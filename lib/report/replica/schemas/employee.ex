@@ -15,6 +15,7 @@ defmodule Report.Replica.Employee do
     field(:end_date, :date)
     field(:status, :string)
     field(:status_reason, :string)
+    field(:speciality, :map)
     field(:updated_by, Ecto.UUID)
     field(:inserted_by, Ecto.UUID)
 
