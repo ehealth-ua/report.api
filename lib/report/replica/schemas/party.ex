@@ -15,6 +15,8 @@ defmodule Report.Replica.Party do
     field(:science_degree, :map)
     field(:declaration_count, :integer)
     field(:declaration_limit, :integer)
+    field(:about_myself, :string)
+    field(:working_experience, :integer)
 
     has_many(:users, Report.Replica.PartyUser, foreign_key: :party_id)
 

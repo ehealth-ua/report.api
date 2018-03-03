@@ -86,7 +86,7 @@ defmodule Report.Factory do
     end_date = Faker.Date.forward(365)
 
     %Employee{
-      employee_type: "doctor",
+      employee_type: "DOCTOR",
       position: Faker.Pokemon.name(),
       start_date: start_date,
       end_date: end_date,
@@ -96,7 +96,8 @@ defmodule Report.Factory do
       status: "APPROVED",
       is_active: true,
       party: build(:party),
-      legal_entity: build(:legal_entity)
+      legal_entity: build(:legal_entity),
+      division: build(:division)
     }
   end
 
@@ -269,7 +270,9 @@ defmodule Report.Factory do
     %Party{
       first_name: "some first_name",
       last_name: "some last_name",
-      second_name: "some second_name"
+      second_name: "some second_name",
+      declaration_count: 0,
+      declaration_limit: 2000
     }
   end
 
