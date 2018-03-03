@@ -18,7 +18,7 @@ defmodule Report.Integration.MainStatsTest do
     schema = Map.put(schema, "properties", get_in(schema, ~w(properties data properties)))
     :ok = NExJsonSchema.Validator.validate(schema, main_stats)
 
-    assert %{"msps" => 4, "doctors" => 3, "declarations" => 2} = main_stats
+    assert %{"msps" => 4, "doctors" => 4, "declarations" => 2} = main_stats
   end
 
   test "get_division_stats/1" do
@@ -54,7 +54,7 @@ defmodule Report.Integration.MainStatsTest do
       |> File.read!()
       |> Poison.decode!()
 
-    assert 2 == main_stats |> List.first() |> get_in(["stats", "doctors"])
+    assert 4 == main_stats |> List.first() |> get_in(["stats", "doctors"])
 
     schema =
       schema

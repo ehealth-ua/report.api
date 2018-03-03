@@ -46,6 +46,7 @@ defmodule Report.Web.Router do
 
     get("/page", PageController, :index)
 
+    get("/stats/employees", EmployeeController, :index)
     get("/reimbursement_report", ReimbursementController, :index)
     get("/reimbursement_report_download", ReimbursementController, :download)
   end
