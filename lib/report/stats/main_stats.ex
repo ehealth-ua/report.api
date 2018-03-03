@@ -296,11 +296,11 @@ defmodule Report.Stats.MainStats do
     |> params_query(%{"status" => "APPROVED"})
     |> params_query(%{"is_active" => true})
     |> join(:left, [e], dv in assoc(e, :division))
-    |> where([e, dv], fragment("? @> ?", dv.addresses, ^[%{"type" => "REGISTRATION"}]))
+    |> where([e, dv], fragment("? @> ?", dv.addresses, ^[%{"type" => "RESIDENCE"}]))
     |> select([e, dv], %{address: fragment("jsonb_array_elements(?)", dv.addresses)})
     |> subquery()
     |> group_by([a], fragment("?->>'area'", a.address))
-    |> where([a], fragment("?->>'type' = 'REGISTRATION'", a.address))
+    |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
     |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
     |> Repo.all()
   end
@@ -309,11 +309,11 @@ defmodule Report.Stats.MainStats do
     MedicationRequest
     |> join(:left, [mr], e in assoc(mr, :employee))
     |> join(:left, [mr, e], d in assoc(e, :division))
-    |> where([mr, e, d], fragment("? @> ?", d.addresses, ^[%{"type" => "REGISTRATION"}]))
+    |> where([mr, e, d], fragment("? @> ?", d.addresses, ^[%{"type" => "RESIDENCE"}]))
     |> select([mr, e, d], %{address: fragment("jsonb_array_elements(?)", d.addresses)})
     |> subquery()
     |> group_by([a], fragment("?->>'area'", a.address))
-    |> where([a], fragment("?->>'type' = 'REGISTRATION'", a.address))
+    |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
     |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
     |> Repo.all()
   end
@@ -322,11 +322,11 @@ defmodule Report.Stats.MainStats do
     Declaration
     |> declaration_query()
     |> join(:left, [d], dv in assoc(d, :division))
-    |> where([d, dv], fragment("? @> ?", dv.addresses, ^[%{"type" => "REGISTRATION"}]))
+    |> where([d, dv], fragment("? @> ?", dv.addresses, ^[%{"type" => "RESIDENCE"}]))
     |> select([d, dv], %{address: fragment("jsonb_array_elements(?)", dv.addresses)})
     |> subquery()
     |> group_by([a], fragment("?->>'area'", a.address))
-    |> where([a], fragment("?->>'type' = 'REGISTRATION'", a.address))
+    |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
     |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
     |> Repo.all()
   end
