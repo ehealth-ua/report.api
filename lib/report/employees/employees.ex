@@ -49,6 +49,7 @@ defmodule Report.Employees do
       |> Map.get(:full_name, "")
       |> String.split()
       |> Enum.join(" & ")
+      |> String.downcase()
 
     if ts_query == "" do
       query
