@@ -58,7 +58,7 @@ defmodule Report.Employees do
         query,
         [e, p],
         fragment(
-          "to_tsvector('russian', ? || ' ' || ? || ' ' || ?) @@ to_tsquery(?)",
+          "to_tsvector('english', ? || ' ' || ? || ' ' || ?) @@ to_tsquery(?)",
           p.first_name,
           p.last_name,
           p.second_name,
