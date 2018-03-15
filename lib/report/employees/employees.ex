@@ -12,14 +12,14 @@ defmodule Report.Employees do
   def list(params) do
     with %Ecto.Changeset{valid?: true, changes: changes} <- changeset(params) do
       Employee
-      |> add_name_search(changes)
+      |> add_full_name_search(changes)
       |> add_speciality_search(changes)
       |> where([e], e.employee_type == "DOCTOR")
       |> where([e], e.is_active)
       |> where([e], e.status == "APPROVED")
       |> where([e], not is_nil(e.division_id))
       |> join(:left, [e], p in assoc(e, :party))
-      |> where([e, p], p.declaration_count < p.declaration_limit)
+      |> add_is_available_search(changes)
       |> preload([e, p], party: p)
       |> join(:left, [e, p], d in assoc(e, :division))
       |> preload([e, p, d], division: d)
@@ -33,12 +33,38 @@ defmodule Report.Employees do
     cast(%Search{}, params, Search.__schema__(:fields))
   end
 
-  defp add_name_search(query, changes) do
-    changes
-    |> Map.take(~w(first_name second_name last_name)a)
-    |> Enum.reduce(query, fn {k, v}, q ->
-      where(q, [e, p], ilike(field(p, ^k), ^("%" <> v <> "%")))
-    end)
+  defp add_is_available_search(query, changes) do
+    case Map.get(changes, :is_available) do
+      false ->
+        query
+
+      _ ->
+        where(query, [e, p], p.declaration_count < p.declaration_limit)
+    end
+  end
+
+  defp add_full_name_search(query, changes) do
+    ts_query =
+      changes
+      |> Map.get(:full_name, "")
+      |> String.split()
+      |> Enum.join(" & ")
+
+    if ts_query == "" do
+      query
+    else
+      where(
+        query,
+        [e, p],
+        fragment(
+          "to_tsvector('russian', ? || ' ' || ? || ' ' || ?) @@ to_tsquery(?)",
+          p.first_name,
+          p.last_name,
+          p.second_name,
+          ^ts_query
+        )
+      )
+    end
   end
 
   defp add_speciality_search(query, changes) do
