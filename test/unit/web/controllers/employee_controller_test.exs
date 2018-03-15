@@ -83,10 +83,16 @@ defmodule Report.Web.EmployeeControllerTest do
 
       insert(:employee, party: party)
 
-      conn =
-        get(conn, employee_path(conn, :index), %{first_name: "First", second_name: "SECOND", last_name: "last name"})
+      conn1 = get(conn, employee_path(conn, :index), %{full_name: "First SECOND last name"})
+      assert resp = json_response(conn1, 200)
+      assert 1 == Enum.count(resp["data"])
 
-      assert resp = json_response(conn, 200)
+      conn2 = get(conn, employee_path(conn, :index), %{full_name: "first"})
+      assert resp = json_response(conn2, 200)
+      assert 1 == Enum.count(resp["data"])
+
+      conn3 = get(conn, employee_path(conn, :index), %{full_name: "LAST"})
+      assert resp = json_response(conn3, 200)
       assert 1 == Enum.count(resp["data"])
     end
 
@@ -163,6 +169,21 @@ defmodule Report.Web.EmployeeControllerTest do
       assert resp = json_response(conn, 200)
       assert 1 == Enum.count(resp["data"])
       assert employee.id == hd(resp["data"])["id"]
+    end
+
+    test "search is_available = false", %{conn: conn} do
+      party1 = insert(:party, declaration_count: 100, declaration_limit: 5)
+      party2 = insert(:party, declaration_count: 0, declaration_limit: 100)
+      insert(:employee, party: party1)
+      insert(:employee, party: party2)
+
+      conn1 = get(conn, employee_path(conn, :index), %{is_available: false})
+      assert resp = json_response(conn1, 200)
+      assert 2 == Enum.count(resp["data"])
+
+      conn2 = get(conn, employee_path(conn, :index), %{is_available: true})
+      assert resp = json_response(conn2, 200)
+      assert 1 == Enum.count(resp["data"])
     end
   end
 end
