@@ -45,7 +45,7 @@ defmodule Report.Replica.EmployeeDoctor do
       field(:certificate_number, :string)
     end
 
-    belongs_to(:employee, Repo.Replica.Employee, type: Ecto.UUID)
+    belongs_to(:employee, Report.Replica.Employee, type: Ecto.UUID)
 
     timestamps()
   end

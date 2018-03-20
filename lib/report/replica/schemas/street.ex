@@ -10,7 +10,7 @@ defmodule Report.Replica.Street do
 
     timestamps()
 
-    has_many(:aliases, Report.Replica.StreetAliases)
+    has_many(:aliases, Report.Replica.StreetsAliases)
 
     belongs_to(:settlement, Report.Replica.Settlement, type: Ecto.UUID)
   end

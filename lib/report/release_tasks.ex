@@ -4,7 +4,7 @@ defmodule Report.ReleaseTasks do
 
   Example:
 
-      report/bin/report command Elixir.Report.ReleaseTasks migrate!
+      report/bin/report command Elixir.Report.ReleaseTasks migrate
   """
   alias Ecto.Migrator
   alias Ecto.Migration.Runner
@@ -23,7 +23,7 @@ defmodule Report.ReleaseTasks do
     Report.Repo
   ]
 
-  def migrate! do
+  def migrate do
     IO.puts("Loading report..")
     # Load the code for report, but don't start it
     :ok = Application.load(:report_api)
@@ -63,7 +63,7 @@ defmodule Report.ReleaseTasks do
 
   defp seed_path(app), do: Application.app_dir(app, "priv/repo/seeds.exs")
 
-  def setup_pg_logical! do
+  def setup_pg_logical do
     pg_logical = Confex.get_env(:report_api, :pg_logical_node)
     Runner.execute("SELECT pglogical.create_node(
     node_name := ‘subscriber’,

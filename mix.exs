@@ -48,7 +48,7 @@ defmodule Report.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:distillery, "~> 1.4.1"},
+      {:distillery, "~> 1.5"},
       {:confex, "~> 3.2"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
@@ -59,20 +59,19 @@ defmodule Report.Mixfile do
       {:eview, "~> 0.12.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:geo, "~> 1.5"},
-      {:timex, "~> 3.1"},
-      {:quantum, ">= 2.1.0"},
+      {:timex, "~> 3.2"},
+      {:quantum, "~> 2.2"},
       {:csv, "~> 2.0.0"},
-      {:timex_ecto, "~> 3.1"},
+      {:timex_ecto, "~> 3.2"},
       {:jvalid, "~> 0.6.0"},
       {:scrivener_ecto, "~> 1.0"},
       {:flow, "~> 0.12"},
       {:plug_logger_json, "~> 0.5"},
       {:ecto_logger_json, "~> 0.1"},
-      {:faker, "~> 0.8", only: [:test]},
-      {:ex_machina, "~> 2.0", only: :test},
-      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
-      {:dogma, ">= 0.1.12", only: [:dev, :test]},
-      {:credo, ">= 0.5.1", only: [:dev, :test]}
+      {:faker, "~> 0.9.0", only: [:test]},
+      {:ex_machina, "~> 2.2", only: :test},
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:credo, "~> 0.9.0-rc8", only: [:dev, :test]}
     ]
   end
 

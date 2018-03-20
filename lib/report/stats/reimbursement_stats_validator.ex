@@ -124,9 +124,11 @@ defmodule Report.Stats.ReimbursementStatsValidator do
     end
   end
 
+  defp do_validate_period(field_changeset, field_from \\ :from, field_to \\ :to)
+
   defp do_validate_period(%Ecto.Changeset{changes: changes}, _, _) when changes == %{}, do: :ok
 
-  defp do_validate_period(field_changeset, field_from \\ :from, field_to \\ :to) do
+  defp do_validate_period(field_changeset, field_from, field_to) do
     from = get_change(field_changeset, field_from)
     to = get_change(field_changeset, field_to)
 
