@@ -22,7 +22,7 @@ config :report_api, Report.Repo,
 config :report_api, Report.Scheduler,
   jobs: [
     news_letter: [
-      schedule: "*/5 * * * *",
+      schedule: "@monthly",
       task: {Report.Reporter, :capitation, []}
     ]
   ]
