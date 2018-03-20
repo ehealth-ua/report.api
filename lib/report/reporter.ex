@@ -8,24 +8,30 @@ defmodule Report.Reporter do
   alias Report.ReportLogs
   alias Report.RedLists
 
+  require Logger
+
   @async_billing Confex.get_env(:report_api, :async_billing)
   @declaration_batch_size 1000
 
   def capitation do
     generate_billing()
     generate_csv()
-    file = File.read!("/tmp/#{Timex.today()}.csv")
 
-    with {:ok, public_url} <-
-           MediaStorage.store_signed_content(file, :capitation_report_bucket, to_string(Timex.to_unix(Timex.now())), [
+    now = Timex.now()
+
+    with {:ok, file} <- File.read("/tmp/#{Timex.today()}.csv"),
+         {:ok, public_url} <-
+           MediaStorage.store_signed_content(file, :capitation_report_bucket, to_string(Timex.to_unix(now)), [
              {"Content-Type", "application/json"}
-           ]) do
-      {:ok, _} = ReportLogs.save_capitation_csv_url(%ReportLog{}, %{public_url: public_url})
+           ]),
+         {:ok, _} <- ReportLogs.save_capitation_csv_url(%ReportLog{}, %{public_url: public_url}) do
+      Logger.info("Capitation report #{Timex.to_unix(now)} created #{now}")
+      :ok
     else
-      _ -> raise "Could not upload CSV to Google Cloud"
+      error ->
+        Logger.error("Capitation report error #{now}: #{inspect(error)}")
+        raise "Could not upload Capitation CSV to Google Cloud"
     end
-
-    :ok
   end
 
   def generate_billing do
