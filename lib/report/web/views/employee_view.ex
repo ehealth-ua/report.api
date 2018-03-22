@@ -22,26 +22,28 @@ defmodule Report.Web.EmployeeView do
     )a)
     |> render_association(employee.party)
     |> render_association(employee.division)
-    |> Map.put("speciality", get_employee_specialities(employee))
+    |> Map.put(:speciality, get_employee_specialities(employee))
   end
 
   defp render_association(map, %Party{} = party) do
-    data = Map.take(party, ~w(
-      id
-      first_name
-      last_name
-      second_name
-      birth_date
-      gender
-      tax_id
-      no_tax_id
-      documents
-      phones
-      declaration_limit
-      declaration_count
-      about_myself
-      working_experience
-    )a)
+    data =
+      party
+      |> Map.take(~w(
+        id
+        first_name
+        last_name
+        second_name
+        birth_date
+        gender
+        tax_id
+        no_tax_id
+        documents
+        phones
+        about_myself
+        working_experience
+      )a)
+      |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
+
     Map.put(map, :party, data)
   end
 
