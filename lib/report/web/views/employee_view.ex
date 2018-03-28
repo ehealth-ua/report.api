@@ -3,10 +3,21 @@ defmodule Report.Web.EmployeeView do
 
   use Report.Web, :view
   alias Report.Replica.Division
+  alias Report.Replica.LegalEntity
   alias Report.Replica.Party
 
   def render("index.json", %{paging: paging}) do
-    render_many(paging.entries, __MODULE__, "show.json", as: :employee)
+    render_many(paging.entries, __MODULE__, "list_item.json", as: :employee)
+  end
+
+  def render("list_item.json", %{employee: employee}) do
+    employee
+    |> Map.take(~w(
+      id
+    )a)
+    |> render_association(employee.party)
+    |> render_association(employee.division)
+    |> render_association(employee.legal_entity)
   end
 
   def render("show.json", %{employee: employee}) do
@@ -57,6 +68,11 @@ defmodule Report.Web.EmployeeView do
       mountain_group
     )a)
     Map.put(map, :division, data)
+  end
+
+  defp render_association(map, %LegalEntity{} = legal_entity) do
+    data = Map.take(legal_entity, ~w(id name)a)
+    Map.put(map, :legal_entity, data)
   end
 
   defp render_association(map, _), do: map
