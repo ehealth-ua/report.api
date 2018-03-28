@@ -23,9 +23,20 @@ defmodule Report.Employees do
       |> preload([e, p], party: p)
       |> join(:left, [e, p], d in assoc(e, :division))
       |> preload([e, p, d], division: d)
+      |> join(:left, [e, p, d], le in assoc(e, :legal_entity))
+      |> preload([e, p, d, le], legal_entity: le)
       |> add_division_search(changes)
       |> add_division_name(changes)
       |> Repo.paginate(params)
+    end
+  end
+
+  def get_by_id(id) do
+    with %Employee{} = employee <- Repo.get(Employee, id) do
+      employee
+      |> Repo.preload(:legal_entity)
+      |> Repo.preload(:party)
+      |> Repo.preload(:division)
     end
   end
 
@@ -83,7 +94,7 @@ defmodule Report.Employees do
       query
     else
       params = Map.put(params, :type, @type_residence)
-      where(query, [..., d], fragment("? @> ?", d.addresses, ^[params]))
+      where(query, [e, p, d, le], fragment("? @> ?", d.addresses, ^[params]))
     end
   end
 
@@ -91,7 +102,7 @@ defmodule Report.Employees do
     changes
     |> Map.take(~w(division_name)a)
     |> Enum.reduce(query, fn {_, v}, q ->
-      where(q, [..., d], ilike(d.name, ^("%" <> v <> "%")))
+      where(q, [e, p, d, le], ilike(d.name, ^("%" <> v <> "%")))
     end)
   end
 end

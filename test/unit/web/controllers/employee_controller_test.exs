@@ -56,25 +56,52 @@ defmodule Report.Web.EmployeeControllerTest do
           }
         )
 
-      insert(
-        :employee,
-        party: party,
-        speciality: %{
-          level: "FIRST",
-          speciality: "PEDIATRICIAN",
-          valid_to_date: "2017-08-05",
-          attestation_date: "2017-08-05",
-          attestation_name: "Академія Богомольця",
-          certificate_number: "AB/21331",
-          qualification_type: "AWARDING",
-          speciality_officio: true
-        }
-      )
+      employee =
+        insert(
+          :employee,
+          party: party,
+          speciality: %{
+            level: "FIRST",
+            speciality: "PEDIATRICIAN",
+            valid_to_date: "2017-08-05",
+            attestation_date: "2017-08-05",
+            attestation_name: "Академія Богомольця",
+            certificate_number: "AB/21331",
+            qualification_type: "AWARDING",
+            speciality_officio: true
+          }
+        )
 
       conn = get(conn, employee_path(conn, :index))
       assert resp = json_response(conn, 200)
       assert 1 == Enum.count(resp["data"])
-      assert 2 == Enum.count(hd(resp["data"])["speciality"])
+
+      assert [
+               %{
+                 "division" => %{
+                   "id" => employee.division.id,
+                   "legal_entity_id" => nil,
+                   "mountain_group" => employee.division.mountain_group,
+                   "name" => employee.division.name,
+                   "status" => "ACTIVE",
+                   "type" => "clinic"
+                 },
+                 "id" => employee.id,
+                 "legal_entity" => %{
+                   "id" => employee.legal_entity.id,
+                   "name" => employee.legal_entity.name
+                 },
+                 "party" => %{
+                   "about_myself" => nil,
+                   "first_name" => "some first_name",
+                   "id" => party.id,
+                   "is_available" => true,
+                   "last_name" => "some last_name",
+                   "second_name" => "some second_name",
+                   "working_experience" => nil
+                 }
+               }
+             ] == resp["data"]
     end
 
     test "search by first_name, last_name, second_name", %{conn: conn} do
@@ -184,6 +211,99 @@ defmodule Report.Web.EmployeeControllerTest do
       conn2 = get(conn, employee_path(conn, :index), %{is_available: true})
       assert resp = json_response(conn2, 200)
       assert 1 == Enum.count(resp["data"])
+    end
+  end
+
+  describe "emplyoee show" do
+    test "success get employee by id", %{conn: conn} do
+      party =
+        insert(
+          :party,
+          educations: [
+            %{
+              city: "Київ",
+              degree: "MASTER",
+              country: "UA",
+              speciality: "Педіатр",
+              issued_date: "2017-08-05",
+              diploma_number: "DD123543",
+              institution_name: "Академія Богомольця"
+            }
+          ],
+          qualifications: [
+            %{
+              type: "STAZHUVANNYA",
+              speciality: "Педіатр",
+              issued_date: "2017-08-05",
+              institution_name: "Академія Богомольця",
+              certificate_number: "2017-08-05"
+            }
+          ],
+          specialities: [
+            %{
+              level: "FIRST",
+              speciality: "PHARMACIST2",
+              valid_to_date: "2017-08-05",
+              attestation_date: "2017-08-05",
+              attestation_name: "Академія Богомольця",
+              certificate_number: "AB/21331",
+              qualification_type: "AWARDING"
+            }
+          ],
+          science_degree: %{
+            city: "Київ",
+            degree: "DOCTOR_OF_SCIENCE",
+            country: "UA",
+            speciality: "THERAPIST",
+            issued_date: "2017-08-05",
+            diploma_number: "DD123543",
+            institution_name: "Академія Богомольця"
+          }
+        )
+
+      employee = insert(:employee, party: party)
+      insert(:employee)
+
+      conn = get(conn, employee_path(conn, :show, employee.id))
+      assert resp = json_response(conn, 200)
+
+      assert %{
+               "division" => %{
+                 "id" => employee.division.id,
+                 "legal_entity_id" => nil,
+                 "mountain_group" => employee.division.mountain_group,
+                 "name" => employee.division.name,
+                 "status" => "ACTIVE",
+                 "type" => "clinic"
+               },
+               "employee_type" => "DOCTOR",
+               "end_date" => to_string(employee.end_date),
+               "id" => employee.id,
+               "party" => %{
+                 "about_myself" => nil,
+                 "first_name" => employee.party.first_name,
+                 "id" => employee.party.id,
+                 "is_available" => true,
+                 "last_name" => employee.party.last_name,
+                 "second_name" => employee.party.second_name,
+                 "working_experience" => nil
+               },
+               "position" => employee.position,
+               "speciality" => [
+                 %{
+                   "attestation_date" => "2017-08-05",
+                   "attestation_name" => "Академія Богомольця",
+                   "certificate_number" => "AB/21331",
+                   "level" => "FIRST",
+                   "qualification_type" => "AWARDING",
+                   "speciality" => "PHARMACIST2",
+                   "speciality_officio" => false,
+                   "valid_to_date" => "2017-08-05"
+                 }
+               ],
+               "start_date" => to_string(employee.start_date),
+               "status" => "APPROVED"
+             } == resp["data"]
     end
   end
 end
