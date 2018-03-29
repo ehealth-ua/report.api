@@ -53,6 +53,7 @@ defmodule Report.Repo.Migrations.AddPartyDeclarationCount do
     BEFORE INSERT
     ON declarations
     FOR EACH ROW
+    WHEN (NEW.status = 'active')
     EXECUTE PROCEDURE increment_declaration_count();
     """)
 
