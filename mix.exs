@@ -67,7 +67,7 @@ defmodule Report.Mixfile do
       {:scrivener_ecto, "~> 1.0"},
       {:flow, "~> 0.12"},
       {:plug_logger_json, "~> 0.5"},
-      {:ecto_logger_json, "~> 0.1"},
+      {:ecto_logger_json, git: "https://github.com/edenlabllc/ecto_logger_json.git", branch: "query_params"},
       {:faker, "~> 0.9.0", only: [:test]},
       {:ex_machina, "~> 2.2", only: :test},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
