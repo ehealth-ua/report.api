@@ -53,6 +53,10 @@ defmodule Report.Web.Router do
 
     get("/reimbursement_report", ReimbursementController, :index)
     get("/reimbursement_report_download", ReimbursementController, :download)
+
+    scope "/api" do
+      post("/parties/declaration_count", ApiController, :declaration_count)
+    end
   end
 
   defp handle_errors(%Plug.Conn{status: 500} = conn, %{kind: kind, reason: reason, stack: stacktrace}) do
