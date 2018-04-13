@@ -13,13 +13,17 @@ defmodule Report do
 
     # Define workers and child supervisors to be supervised
     children = [
+      worker(Report.Stats.Cache, []),
+
       # Start the Ecto repository
       supervisor(Report.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Report.Web.Endpoint, []),
       # Starts a worker by calling: Report.Worker.start_link(arg1, arg2, arg3)
       # worker(Report.Worker, [arg1, arg2, arg3]),
-      worker(Report.Scheduler, [])
+      worker(Report.Scheduler, []),
+      worker(Report.Stats.Cache.MainStats, []),
+      worker(Report.Stats.Cache.RegionStats, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

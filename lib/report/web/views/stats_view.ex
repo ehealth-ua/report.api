@@ -34,9 +34,8 @@ defmodule Report.Web.StatsView do
     second_name
   )a
 
-  def render("index.json", %{stats: stats}) do
-    stats
-  end
+  def render("index.json", %{stats: nil}), do: %{}
+  def render("index.json", %{stats: stats}), do: stats
 
   def render("index.json", %{"division" => division, "stats" => stats}) do
     %{
