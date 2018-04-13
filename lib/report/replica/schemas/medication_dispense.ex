@@ -16,6 +16,7 @@ defmodule Report.Replica.MedicationDispense do
     field(:is_active, :boolean)
     field(:inserted_by, Ecto.UUID)
     field(:updated_by, Ecto.UUID)
+    field(:dispensed_by, :string)
 
     has_many(:details, Report.Replica.MedicationDispense.Details)
     belongs_to(:medication_request, Report.Replica.MedicationRequest, define_field: false)
