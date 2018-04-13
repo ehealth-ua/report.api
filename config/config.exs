@@ -80,6 +80,9 @@ config :report_api, Report.MediaStorage,
     timeout: {:system, :integer, "MEDIA_STORAGE_REQUEST_TIMEOUT", 30_000}
   ]
 
+config :report_api, Report.Stats.Cache.MainStats, cache_ttl: {:system, :integer, "MAIN_STATS_CACHE_TTL", 60_000}
+config :report_api, Report.Stats.Cache.RegionStats, cache_ttl: {:system, :integer, "REPORTS_STATS_CACHE_TTL", 60_000}
+
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
 # by uncommenting the line below and defining dev.exs, test.exs and such.
