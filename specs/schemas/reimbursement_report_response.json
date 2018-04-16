@@ -246,10 +246,15 @@
           },
           "medication_dispense": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
               "id": {
                 "type": "string",
                 "description": "Medication dispense Identifier"
+              },
+              "dispensed_by": {
+                "type": ["string", "null"],
+                "description": "pharmacist who created dispense"
               },
               "dispensed_at": {
                 "type": "string",
