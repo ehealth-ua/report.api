@@ -2,6 +2,7 @@ use Mix.Config
 
 # Configuration for production environment.
 # It should read environment variables to follow 12 factor apps convention.
+config :report_api, :environment, :prod
 
 config :report_api, :pg_logical_node,
   dsn: {:system, "NODE_DSN"},
