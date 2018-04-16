@@ -24,4 +24,12 @@ defmodule Report.Stats.Cache do
   def set_regions_stats(stats) do
     Agent.update(__MODULE__, &Map.put(&1, :regions, stats))
   end
+
+  def get_histogram_stats do
+    Agent.get(__MODULE__, &{:ok, Map.get(&1, :histogram)})
+  end
+
+  def set_histogram_stats(stats) do
+    Agent.update(__MODULE__, &Map.put(&1, :histogram, stats))
+  end
 end
