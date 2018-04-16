@@ -2,6 +2,8 @@ use Mix.Config
 
 # Configuration for test environment
 
+config :report_api, :environment, :dev
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
