@@ -104,7 +104,7 @@ defmodule Report.Web.ReimbursementView do
 
     dispense =
       medication_dispense.medication_dispense
-      |> Map.take(~w(id dispensed_at status)a)
+      |> Map.take(~w(id dispensed_at dispensed_by status)a)
       |> Map.merge(%{
         "party" => render_one(party, __MODULE__, "party.json", as: :party),
         "division" => render_one(division, __MODULE__, "division.json", as: :division),
