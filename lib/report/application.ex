@@ -12,7 +12,7 @@ defmodule Report do
     import Supervisor.Spec, warn: false
 
     cache_servers =
-      if Mix.env() == :test do
+      if Application.get_env(:report_api, :environment) == :test do
         []
       else
         [

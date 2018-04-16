@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :report_api, :environment, :test
+
 # Configure your database
 config :report_api, Report.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
