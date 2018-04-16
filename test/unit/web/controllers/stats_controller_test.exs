@@ -6,8 +6,17 @@ defmodule Report.Web.StatsControllerTest do
   alias Report.Stats.HistogramStatsRequest
   alias Report.Replica.Employee
   alias NExJsonSchema.Validator
+  alias Ecto.UUID
+  alias Report.Stats.Cache.MainStats
+  alias Report.Stats.Cache.RegionStats
+  alias Report.Stats.Cache.HistogramStats
 
   test "get main stats", %{conn: conn} do
+    {:ok, pid} = MainStats.start_link()
+    :timer.sleep(200)
+
+    on_exit(fn -> Process.exit(pid, :normal) end)
+
     conn = get(conn, stats_path(conn, :index))
 
     schema =
@@ -20,7 +29,7 @@ defmodule Report.Web.StatsControllerTest do
 
   test "get division stats", %{conn: conn} do
     assert_raise(Ecto.NoResultsError, fn ->
-      get(conn, stats_path(conn, :division, Ecto.UUID.generate()))
+      get(conn, stats_path(conn, :division, UUID.generate()))
     end)
 
     division = insert(:division)
@@ -35,6 +44,10 @@ defmodule Report.Web.StatsControllerTest do
   end
 
   test "get regions stats", %{conn: conn} do
+    {:ok, pid} = RegionStats.start_link()
+    :timer.sleep(200)
+    on_exit(fn -> Process.exit(pid, :normal) end)
+
     schema =
       "test/data/stats/regions_stats_response.json"
       |> File.read!()
@@ -49,84 +62,9 @@ defmodule Report.Web.StatsControllerTest do
   end
 
   test "get histogram stats", %{conn: conn} do
-    conn = get(conn, stats_path(conn, :histogram))
-    assert response(conn, 422)
-
-    conn = get(conn, stats_path(conn, :histogram, from_date: "2017-01-01"))
-    assert response(conn, 422)
-
-    conn = get(conn, stats_path(conn, :histogram, to_date: "2017-01-01"))
-    assert response(conn, 422)
-
-    conn =
-      get(
-        conn,
-        stats_path(
-          conn,
-          :histogram,
-          from_date: "2017-01",
-          to_date: "2017-02",
-          interval: HistogramStatsRequest.interval(:day)
-        )
-      )
-
-    assert response(conn, 422)
-
-    conn =
-      get(
-        conn,
-        stats_path(
-          conn,
-          :histogram,
-          from_date: "2017",
-          to_date: "2017",
-          interval: HistogramStatsRequest.interval(:month)
-        )
-      )
-
-    assert response(conn, 422)
-
-    conn =
-      get(
-        conn,
-        stats_path(
-          conn,
-          :histogram,
-          from_date: "2017-07-01",
-          to_date: "2017-01-01",
-          interval: HistogramStatsRequest.interval(:month)
-        )
-      )
-
-    assert response(conn, 422)
-
-    conn =
-      get(
-        conn,
-        stats_path(
-          conn,
-          :histogram,
-          from_date: "2017-07-01",
-          to_date: "2017-01-01",
-          interval: HistogramStatsRequest.interval(:day)
-        )
-      )
-
-    assert response(conn, 422)
-
-    conn =
-      get(
-        conn,
-        stats_path(
-          conn,
-          :histogram,
-          from_date: "2017",
-          to_date: "2015",
-          interval: HistogramStatsRequest.interval(:year)
-        )
-      )
-
-    assert response(conn, 422)
+    {:ok, pid} = HistogramStats.start_link()
+    :timer.sleep(200)
+    on_exit(fn -> Process.exit(pid, :normal) end)
 
     conn =
       get(

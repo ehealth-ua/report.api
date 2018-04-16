@@ -81,7 +81,10 @@ config :report_api, Report.MediaStorage,
   ]
 
 config :report_api, Report.Stats.Cache.MainStats, cache_ttl: {:system, :integer, "MAIN_STATS_CACHE_TTL", 60_000}
-config :report_api, Report.Stats.Cache.RegionStats, cache_ttl: {:system, :integer, "REPORTS_STATS_CACHE_TTL", 60_000}
+config :report_api, Report.Stats.Cache.RegionStats, cache_ttl: {:system, :integer, "REGIONS_STATS_CACHE_TTL", 60_000}
+
+config :report_api, Report.Stats.Cache.HistogramStats,
+  cache_ttl: {:system, :integer, "HISTOGRAM_STATS_CACHE_TTL", 60_000}
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
