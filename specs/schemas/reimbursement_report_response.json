@@ -251,6 +251,10 @@
                 "type": "string",
                 "description": "Medication dispense Identifier"
               },
+              "dispensed_by": {
+                "type": ["string", "null"],
+                "description": "pharmacist who created dispense"
+              },
               "dispensed_at": {
                 "type": "string",
                 "description": "date of dispense"
