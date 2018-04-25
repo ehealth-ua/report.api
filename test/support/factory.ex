@@ -109,7 +109,7 @@ defmodule Report.Factory do
       name: Faker.Pokemon.name(),
       status: "ACTIVE",
       is_active: true,
-      type: "clinic",
+      type: "CLINIC",
       addresses: [
         %{
           zip: "02090",
@@ -130,7 +130,8 @@ defmodule Report.Factory do
       mountain_group: Enum.at(bool_list, :rand.uniform(2) - 1),
       location: %Geo.Point{
         coordinates: {50.12332, 30.12332}
-      }
+      },
+      legal_entity_id: nil
     }
   end
 

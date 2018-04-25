@@ -11,20 +11,34 @@ defmodule Report.Web.EmployeeControllerTest do
     end
 
     test "success search no filters", %{conn: conn} do
+      educations = [
+        %{
+          "city" => "Київ",
+          "degree" => "MASTER",
+          "country" => "UA",
+          "speciality" => "Педіатр",
+          "issued_date" => "2017-08-05",
+          "diploma_number" => "DD123543",
+          "institution_name" => "Академія Богомольця"
+        }
+      ]
+
+      specialities = [
+        %{
+          "level" => "FIRST",
+          "speciality" => "PHARMACIST2",
+          "valid_to_date" => "2017-08-05",
+          "attestation_date" => "2017-08-05",
+          "attestation_name" => "Академія Богомольця",
+          "certificate_number" => "AB/21331",
+          "qualification_type" => "AWARDING"
+        }
+      ]
+
       party =
         insert(
           :party,
-          educations: [
-            %{
-              city: "Київ",
-              degree: "MASTER",
-              country: "UA",
-              speciality: "Педіатр",
-              issued_date: "2017-08-05",
-              diploma_number: "DD123543",
-              institution_name: "Академія Богомольця"
-            }
-          ],
+          educations: educations,
           qualifications: [
             %{
               type: "STAZHUVANNYA",
@@ -34,17 +48,7 @@ defmodule Report.Web.EmployeeControllerTest do
               certificate_number: "2017-08-05"
             }
           ],
-          specialities: [
-            %{
-              level: "FIRST",
-              speciality: "PHARMACIST2",
-              valid_to_date: "2017-08-05",
-              attestation_date: "2017-08-05",
-              attestation_name: "Академія Богомольця",
-              certificate_number: "AB/21331",
-              qualification_type: "AWARDING"
-            }
-          ],
+          specialities: specialities,
           science_degree: %{
             city: "Київ",
             degree: "DOCTOR_OF_SCIENCE",
@@ -76,6 +80,13 @@ defmodule Report.Web.EmployeeControllerTest do
       assert resp = json_response(conn, 200)
       assert 1 == Enum.count(resp["data"])
 
+      schema =
+        "test/data/stats/employee_stats_response.json"
+        |> File.read!()
+        |> Poison.decode!()
+
+      :ok = NExJsonSchema.Validator.validate(schema, resp)
+
       assert [
                %{
                  "division" => %{
@@ -84,7 +95,7 @@ defmodule Report.Web.EmployeeControllerTest do
                    "mountain_group" => employee.division.mountain_group,
                    "name" => employee.division.name,
                    "status" => "ACTIVE",
-                   "type" => "clinic"
+                   "type" => "CLINIC"
                  },
                  "id" => employee.id,
                  "legal_entity" => %{
@@ -98,7 +109,9 @@ defmodule Report.Web.EmployeeControllerTest do
                    "is_available" => true,
                    "last_name" => "some last_name",
                    "second_name" => "some second_name",
-                   "working_experience" => nil
+                   "working_experience" => nil,
+                   "educations" => educations,
+                   "specialities" => specialities
                  }
                }
              ] == resp["data"]
@@ -212,24 +225,49 @@ defmodule Report.Web.EmployeeControllerTest do
       assert resp = json_response(conn2, 200)
       assert 1 == Enum.count(resp["data"])
     end
+
+    test "search by id", %{conn: conn} do
+      employee = insert(:employee)
+      insert(:employee)
+
+      conn = get(conn, employee_path(conn, :index), %{id: employee.id})
+
+      assert resp = json_response(conn, 200)
+      assert 1 == Enum.count(resp["data"])
+      assert employee.id == hd(resp["data"])["id"]
+    end
   end
 
   describe "emplyoee show" do
     test "success get employee by id", %{conn: conn} do
+      educations = [
+        %{
+          "city" => "Київ",
+          "degree" => "MASTER",
+          "country" => "UA",
+          "speciality" => "Педіатр",
+          "issued_date" => "2017-08-05",
+          "diploma_number" => "DD123543",
+          "institution_name" => "Академія Богомольця"
+        }
+      ]
+
+      specialities = [
+        %{
+          "level" => "FIRST",
+          "speciality" => "PHARMACIST2",
+          "valid_to_date" => "2017-08-05",
+          "attestation_date" => "2017-08-05",
+          "attestation_name" => "Академія Богомольця",
+          "certificate_number" => "AB/21331",
+          "qualification_type" => "AWARDING"
+        }
+      ]
+
       party =
         insert(
           :party,
-          educations: [
-            %{
-              city: "Київ",
-              degree: "MASTER",
-              country: "UA",
-              speciality: "Педіатр",
-              issued_date: "2017-08-05",
-              diploma_number: "DD123543",
-              institution_name: "Академія Богомольця"
-            }
-          ],
+          educations: educations,
           qualifications: [
             %{
               type: "STAZHUVANNYA",
@@ -239,17 +277,7 @@ defmodule Report.Web.EmployeeControllerTest do
               certificate_number: "2017-08-05"
             }
           ],
-          specialities: [
-            %{
-              level: "FIRST",
-              speciality: "PHARMACIST2",
-              valid_to_date: "2017-08-05",
-              attestation_date: "2017-08-05",
-              attestation_name: "Академія Богомольця",
-              certificate_number: "AB/21331",
-              qualification_type: "AWARDING"
-            }
-          ],
+          specialities: specialities,
           science_degree: %{
             city: "Київ",
             degree: "DOCTOR_OF_SCIENCE",
@@ -261,20 +289,33 @@ defmodule Report.Web.EmployeeControllerTest do
           }
         )
 
-      employee = insert(:employee, party: party)
+      legal_entity = insert(:legal_entity)
+      division = insert(:division, legal_entity_id: legal_entity.id)
+      employee = insert(:employee, party: party, division: division)
       insert(:employee)
 
       conn = get(conn, employee_path(conn, :show, employee.id))
       assert resp = json_response(conn, 200)
 
+      schema =
+        "test/data/stats/employee_stats_details_response.json"
+        |> File.read!()
+        |> Poison.decode!()
+
+      :ok = NExJsonSchema.Validator.validate(schema, resp)
+
       assert %{
                "division" => %{
                  "id" => employee.division.id,
-                 "legal_entity_id" => nil,
+                 "legal_entity_id" => legal_entity.id,
+                 "legal_entity" => %{
+                   "id" => legal_entity.id,
+                   "name" => legal_entity.name
+                 },
                  "mountain_group" => employee.division.mountain_group,
                  "name" => employee.division.name,
                  "status" => "ACTIVE",
-                 "type" => "clinic"
+                 "type" => "CLINIC"
                },
                "employee_type" => "DOCTOR",
                "end_date" => to_string(employee.end_date),
@@ -286,7 +327,9 @@ defmodule Report.Web.EmployeeControllerTest do
                  "is_available" => true,
                  "last_name" => employee.party.last_name,
                  "second_name" => employee.party.second_name,
-                 "working_experience" => nil
+                 "working_experience" => nil,
+                 "educations" => educations,
+                 "specialities" => specialities
                },
                "position" => employee.position,
                "speciality" => [
@@ -301,6 +344,10 @@ defmodule Report.Web.EmployeeControllerTest do
                    "valid_to_date" => "2017-08-05"
                  }
                ],
+               "legal_entity" => %{
+                 "id" => employee.legal_entity.id,
+                 "name" => employee.legal_entity.name
+               },
                "start_date" => to_string(employee.start_date),
                "status" => "APPROVED"
              } == resp["data"]

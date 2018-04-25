@@ -3,13 +3,15 @@ defmodule Report.Employees.Search do
 
   use Ecto.Schema
 
-  schema "employees_search" do
+  @primary_key false
+  embedded_schema do
+    field(:id, Ecto.UUID)
     field(:full_name, :string)
     field(:speciality, :string)
     field(:region, :string)
     field(:area, :string)
     field(:settlement, :string)
     field(:division_name, :string)
-    field(:is_available, :boolean, default: true)
+    field(:is_available, :boolean)
   end
 end

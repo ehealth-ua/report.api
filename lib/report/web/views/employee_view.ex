@@ -33,6 +33,7 @@ defmodule Report.Web.EmployeeView do
     )a)
     |> render_association(employee.party)
     |> render_association(employee.division)
+    |> render_association(employee.legal_entity)
     |> Map.put(:speciality, get_employee_specialities(employee))
   end
 
@@ -52,6 +53,8 @@ defmodule Report.Web.EmployeeView do
         phones
         about_myself
         working_experience
+        educations
+        specialities
       )a)
       |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
 
@@ -67,7 +70,8 @@ defmodule Report.Web.EmployeeView do
       legal_entity_id
       mountain_group
     )a)
-    Map.put(map, :division, data)
+
+    Map.put(map, :division, render_association(data, division.legal_entity))
   end
 
   defp render_association(map, %LegalEntity{} = legal_entity) do

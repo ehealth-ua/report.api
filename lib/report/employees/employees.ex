@@ -12,6 +12,7 @@ defmodule Report.Employees do
   def list(params) do
     with %Ecto.Changeset{valid?: true, changes: changes} <- changeset(params) do
       Employee
+      |> add_id_search(changes)
       |> add_full_name_search(changes)
       |> add_speciality_search(changes)
       |> where([e], e.employee_type == "DOCTOR")
@@ -31,12 +32,18 @@ defmodule Report.Employees do
     end
   end
 
+  defp add_id_search(query, %{id: id}) when not is_nil(id) do
+    where(query, [e], e.id == ^id)
+  end
+
+  defp add_id_search(query, _), do: query
+
   def get_by_id(id) do
     with %Employee{} = employee <- Repo.get(Employee, id) do
       employee
       |> Repo.preload(:legal_entity)
       |> Repo.preload(:party)
-      |> Repo.preload(:division)
+      |> Repo.preload(division: [:legal_entity])
     end
   end
 
@@ -46,11 +53,11 @@ defmodule Report.Employees do
 
   defp add_is_available_search(query, changes) do
     case Map.get(changes, :is_available) do
-      false ->
-        query
+      true ->
+        where(query, [e, p], p.declaration_count < p.declaration_limit)
 
       _ ->
-        where(query, [e, p], p.declaration_count < p.declaration_limit)
+        query
     end
   end
 
