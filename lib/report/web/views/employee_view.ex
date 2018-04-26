@@ -15,8 +15,8 @@ defmodule Report.Web.EmployeeView do
     |> Map.take(~w(
       id
     )a)
-    |> render_association(employee.party)
-    |> render_association(employee.division)
+    |> render_association_list(employee.party)
+    |> render_association_list(employee.division)
     |> render_association(employee.legal_entity)
   end
 
@@ -51,10 +51,10 @@ defmodule Report.Web.EmployeeView do
         no_tax_id
         documents
         phones
-        about_myself
         working_experience
         educations
         specialities
+        about_myself
       )a)
       |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
 
@@ -62,14 +62,14 @@ defmodule Report.Web.EmployeeView do
   end
 
   defp render_association(map, %Division{} = division) do
-    data = Map.take(division, ~w(
-      id
-      name
-      status
-      type
-      legal_entity_id
-      mountain_group
-    )a)
+    data =
+      division
+      |> Map.take(~w(
+        id
+        name
+        type
+      )a)
+      |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, "type") == "RESIDENCE")))
 
     Map.put(map, :division, render_association(data, division.legal_entity))
   end
@@ -80,6 +80,39 @@ defmodule Report.Web.EmployeeView do
   end
 
   defp render_association(map, _), do: map
+
+  defp render_association_list(map, %Party{} = party) do
+    data =
+      party
+      |> Map.take(~w(
+        id
+        first_name
+        last_name
+        second_name
+        birth_date
+        gender
+        tax_id
+        no_tax_id
+        documents
+        phones
+        specialities
+      )a)
+      |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
+
+    Map.put(map, :party, data)
+  end
+
+  defp render_association_list(map, %Division{} = division) do
+    data =
+      division
+      |> Map.take(~w(
+        id
+        name
+      )a)
+      |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, "type") == "RESIDENCE")))
+
+    Map.put(map, :division, render_association(data, division.legal_entity))
+  end
 
   defp get_employee_specialities(employee) do
     speciality = employee.speciality

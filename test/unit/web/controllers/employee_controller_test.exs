@@ -11,18 +11,6 @@ defmodule Report.Web.EmployeeControllerTest do
     end
 
     test "success search no filters", %{conn: conn} do
-      educations = [
-        %{
-          "city" => "Київ",
-          "degree" => "MASTER",
-          "country" => "UA",
-          "speciality" => "Педіатр",
-          "issued_date" => "2017-08-05",
-          "diploma_number" => "DD123543",
-          "institution_name" => "Академія Богомольця"
-        }
-      ]
-
       specialities = [
         %{
           "level" => "FIRST",
@@ -38,7 +26,6 @@ defmodule Report.Web.EmployeeControllerTest do
       party =
         insert(
           :party,
-          educations: educations,
           qualifications: [
             %{
               type: "STAZHUVANNYA",
@@ -91,11 +78,21 @@ defmodule Report.Web.EmployeeControllerTest do
                %{
                  "division" => %{
                    "id" => employee.division.id,
-                   "legal_entity_id" => nil,
-                   "mountain_group" => employee.division.mountain_group,
                    "name" => employee.division.name,
-                   "status" => "ACTIVE",
-                   "type" => "CLINIC"
+                   "addresses" => %{
+                     "apartment" => "3",
+                     "area" => "ЛЬВІВСЬКА",
+                     "building" => "115",
+                     "country" => "UA",
+                     "region" => "ПУСТОМИТІВСЬКИЙ",
+                     "settlement" => "СОРОКИ-ЛЬВІВСЬКІ",
+                     "settlement_id" => "707dbc55-cb6b-4aaa-97c1-2a1e03476100",
+                     "settlement_type" => "CITY",
+                     "street" => "Ніжинська",
+                     "street_type" => "STREET",
+                     "type" => "RESIDENCE",
+                     "zip" => "02090"
+                   }
                  },
                  "id" => employee.id,
                  "legal_entity" => %{
@@ -103,14 +100,11 @@ defmodule Report.Web.EmployeeControllerTest do
                    "name" => employee.legal_entity.name
                  },
                  "party" => %{
-                   "about_myself" => nil,
                    "first_name" => "some first_name",
                    "id" => party.id,
                    "is_available" => true,
                    "last_name" => "some last_name",
                    "second_name" => "some second_name",
-                   "working_experience" => nil,
-                   "educations" => educations,
                    "specialities" => specialities
                  }
                }
@@ -307,15 +301,26 @@ defmodule Report.Web.EmployeeControllerTest do
       assert %{
                "division" => %{
                  "id" => employee.division.id,
-                 "legal_entity_id" => legal_entity.id,
                  "legal_entity" => %{
                    "id" => legal_entity.id,
                    "name" => legal_entity.name
                  },
-                 "mountain_group" => employee.division.mountain_group,
                  "name" => employee.division.name,
-                 "status" => "ACTIVE",
-                 "type" => "CLINIC"
+                 "type" => "CLINIC",
+                 "addresses" => %{
+                   "apartment" => "3",
+                   "area" => "ЛЬВІВСЬКА",
+                   "building" => "115",
+                   "country" => "UA",
+                   "region" => "ПУСТОМИТІВСЬКИЙ",
+                   "settlement" => "СОРОКИ-ЛЬВІВСЬКІ",
+                   "settlement_id" => "707dbc55-cb6b-4aaa-97c1-2a1e03476100",
+                   "settlement_type" => "CITY",
+                   "street" => "Ніжинська",
+                   "street_type" => "STREET",
+                   "type" => "RESIDENCE",
+                   "zip" => "02090"
+                 }
                },
                "employee_type" => "DOCTOR",
                "end_date" => to_string(employee.end_date),

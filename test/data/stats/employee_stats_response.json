@@ -4,138 +4,147 @@
     "properties": {
         "data": {
             "type": "array",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "description": "employee id"
-                },
-                "party": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "first_name": {
-                            "type": "string"
-                        },
-                        "second_name": {
-                            "type": "string"
-                        },
-                        "last_name": {
-                            "type": "string"
-                        },
-                        "specialities": {
-                            "type": "array",
-                            "description": "блок інформації про отримання сертифікату спеціалісту та проходження атестацій"
-                        },
-                        "is_avaliable": {
-                            "type": "boolean"
-                        }
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "employee id"
                     },
-                    "required": [
-                        "id",
-                        "first_name",
-                        "second_name",
-                        "last_name",
-                        "specialities",
-                        "is_avaliable"
-                    ]
-                },
-                "division": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "addresses": {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "description": "`Dictionary ADDRESS_TYPE`. As for now Regisrtration and Residence types"
-                                },
-                                "country": {
-                                    "type": "string",
-                                    "description": "`Dictionary COUNTRY`"
-                                },
-                                "area": {
-                                    "type": "string",
-                                    "description": "one of Ukraianian area"
-                                },
-                                "region": {
-                                    "type": "string",
-                                    "description": "district of area"
-                                },
-                                "settlement": {
-                                    "type": "string",
-                                    "description": "city name"
-                                },
-                                "settlement_type": {
-                                    "type": "string",
-                                    "description": "`Dictionary SETTLEMENT_TYPE` - type of settlement as city/town/village etc"
-                                },
-                                "settlement_id": {
-                                    "type": "string",
-                                    "description": "settlement identificator from uaadresses"
-                                },
-                                "street_type": {
-                                    "type": "string",
-                                    "description": "`Dictionary STREET_TYPE` - type of street as street/road/line etc"
-                                },
-                                "street": {
-                                    "type": "string",
-                                    "description": "street name"
-                                },
-                                "building": {
-                                    "type": "string",
-                                    "description": "number of building"
-                                },
-                                "apartment": {
-                                    "type": "string",
-                                    "description": "number of appartment"
-                                },
-                                "zip": {
-                                    "type": "string",
-                                    "description": "system of postal codes"
-                                }
+                    "party": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
                             },
-                            "required": [
-                                "type",
-                                "country",
-                                "settlement_id",
-                                "building"
-                            ]
-                        }
-                    },
-                    "required": [
-                        "id",
-                        "name"
-                    ]
-                },
-                "legal_entity": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
+                            "first_name": {
+                                "type": "string"
+                            },
+                            "second_name": {
+                                "type": "string"
+                            },
+                            "last_name": {
+                                "type": "string"
+                            },
+                            "specialities": {
+                                "type": "array",
+                                "description": "блок інформації про отримання сертифікату спеціалісту та проходження атестацій"
+                            },
+                            "is_available": {
+                                "type": "boolean"
+                            }
                         },
-                        "name": {
-                            "type": "string"
-                        }
+                        "required": [
+                            "id",
+                            "first_name",
+                            "second_name",
+                            "last_name",
+                            "specialities",
+                            "is_available"
+                        ],
+                        "additionalProperties": false
                     },
-                    "required": [
-                        "id",
-                        "name"
-                    ]
-                }
-            },
-            "required": [
-                "id",
-                "division",
-                "legal_entity"
-            ]
+                    "division": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "addresses": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "description": "`Dictionary ADDRESS_TYPE`. As for now Regisrtration and Residence types"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "description": "`Dictionary COUNTRY`"
+                                    },
+                                    "area": {
+                                        "type": "string",
+                                        "description": "one of Ukraianian area"
+                                    },
+                                    "region": {
+                                        "type": "string",
+                                        "description": "district of area"
+                                    },
+                                    "settlement": {
+                                        "type": "string",
+                                        "description": "city name"
+                                    },
+                                    "settlement_type": {
+                                        "type": "string",
+                                        "description": "`Dictionary SETTLEMENT_TYPE` - type of settlement as city/town/village etc"
+                                    },
+                                    "settlement_id": {
+                                        "type": "string",
+                                        "description": "settlement identificator from uaadresses"
+                                    },
+                                    "street_type": {
+                                        "type": "string",
+                                        "description": "`Dictionary STREET_TYPE` - type of street as street/road/line etc"
+                                    },
+                                    "street": {
+                                        "type": "string",
+                                        "description": "street name"
+                                    },
+                                    "building": {
+                                        "type": "string",
+                                        "description": "number of building"
+                                    },
+                                    "apartment": {
+                                        "type": "string",
+                                        "description": "number of appartment"
+                                    },
+                                    "zip": {
+                                        "type": "string",
+                                        "description": "system of postal codes"
+                                    }
+                                },
+                                "required": [
+                                    "type",
+                                    "country",
+                                    "settlement_id",
+                                    "building"
+                                ],
+                                "additionalProperties": false
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "addresses"
+                        ],
+                        "additionalProperties": false
+                    },
+                    "legal_entity": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ],
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "id",
+                    "division",
+                    "legal_entity"
+                ],
+                "additionalProperties": false
+            }
         }
     }
 }
