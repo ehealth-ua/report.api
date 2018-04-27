@@ -19,7 +19,8 @@ defmodule Report.Web.EmployeeControllerTest do
           "attestation_date" => "2017-08-05",
           "attestation_name" => "Академія Богомольця",
           "certificate_number" => "AB/21331",
-          "qualification_type" => "AWARDING"
+          "qualification_type" => "AWARDING",
+          "speciality_officio" => false
         }
       ]
 
@@ -109,6 +110,15 @@ defmodule Report.Web.EmployeeControllerTest do
                  }
                }
              ] == resp["data"]
+    end
+
+    test "search by division_id", %{conn: conn} do
+      division = insert(:division)
+      insert(:employee, division: division)
+
+      conn = get(conn, employee_path(conn, :index), %{division_id: division.id})
+      assert resp = json_response(conn, 200)
+      assert 1 == Enum.count(resp["data"])
     end
 
     test "search by first_name, last_name, second_name", %{conn: conn} do
@@ -213,7 +223,7 @@ defmodule Report.Web.EmployeeControllerTest do
 
       conn1 = get(conn, employee_path(conn, :index), %{is_available: false})
       assert resp = json_response(conn1, 200)
-      assert 2 == Enum.count(resp["data"])
+      assert 1 == Enum.count(resp["data"])
 
       conn2 = get(conn, employee_path(conn, :index), %{is_available: true})
       assert resp = json_response(conn2, 200)
@@ -254,7 +264,8 @@ defmodule Report.Web.EmployeeControllerTest do
           "attestation_date" => "2017-08-05",
           "attestation_name" => "Академія Богомольця",
           "certificate_number" => "AB/21331",
-          "qualification_type" => "AWARDING"
+          "qualification_type" => "AWARDING",
+          "speciality_officio" => true
         }
       ]
 
@@ -285,7 +296,7 @@ defmodule Report.Web.EmployeeControllerTest do
 
       legal_entity = insert(:legal_entity)
       division = insert(:division, legal_entity_id: legal_entity.id)
-      employee = insert(:employee, party: party, division: division)
+      employee = insert(:employee, party: party, division: division, speciality: hd(specialities))
       insert(:employee)
 
       conn = get(conn, employee_path(conn, :show, employee.id))
@@ -337,18 +348,16 @@ defmodule Report.Web.EmployeeControllerTest do
                  "specialities" => specialities
                },
                "position" => employee.position,
-               "speciality" => [
-                 %{
-                   "attestation_date" => "2017-08-05",
-                   "attestation_name" => "Академія Богомольця",
-                   "certificate_number" => "AB/21331",
-                   "level" => "FIRST",
-                   "qualification_type" => "AWARDING",
-                   "speciality" => "PHARMACIST2",
-                   "speciality_officio" => false,
-                   "valid_to_date" => "2017-08-05"
-                 }
-               ],
+               "speciality" => %{
+                 "attestation_date" => "2017-08-05",
+                 "attestation_name" => "Академія Богомольця",
+                 "certificate_number" => "AB/21331",
+                 "level" => "FIRST",
+                 "qualification_type" => "AWARDING",
+                 "speciality" => "PHARMACIST2",
+                 "speciality_officio" => true,
+                 "valid_to_date" => "2017-08-05"
+               },
                "legal_entity" => %{
                  "id" => employee.legal_entity.id,
                  "name" => employee.legal_entity.name

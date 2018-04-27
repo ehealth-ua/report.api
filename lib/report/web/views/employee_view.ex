@@ -15,7 +15,7 @@ defmodule Report.Web.EmployeeView do
     |> Map.take(~w(
       id
     )a)
-    |> render_association_list(employee.party)
+    |> render_association_list(employee.party, employee.speciality)
     |> render_association_list(employee.division)
     |> render_association(employee.legal_entity)
   end
@@ -31,13 +31,18 @@ defmodule Report.Web.EmployeeView do
       end_date
       speciality
     )a)
-    |> render_association(employee.party)
+    |> render_association(employee.party, employee.speciality)
     |> render_association(employee.division)
     |> render_association(employee.legal_entity)
-    |> Map.put(:speciality, get_employee_specialities(employee))
   end
 
-  defp render_association(map, %Party{} = party) do
+  defp render_association(map, %Party{} = party, employee_speciality) do
+    specialities =
+      Enum.map(
+        party.specialities,
+        &Map.put(&1, "speciality_officio", Map.get(&1, "speciality") == employee_speciality["speciality"])
+      )
+
     data =
       party
       |> Map.take(~w(
@@ -53,10 +58,10 @@ defmodule Report.Web.EmployeeView do
         phones
         working_experience
         educations
-        specialities
         about_myself
       )a)
       |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
+      |> Map.put(:specialities, specialities)
 
     Map.put(map, :party, data)
   end
@@ -81,7 +86,13 @@ defmodule Report.Web.EmployeeView do
 
   defp render_association(map, _), do: map
 
-  defp render_association_list(map, %Party{} = party) do
+  defp render_association_list(map, %Party{} = party, employee_speciality) do
+    specialities =
+      Enum.map(
+        party.specialities || [],
+        &Map.put(&1, "speciality_officio", Map.get(&1, "speciality") == employee_speciality["speciality"])
+      )
+
     data =
       party
       |> Map.take(~w(
@@ -95,9 +106,9 @@ defmodule Report.Web.EmployeeView do
         no_tax_id
         documents
         phones
-        specialities
       )a)
       |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
+      |> Map.put(:specialities, specialities)
 
     Map.put(map, :party, data)
   end
