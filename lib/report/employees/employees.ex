@@ -26,6 +26,7 @@ defmodule Report.Employees do
       |> preload([e, p, d], division: d)
       |> join(:left, [e, p, d], le in assoc(e, :legal_entity))
       |> preload([e, p, d, le], legal_entity: le)
+      |> add_division_id_search(changes)
       |> add_division_search(changes)
       |> add_division_name(changes)
       |> Repo.paginate(params)
@@ -54,7 +55,10 @@ defmodule Report.Employees do
   defp add_is_available_search(query, changes) do
     case Map.get(changes, :is_available) do
       true ->
-        where(query, [e, p], p.declaration_count < p.declaration_limit)
+        where(query, [e, p], is_nil(p.declaration_count) or p.declaration_count < p.declaration_limit)
+
+      false ->
+        where(query, [e, p], not is_nil(p.declaration_count) and p.declaration_count >= p.declaration_limit)
 
       _ ->
         query
@@ -91,6 +95,14 @@ defmodule Report.Employees do
     |> Map.take(~w(speciality)a)
     |> Enum.reduce(query, fn {_, v}, q ->
       where(q, [e], fragment("?->>'speciality' = ?", e.speciality, ^v))
+    end)
+  end
+
+  defp add_division_id_search(query, changes) do
+    changes
+    |> Map.take(~w(division_id)a)
+    |> Enum.reduce(query, fn {_, v}, q ->
+      where(q, [e], e.division_id == ^v)
     end)
   end
 

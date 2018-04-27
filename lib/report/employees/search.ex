@@ -8,10 +8,11 @@ defmodule Report.Employees.Search do
     field(:id, Ecto.UUID)
     field(:full_name, :string)
     field(:speciality, :string)
-    field(:region, :string)
-    field(:area, :string)
-    field(:settlement, :string)
+    field(:division_id, Ecto.UUID)
     field(:division_name, :string)
+    field(:area, :string)
+    field(:region, :string)
+    field(:settlement, :string)
     field(:is_available, :boolean)
   end
 end
