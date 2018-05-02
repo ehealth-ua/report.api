@@ -16,6 +16,7 @@ defmodule Report.Stats.MainStats do
   import Ecto.Query
   import Report.Replica.Replicas
   import Report.Stats.MainStatsValidator
+  use Confex, otp_app: :report_api
 
   use Timex
 
@@ -328,7 +329,7 @@ defmodule Report.Stats.MainStats do
     |> group_by([a], fragment("?->>'area'", a.address))
     |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
     |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
-    |> Repo.all()
+    |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
   end
 
   defp add_to_regions_skeleton(data, keys, skeleton) do
