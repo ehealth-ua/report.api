@@ -1,7 +1,7 @@
 defmodule Report.Mixfile do
   use Mix.Project
 
-  @version "1.108.28"
+  @version "1.108.29"
 
   def project do
     [
