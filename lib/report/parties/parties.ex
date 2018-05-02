@@ -11,6 +11,7 @@ defmodule Report.Parties do
     with %Ecto.Changeset{valid?: true, changes: changes} <- changeset(ids) do
       {:ok,
        Party
+       |> select([p], [:id, :declaration_count])
        |> where([p], p.id in ^Map.get(changes, :ids))
        |> Repo.all()}
     end
