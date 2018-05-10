@@ -106,7 +106,10 @@ defmodule Report.Web.EmployeeControllerTest do
                    "is_available" => true,
                    "last_name" => "some last_name",
                    "second_name" => "some second_name",
-                   "specialities" => specialities
+                   "specialities" => [
+                     Map.put(employee.speciality |> Poison.encode!() |> Poison.decode!(), "speciality_officio", true)
+                     | specialities
+                   ]
                  }
                }
              ] == resp["data"]
@@ -265,7 +268,7 @@ defmodule Report.Web.EmployeeControllerTest do
           "attestation_name" => "Академія Богомольця",
           "certificate_number" => "AB/21331",
           "qualification_type" => "AWARDING",
-          "speciality_officio" => true
+          "speciality_officio" => false
         }
       ]
 
@@ -296,7 +299,15 @@ defmodule Report.Web.EmployeeControllerTest do
 
       legal_entity = insert(:legal_entity)
       division = insert(:division, legal_entity_id: legal_entity.id)
-      employee = insert(:employee, party: party, division: division, speciality: hd(specialities))
+
+      employee =
+        insert(
+          :employee,
+          party: party,
+          division: division,
+          speciality: Map.put(hd(specialities), :speciality_officio, true)
+        )
+
       insert(:employee)
 
       conn = get(conn, employee_path(conn, :show, employee.id))
@@ -345,7 +356,10 @@ defmodule Report.Web.EmployeeControllerTest do
                  "second_name" => employee.party.second_name,
                  "working_experience" => nil,
                  "educations" => educations,
-                 "specialities" => specialities
+                 "specialities" => [
+                   Map.put(employee.speciality |> Poison.encode!() |> Poison.decode!(), "speciality_officio", true)
+                   | specialities
+                 ]
                },
                "position" => employee.position,
                "speciality" => %{

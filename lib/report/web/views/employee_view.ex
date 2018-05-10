@@ -37,11 +37,11 @@ defmodule Report.Web.EmployeeView do
   end
 
   defp render_association(map, %Party{} = party, employee_speciality) do
+    specialities = party.specialities || []
+
     specialities =
-      Enum.map(
-        party.specialities,
-        &Map.put(&1, "speciality_officio", Map.get(&1, "speciality") == employee_speciality["speciality"])
-      )
+      [employee_speciality | Enum.map(specialities, &Map.put(&1, "speciality_officio", false))]
+      |> Enum.filter(&(!is_nil(&1)))
 
     data =
       party
@@ -87,11 +87,11 @@ defmodule Report.Web.EmployeeView do
   defp render_association(map, _), do: map
 
   defp render_association_list(map, %Party{} = party, employee_speciality) do
+    specialities = party.specialities || []
+
     specialities =
-      Enum.map(
-        party.specialities || [],
-        &Map.put(&1, "speciality_officio", Map.get(&1, "speciality") == employee_speciality["speciality"])
-      )
+      [employee_speciality | Enum.map(specialities, &Map.put(&1, "speciality_officio", false))]
+      |> Enum.filter(&(!is_nil(&1)))
 
     data =
       party
@@ -123,20 +123,5 @@ defmodule Report.Web.EmployeeView do
       |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, "type") == "RESIDENCE")))
 
     Map.put(map, :division, render_association(data, division.legal_entity))
-  end
-
-  defp get_employee_specialities(employee) do
-    speciality = employee.speciality
-    party_specialities = employee.party.specialities || []
-
-    party_specialities =
-      party_specialities
-      |> Enum.filter(&(Map.get(&1, "speciality") != speciality["speciality"]))
-      |> Enum.map(&Map.put(&1, "speciality_officio", false))
-
-    case speciality do
-      nil -> party_specialities
-      speciality -> [speciality | party_specialities]
-    end
   end
 end
