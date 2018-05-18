@@ -2,7 +2,6 @@ defmodule Report.Replica.DivisionAddress do
   @moduledoc false
 
   use Ecto.Schema
-  import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "division_addresses" do
@@ -20,10 +19,5 @@ defmodule Report.Replica.DivisionAddress do
     field(:settlement_type, :string)
 
     belongs_to(:division, Report.Replica.Division, foreign_key: :division_id, type: Ecto.UUID)
-  end
-
-  def changeset(params) do
-    %__MODULE__{}
-    |> cast(params, __MODULE__.__schema__(:fields))
   end
 end

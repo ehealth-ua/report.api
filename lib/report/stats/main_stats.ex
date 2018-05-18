@@ -332,18 +332,6 @@ defmodule Report.Stats.MainStats do
     |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
   end
 
-  # todo: replace declarations_by_regions with this function
-  def declaration_by_regions_optimized do
-    Declaration
-    |> declaration_query()
-    |> join(:left, [d], dv in assoc(d, :division))
-    |> join(:left, [_d, dv], da in assoc(dv, :division_addresses))
-    |> where([_d, _dv, da], da.type == "RESIDENCE")
-    |> group_by([_d, _dv, da], da.area)
-    |> select([_d, _dv, da], %{region: da.area, count: count(da.id)})
-    |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
-  end
-
   defp add_to_regions_skeleton(data, keys, skeleton) do
     Enum.reduce(data, skeleton, fn %{count: count, region: region_name}, acc ->
       if Map.has_key?(acc, region_name),
