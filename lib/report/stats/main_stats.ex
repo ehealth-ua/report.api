@@ -1,6 +1,14 @@
 defmodule Report.Stats.MainStats do
   @moduledoc false
 
+  use Confex, otp_app: :report_api
+  use Timex
+
+  import Ecto.Changeset, only: [apply_changes: 1]
+  import Ecto.Query
+  import Report.Replica.Replicas
+  import Report.Stats.MainStatsValidator
+
   alias Report.Repo
   alias Report.Replica.Declaration
   alias Report.Replica.DeclarationStatusHistory
@@ -11,14 +19,6 @@ defmodule Report.Stats.MainStats do
   alias Report.Replica.MedicationRequest
   alias Report.Replica.MedicationRequestStatusHistory
   alias Report.Stats.HistogramStatsRequest
-
-  import Ecto.Changeset, only: [apply_changes: 1]
-  import Ecto.Query
-  import Report.Replica.Replicas
-  import Report.Stats.MainStatsValidator
-  use Confex, otp_app: :report_api
-
-  use Timex
 
   def get_main_stats do
     msps =
@@ -329,6 +329,18 @@ defmodule Report.Stats.MainStats do
     |> group_by([a], fragment("?->>'area'", a.address))
     |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
     |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
+    |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
+  end
+
+  # todo: replace declarations_by_regions with this function
+  def declaration_by_regions_optimized do
+    Declaration
+    |> declaration_query()
+    |> join(:left, [d], dv in assoc(d, :division))
+    |> join(:left, [_d, dv], da in assoc(dv, :division_addresses))
+    |> where([_d, _dv, da], da.type == "RESIDENCE")
+    |> group_by([_d, _dv, da], da.area)
+    |> select([_d, _dv, da], %{region: da.area, count: count(da.id)})
     |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
   end
 
