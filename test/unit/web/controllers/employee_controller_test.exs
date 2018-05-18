@@ -272,29 +272,33 @@ defmodule Report.Web.EmployeeControllerTest do
         }
       ]
 
+      qualifications = [
+        %{
+          type: "STAZHUVANNYA",
+          speciality: "Педіатр",
+          issued_date: "2017-08-05",
+          institution_name: "Академія Богомольця",
+          certificate_number: "2017-08-05"
+        }
+      ]
+
+      science_degree = %{
+        city: "Київ",
+        degree: "DOCTOR_OF_SCIENCE",
+        country: "UA",
+        speciality: "THERAPIST",
+        issued_date: "2017-08-05",
+        diploma_number: "DD123543",
+        institution_name: "Академія Богомольця"
+      }
+
       party =
         insert(
           :party,
           educations: educations,
-          qualifications: [
-            %{
-              type: "STAZHUVANNYA",
-              speciality: "Педіатр",
-              issued_date: "2017-08-05",
-              institution_name: "Академія Богомольця",
-              certificate_number: "2017-08-05"
-            }
-          ],
+          qualifications: qualifications,
           specialities: specialities,
-          science_degree: %{
-            city: "Київ",
-            degree: "DOCTOR_OF_SCIENCE",
-            country: "UA",
-            speciality: "THERAPIST",
-            issued_date: "2017-08-05",
-            diploma_number: "DD123543",
-            institution_name: "Академія Богомольця"
-          }
+          science_degree: science_degree
         )
 
       legal_entity = insert(:legal_entity)
@@ -359,19 +363,11 @@ defmodule Report.Web.EmployeeControllerTest do
                  "specialities" => [
                    Map.put(employee.speciality |> Poison.encode!() |> Poison.decode!(), "speciality_officio", true)
                    | specialities
-                 ]
+                 ],
+                 "qualifications" => qualifications |> Poison.encode!() |> Poison.decode!(),
+                 "science_degree" => science_degree |> Poison.encode!() |> Poison.decode!()
                },
                "position" => employee.position,
-               "speciality" => %{
-                 "attestation_date" => "2017-08-05",
-                 "attestation_name" => "Академія Богомольця",
-                 "certificate_number" => "AB/21331",
-                 "level" => "FIRST",
-                 "qualification_type" => "AWARDING",
-                 "speciality" => "PHARMACIST2",
-                 "speciality_officio" => true,
-                 "valid_to_date" => "2017-08-05"
-               },
                "legal_entity" => %{
                  "id" => employee.legal_entity.id,
                  "name" => employee.legal_entity.name

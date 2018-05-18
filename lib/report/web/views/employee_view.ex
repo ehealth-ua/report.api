@@ -29,7 +29,6 @@ defmodule Report.Web.EmployeeView do
       employee_type
       start_date
       end_date
-      speciality
     )a)
     |> render_association(employee.party, employee.speciality)
     |> render_association(employee.division)
@@ -58,9 +57,11 @@ defmodule Report.Web.EmployeeView do
         phones
         working_experience
         educations
+        qualifications
+        science_degree
         about_myself
       )a)
-      |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
+      |> Map.put(:is_available, (party.declaration_count || 0) < party.declaration_limit)
       |> Map.put(:specialities, specialities)
 
     Map.put(map, :party, data)
@@ -107,7 +108,7 @@ defmodule Report.Web.EmployeeView do
         documents
         phones
       )a)
-      |> Map.put(:is_available, party.declaration_count < party.declaration_limit)
+      |> Map.put(:is_available, (party.declaration_count || 0) < party.declaration_limit)
       |> Map.put(:specialities, specialities)
 
     Map.put(map, :party, data)
