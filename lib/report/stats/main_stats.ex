@@ -1,6 +1,14 @@
 defmodule Report.Stats.MainStats do
   @moduledoc false
 
+  use Confex, otp_app: :report_api
+  use Timex
+
+  import Ecto.Changeset, only: [apply_changes: 1]
+  import Ecto.Query
+  import Report.Replica.Replicas
+  import Report.Stats.MainStatsValidator
+
   alias Report.Repo
   alias Report.Replica.Declaration
   alias Report.Replica.DeclarationStatusHistory
@@ -11,14 +19,6 @@ defmodule Report.Stats.MainStats do
   alias Report.Replica.MedicationRequest
   alias Report.Replica.MedicationRequestStatusHistory
   alias Report.Stats.HistogramStatsRequest
-
-  import Ecto.Changeset, only: [apply_changes: 1]
-  import Ecto.Query
-  import Report.Replica.Replicas
-  import Report.Stats.MainStatsValidator
-  use Confex, otp_app: :report_api
-
-  use Timex
 
   def get_main_stats do
     msps =
