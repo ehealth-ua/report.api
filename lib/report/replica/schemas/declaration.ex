@@ -15,7 +15,6 @@ defmodule Report.Replica.Declaration do
     field(:scope, :string)
     field(:declaration_request_id, Ecto.UUID)
     field(:seed, :string)
-    field(:reason, :string)
 
     belongs_to(:division, Report.Replica.Division, type: Ecto.UUID)
     belongs_to(:person, Report.Replica.Person, type: Ecto.UUID)
