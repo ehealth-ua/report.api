@@ -362,7 +362,6 @@ defmodule Report.Web.EmployeeControllerTest do
                  "educations" => educations,
                  "specialities" => [
                    Map.put(employee.speciality |> Poison.encode!() |> Poison.decode!(), "speciality_officio", true)
-                   | specialities
                  ],
                  "qualifications" => qualifications |> Poison.encode!() |> Poison.decode!(),
                  "science_degree" => science_degree |> Poison.encode!() |> Poison.decode!()
