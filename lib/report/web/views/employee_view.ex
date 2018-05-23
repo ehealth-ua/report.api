@@ -38,8 +38,13 @@ defmodule Report.Web.EmployeeView do
   defp render_association(map, %Party{} = party, employee_speciality) do
     specialities = party.specialities || []
 
+    party_specialities =
+      specialities
+      |> Enum.map(&Map.put(&1, "speciality_officio", false))
+      |> Enum.filter(&(Map.get(&1, "speciality") != employee_speciality["speciality"]))
+
     specialities =
-      [employee_speciality | Enum.map(specialities, &Map.put(&1, "speciality_officio", false))]
+      [employee_speciality | party_specialities]
       |> Enum.filter(&(!is_nil(&1)))
 
     data =
@@ -90,8 +95,13 @@ defmodule Report.Web.EmployeeView do
   defp render_association_list(map, %Party{} = party, employee_speciality) do
     specialities = party.specialities || []
 
+    party_specialities =
+      specialities
+      |> Enum.map(&Map.put(&1, "speciality_officio", false))
+      |> Enum.filter(&(Map.get(&1, "speciality") != employee_speciality["speciality"]))
+
     specialities =
-      [employee_speciality | Enum.map(specialities, &Map.put(&1, "speciality_officio", false))]
+      [employee_speciality | party_specialities]
       |> Enum.filter(&(!is_nil(&1)))
 
     data =
