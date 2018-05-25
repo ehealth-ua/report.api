@@ -1,4 +1,6 @@
 defmodule Report.Integration.MainStatsTest do
+  @moduledoc false
+
   use Report.Web.ConnCase
 
   alias Report.Stats.HistogramStatsRequest
@@ -63,7 +65,6 @@ defmodule Report.Integration.MainStatsTest do
       |> Map.delete("properties")
 
     :ok = NExJsonSchema.Validator.validate(schema, main_stats)
-
     assert 2 == Enum.count(main_stats)
   end
 

@@ -16,7 +16,9 @@ defmodule Report.Replica.Division do
     field(:is_active, :boolean, default: false)
     field(:location, Geo.Geometry)
     field(:working_hours, :map)
+
     belongs_to(:legal_entity, Report.Replica.LegalEntity, type: Ecto.UUID)
+    has_many(:division_addresses, Report.Replica.DivisionAddress, foreign_key: :division_id)
 
     timestamps(type: :utc_datetime)
   end

@@ -1,5 +1,6 @@
 defmodule Report.Factory do
   @moduledoc false
+
   use ExMachina.Ecto, repo: Report.Repo
   alias Report.Replica.Declaration
   alias Report.Replica.DeclarationStatusHistory
@@ -23,6 +24,7 @@ defmodule Report.Factory do
   alias Report.RedMSPTerritory
   alias Report.Replica.INNM
   alias Report.Replica.INNMDosageIngredient
+  alias Report.Replica.DivisionAddress
   alias Ecto.UUID
 
   def declaration_factory do
@@ -126,12 +128,31 @@ defmodule Report.Factory do
           settlement_type: "CITY"
         }
       ],
+      division_addresses: [build(:division_address), build(:division_address, type: "REGISTRATION")],
       phones: [%{type: "MOBILE", number: "+380503410870"}],
       mountain_group: Enum.at(bool_list, :rand.uniform(2) - 1),
       location: %Geo.Point{
         coordinates: {50.12332, 30.12332}
       },
       legal_entity_id: nil
+    }
+  end
+
+  def division_address_factory do
+    %DivisionAddress{
+      zip: "02090",
+      area: "ЛЬВІВСЬКА",
+      type: "RESIDENCE",
+      region: "ПУСТОМИТІВСЬКИЙ",
+      street: "Ніжинська",
+      country: "UA",
+      building: "115",
+      apartment: "3",
+      settlement: "СОРОКИ-ЛЬВІВСЬКІ",
+      street_type: "STREET",
+      settlement_id: "707dbc55-cb6b-4aaa-97c1-2a1e03476100",
+      settlement_type: "CITY",
+      division_id: UUID.generate()
     }
   end
 
