@@ -13,6 +13,7 @@ defmodule Report.Stats.MainStats do
   alias Report.Replica.Declaration
   alias Report.Replica.DeclarationStatusHistory
   alias Report.Replica.Division
+  alias Report.Replica.DivisionAddress
   alias Report.Replica.Employee
   alias Report.Replica.LegalEntity
   alias Report.Replica.Region
@@ -296,39 +297,30 @@ defmodule Report.Stats.MainStats do
     query
     |> params_query(%{"status" => "APPROVED"})
     |> params_query(%{"is_active" => true})
-    |> join(:left, [e], dv in assoc(e, :division))
-    |> where([e, dv], fragment("? @> ?", dv.addresses, ^[%{"type" => "RESIDENCE"}]))
-    |> select([e, dv], %{address: fragment("jsonb_array_elements(?)", dv.addresses)})
-    |> subquery()
-    |> group_by([a], fragment("?->>'area'", a.address))
-    |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
-    |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
+    |> join(:left, [e], da in DivisionAddress, da.division_id == e.division_id)
+    |> where([..., da], da.type == "RESIDENCE")
+    |> group_by([..., da], da.area)
+    |> select([..., da], %{region: da.area, count: count(da.id)})
     |> Repo.all()
   end
 
   defp medication_requests_by_regions do
     MedicationRequest
     |> join(:left, [mr], e in assoc(mr, :employee))
-    |> join(:left, [mr, e], d in assoc(e, :division))
-    |> where([mr, e, d], fragment("? @> ?", d.addresses, ^[%{"type" => "RESIDENCE"}]))
-    |> select([mr, e, d], %{address: fragment("jsonb_array_elements(?)", d.addresses)})
-    |> subquery()
-    |> group_by([a], fragment("?->>'area'", a.address))
-    |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
-    |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
+    |> join(:left, [mr], da in DivisionAddress, da.division_id == mr.division_id)
+    |> where([..., da], da.type == "RESIDENCE")
+    |> group_by([..., da], da.area)
+    |> select([..., da], %{region: da.area, count: count(da.id)})
     |> Repo.all()
   end
 
   defp declarations_by_regions do
     Declaration
     |> declaration_query()
-    |> join(:left, [d], dv in assoc(d, :division))
-    |> where([d, dv], fragment("? @> ?", dv.addresses, ^[%{"type" => "RESIDENCE"}]))
-    |> select([d, dv], %{address: fragment("jsonb_array_elements(?)", dv.addresses)})
-    |> subquery()
-    |> group_by([a], fragment("?->>'area'", a.address))
-    |> where([a], fragment("?->>'type' = 'RESIDENCE'", a.address))
-    |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
+    |> join(:left, [d], da in DivisionAddress, da.division_id == d.division_id)
+    |> where([..., da], da.type == "RESIDENCE")
+    |> group_by([..., da], da.area)
+    |> select([..., da], %{region: da.area, count: count(da.id)})
     |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
   end
 
