@@ -20,7 +20,6 @@ defmodule Report.Repo.Migrations.CreateContracts do
       add(:nhs_signer_base, :string, null: false)
       add(:nhs_legal_entity_id, :uuid, null: false)
       add(:nhs_payment_method, :string, null: false)
-      add(:nhs_payment_details, :map, null: false)
       add(:is_active, :boolean, null: false)
       add(:is_suspended, :boolean, null: false)
       add(:issue_city, :string, null: false)
