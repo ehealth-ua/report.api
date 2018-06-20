@@ -84,7 +84,7 @@ defmodule Report.Replica.Replicas do
   def count_query(query, field_name \\ :id) do
     query
     |> select([e], count(field(e, ^field_name)))
-    |> Repo.one!()
+    |> Repo.one!(timeout: :infinity)
   end
 
   def ilike_query(query, _, nil), do: query
