@@ -120,7 +120,7 @@ defmodule Report.Stats.MainStats do
       Declaration
       |> interval_query(from_date, to_date)
       |> declarations_by_intervals(interval)
-      |> Repo.all()
+      |> Repo.all(timeout: :infinity)
       |> Enum.into(%{}, fn %{count: count, date: date} ->
         {date, count}
       end)
@@ -130,7 +130,7 @@ defmodule Report.Stats.MainStats do
       |> interval_query(from_date, to_date)
       |> where([dsh], dsh.status in ~w(terminated closed))
       |> declarations_by_intervals(interval)
-      |> Repo.all()
+      |> Repo.all(timeout: :infinity)
       |> Enum.into(%{}, fn %{count: count, date: date} ->
         {date, count}
       end)
@@ -278,7 +278,7 @@ defmodule Report.Stats.MainStats do
     |> group_by([a], fragment("?->>'area'", a.address))
     |> where([a], fragment("?->>'type' = 'REGISTRATION'", a.address))
     |> select([a], %{region: fragment("?->>'area'", a.address), count: count(a.address)})
-    |> Repo.all()
+    |> Repo.all(timeout: :infinity)
   end
 
   defp doctors_by_regions do
@@ -301,7 +301,7 @@ defmodule Report.Stats.MainStats do
     |> where([..., da], da.type == "RESIDENCE")
     |> group_by([..., da], da.area)
     |> select([..., da], %{region: da.area, count: count(da.id)})
-    |> Repo.all()
+    |> Repo.all(timeout: :infinity)
   end
 
   defp medication_requests_by_regions do
@@ -321,7 +321,7 @@ defmodule Report.Stats.MainStats do
     |> where([..., da], da.type == "RESIDENCE")
     |> group_by([..., da], da.area)
     |> select([..., da], %{region: da.area, count: count(da.id)})
-    |> Repo.all(timeout: config()[:declarations_by_regions_timeout])
+    |> Repo.all(timeout: :infinity)
   end
 
   defp add_to_regions_skeleton(data, keys, skeleton) do
@@ -355,7 +355,7 @@ defmodule Report.Stats.MainStats do
     |> where([a], a.x == 1)
     |> declaration_query()
     |> select([a], count(a.declaration_id))
-    |> Repo.one!()
+    |> Repo.one!(timeout: :infinity)
   end
 
   defp active_medication_requests_by_date(date) do
