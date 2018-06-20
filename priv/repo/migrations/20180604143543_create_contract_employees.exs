@@ -10,7 +10,7 @@ defmodule Report.Repo.Migrations.CreateContractEmployees do
       add(:declaration_limit, :integer, null: false)
       add(:employee_id, :uuid, null: false)
       add(:division_id, :uuid, null: false)
-      add(:contract_id, references(:contracts, type: :uuid, on_delete: :nothing))
+      add(:contract_id, :uuid, null: false)
       add(:inserted_by, :uuid, null: false)
       add(:updated_by, :uuid, null: false)
       add(:start_date, :date, null: false)

@@ -7,7 +7,7 @@ defmodule Report.Repo.Migrations.CreateContractDivisions do
     create table(:contract_divisions, primary_key: false) do
       add(:id, :uuid, primary_key: true)
       add(:division_id, :uuid, null: false)
-      add(:contract_id, references(:contracts, type: :uuid, on_delete: :nothing))
+      add(:contract_id, :uuid, null: false)
       add(:inserted_by, :uuid, null: false)
       add(:updated_by, :uuid, null: false)
 
