@@ -3,6 +3,7 @@ defmodule Report.MediaStorage do
   Media Storage on Google Cloud Platform
   """
   @media_storage_timeout_error "MediaStorage is unavaible and max retries exceeded"
+  @behaviour Report.MediaStorageBehaviour
 
   use HTTPoison.Base
   use Confex, otp_app: :report_api
@@ -13,7 +14,7 @@ defmodule Report.MediaStorage do
 
   def options, do: config()[:hackney_options]
 
-  def create_signed_url(action, bucket, resource_name, resource_id, headers \\ []) do
+  def create_signed_url(action, bucket, resource_name, resource_id) do
     data = %{
       "secret" => %{
         "action" => action,
@@ -23,10 +24,10 @@ defmodule Report.MediaStorage do
       }
     }
 
-    create_signed_url(data, headers)
+    create_signed_url(data)
   end
 
-  def create_signed_url(data, _headers) do
+  def create_signed_url(data) do
     config()[:endpoint]
     |> Kernel.<>("/media_content_storage_secrets")
     |> post!(Poison.encode!(data), [{"Content-Type", "application/json"}], options())
@@ -51,9 +52,9 @@ defmodule Report.MediaStorage do
     store_signed_content(config()[:enabled?], bucket, signed_content, id, headers)
   end
 
-  def store_signed_content(true, bucket, signed_content, id, headers) do
+  def store_signed_content(true, bucket, signed_content, id, _headers) do
     "PUT"
-    |> create_signed_url(config()[bucket], "capitation.csv", id, headers)
+    |> create_signed_url(config()[bucket], "capitation.csv", id)
     |> put_signed_content(signed_content, retry: 5, timeout: 60_000)
   end
 

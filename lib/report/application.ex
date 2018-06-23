@@ -3,8 +3,9 @@ defmodule Report do
   This is an entry point of report application.
   """
   use Application
-  alias Report.Web.Endpoint
   alias Confex.Resolver
+  alias Report.Scheduler
+  alias Report.Web.Endpoint
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -25,6 +26,7 @@ defmodule Report do
     # Define workers and child supervisors to be supervised
     children =
       [
+        supervisor(Registry, [:unique, :capitation_registry]),
         worker(Report.Stats.Cache, []),
 
         # Start the Ecto repository
@@ -33,13 +35,16 @@ defmodule Report do
         supervisor(Report.Web.Endpoint, []),
         # Starts a worker by calling: Report.Worker.start_link(arg1, arg2, arg3)
         # worker(Report.Worker, [arg1, arg2, arg3]),
-        worker(Report.Scheduler, [])
+        worker(Report.Scheduler, []),
+        supervisor(Report.Capitation.GenStageSupervisor, [])
       ] ++ cache_servers
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Report.Supervisor]
-    Supervisor.start_link(children, opts)
+    result = Supervisor.start_link(children, opts)
+    Scheduler.create_jobs()
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration

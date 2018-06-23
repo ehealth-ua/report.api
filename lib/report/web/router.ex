@@ -37,11 +37,6 @@ defmodule Report.Web.Router do
         get("/regions", StatsController, :regions)
         get("/histogram", StatsController, :histogram)
       end
-
-      scope "/log" do
-        get("/", ReportLogsController, :index)
-        get("/temp_capitation", ReportLogsController, :temp_capitation)
-      end
     end
 
     get("/page", PageController, :index)

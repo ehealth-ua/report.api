@@ -18,13 +18,12 @@ defmodule Report.Factory do
   alias Report.Replica.MedicalProgram
   alias Report.Replica.Medication
   alias Report.Replica.MedicationDispense.Details
-  alias Report.Billing
-  alias Report.ReportLog
-  alias Report.RedMSP
-  alias Report.RedMSPTerritory
   alias Report.Replica.INNM
   alias Report.Replica.INNMDosageIngredient
   alias Report.Replica.DivisionAddress
+  alias Report.Replica.Contract
+  alias Report.Replica.ContractDivision
+  alias Report.Replica.ContractEmployee
   alias Ecto.UUID
 
   def declaration_factory do
@@ -33,6 +32,8 @@ defmodule Report.Factory do
 
     %Declaration{
       declaration_request_id: UUID.generate(),
+      person_id: UUID.generate(),
+      legal_entity_id: UUID.generate(),
       start_date: start_date,
       end_date: end_date,
       status: "active",
@@ -227,50 +228,9 @@ defmodule Report.Factory do
     insert(:legal_entity, medical_service_provider: msp)
   end
 
-  def billing_factory do
-    declaration = make_declaration_with_all()
-
-    %Billing{
-      billing_date: Faker.Date.forward(-30),
-      declaration_id: declaration.id,
-      legal_entity_id: declaration.legal_entity_id,
-      person_age: :rand.uniform(65),
-      mountain_group: Enum.at(["true", "false"], :rand.uniform(2) - 1),
-      compensation_group: "test",
-      decision_id: "id"
-    }
-  end
-
-  def report_log_factory do
-    %ReportLog{
-      type: "capitation",
-      public_url: Faker.Internet.url()
-    }
-  end
-
   def region_factory do
     %Region{
       name: "ЛЬВІВСЬКА"
-    }
-  end
-
-  def red_msp_territory_factory do
-    %RedMSPTerritory{
-      settlement_id: UUID.generate(),
-      street_type: "street",
-      street_name: Faker.Address.street_name(),
-      postal_code: Faker.Address.zip(),
-      buildings: "1,2,3",
-      red_msp: build(:red_msp)
-    }
-  end
-
-  def red_msp_factory do
-    %RedMSP{
-      name: Faker.App.name(),
-      edrpou: sequence(:edrpou, &"2007772#{&1}"),
-      type: "general",
-      population_count: :rand.uniform(10000)
     }
   end
 
@@ -396,4 +356,80 @@ defmodule Report.Factory do
       innm: build(:innm)
     }
   end
+
+  def contract_factory do
+    %Contract{
+      id: UUID.generate(),
+      start_date: Date.utc_today(),
+      end_date: Date.utc_today(),
+      status: Contract.status(:verified),
+      contractor_legal_entity_id: UUID.generate(),
+      contractor_owner_id: UUID.generate(),
+      contractor_base: "на підставі закону про Медичне обслуговування населення",
+      contractor_payment_details: %{
+        bank_name: "Банк номер 1",
+        MFO: "351005",
+        payer_account: "32009102701026"
+      },
+      contractor_rmsp_amount: Enum.random(50_000..100_000),
+      external_contractor_flag: true,
+      external_contractors: [
+        %{
+          legal_entity: %{
+            id: UUID.generate(),
+            name: "Клініка Ноунейм"
+          },
+          contract: %{
+            number: "1234567",
+            issued_at: NaiveDateTime.utc_now(),
+            expires_at: NaiveDateTime.add(NaiveDateTime.utc_now(), days_to_seconds(365), :seconds)
+          },
+          divisions: [
+            %{
+              id: UUID.generate(),
+              name: "Бориспільське відділення Клініки Ноунейм",
+              medical_service: "Послуга ПМД"
+            }
+          ]
+        }
+      ],
+      nhs_legal_entity_id: UUID.generate(),
+      nhs_signer_id: UUID.generate(),
+      nhs_payment_method: "prepayment",
+      nhs_signer_base: "на підставі наказу",
+      issue_city: "Київ",
+      nhs_contract_price: to_float(Enum.random(100_000..200_000)),
+      contract_number: "0000-9EAX-XT7X-3115",
+      contract_request_id: UUID.generate(),
+      is_active: true,
+      is_suspended: false,
+      inserted_by: UUID.generate(),
+      updated_by: UUID.generate()
+    }
+  end
+
+  def contract_employee_factory do
+    %ContractEmployee{
+      contract_id: UUID.generate(),
+      employee_id: UUID.generate(),
+      division_id: UUID.generate(),
+      staff_units: to_float(Enum.random(100_000..200_000)),
+      declaration_limit: 2000,
+      inserted_by: UUID.generate(),
+      updated_by: UUID.generate(),
+      start_date: NaiveDateTime.utc_now()
+    }
+  end
+
+  def contract_division_factory do
+    %ContractDivision{
+      contract_id: UUID.generate(),
+      division_id: UUID.generate(),
+      inserted_by: UUID.generate(),
+      updated_by: UUID.generate()
+    }
+  end
+
+  defp days_to_seconds(days_count), do: days_count * 24 * 60 * 60
+  defp to_float(number) when is_integer(number), do: number + 0.0
 end

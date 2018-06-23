@@ -49,17 +49,6 @@ config :report_api, Report.Web.Endpoint,
   secret_key_base: "U6jv7YneKVixSMz0h4Z/W1P5gifuhS0rekLu2tuZRsZmE856L71BcjX18tNzZmVu",
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
 
-config :report_api, :gandalf,
-  url: {:system, "GANDALF_DECISION_URL", "http://localhost:4000"},
-  user: {:system, "GANDALF_USER", "test"},
-  password: {:system, "GANDALF_PASSWORD", "password"},
-  application_header: {:system, "GANDALF_APPLICATION_HEADER", "header"}
-
-config :report_api,
-  maturity_age: {:system, :integer, "MATURITY_AGE", 18},
-  async_billing: true,
-  validate_signed_content: {:system, :boolean, "VALIDATE_SIGNED_CONTENT", true}
-
 config :ssl, protocol_version: :"tlsv1.2"
 
 # Configures Elixir's Logger
@@ -80,6 +69,11 @@ config :report_api, Report.MediaStorage,
     timeout: {:system, :integer, "MEDIA_STORAGE_REQUEST_TIMEOUT", 30_000}
   ]
 
+config :report_api,
+  api_resolvers: [
+    media_storage: Report.MediaStorage
+  ]
+
 config :report_api, Report.Stats.Cache.MainStats, cache_ttl: {:system, :integer, "MAIN_STATS_CACHE_TTL", 60_000}
 
 config :report_api, Report.Stats.Cache.RegionStats, cache_ttl: {:system, :integer, "REGIONS_STATS_CACHE_TTL", 60_000}
@@ -89,6 +83,12 @@ config :report_api, Report.Stats.Cache.HistogramStats,
 
 config :report_api, Report.Stats.MainStats,
   declarations_by_regions_timeout: {:system, :integer, "DECLARATIONS_BY_REGIONS_TIMEOUT", 60_000 * 5}
+
+config :report_api, Report.Scheduler, capitation_schedule: {:system, :string, "CAPITATION_SCHEDULE", "0 * 1 * *"}
+
+config :report_api, Report.Capitation.CapitationConsumer,
+  max_demand: {:system, :integer, "CAPITATION_MAX_DEMAND", 500},
+  capitation_validate_signature: {:system, :boolean, "CAPITATION_REPORT_VALIDATE_SIGNATURE", true}
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
