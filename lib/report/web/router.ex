@@ -29,6 +29,13 @@ defmodule Report.Web.Router do
   scope "/", Report.Web do
     pipe_through(:api)
 
+    scope "/api" do
+      scope "/capitation_reports" do
+        get("/", CapitationController, :index)
+        get("/:id", CapitationController, :show)
+      end
+    end
+
     scope "/reports" do
       scope "/stats" do
         get("/", StatsController, :index)

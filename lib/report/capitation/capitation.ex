@@ -7,7 +7,20 @@ defmodule Report.Capitation do
   alias Report.Capitation.CapitationProducer
   alias Report.Capitation.CapitationConsumer
   alias Report.Repo
+  alias Report.Replica.LegalEntity
   import Ecto.Changeset
+  import Ecto.Query
+
+  def list(params) do
+    Repo.paginate(CapitationReport, params)
+  end
+
+  def get_by_id(id) do
+    CapitationReportDetail
+    |> select([crd, l], %{legal_entity_id: crd.legal_entity_id, edrpu: l.edrpou})
+    |> join(:inner, [crd], l in LegalEntity, l.id == crd.legal_entity_id and crd.id == ^id)
+    |> Repo.one()
+  end
 
   def run do
     billing_date = Map.put(Date.utc_today(), :day, 1)

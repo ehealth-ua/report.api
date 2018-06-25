@@ -2,6 +2,7 @@ defmodule Report.Factory do
   @moduledoc false
 
   use ExMachina.Ecto, repo: Report.Repo
+  alias Report.Capitation.CapitationReport
   alias Report.Replica.Declaration
   alias Report.Replica.DeclarationStatusHistory
   alias Report.Replica.MedicationRequestStatusHistory
@@ -427,6 +428,12 @@ defmodule Report.Factory do
       division_id: UUID.generate(),
       inserted_by: UUID.generate(),
       updated_by: UUID.generate()
+    }
+  end
+
+  def capitation_report_factory do
+    %CapitationReport{
+      billing_date: Map.put(Date.utc_today(), :day, 1)
     }
   end
 
