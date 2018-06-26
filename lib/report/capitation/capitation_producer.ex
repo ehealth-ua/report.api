@@ -46,18 +46,18 @@ defmodule Report.Capitation.CapitationProducer do
     Contract
     |> where([c], c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == @status_verified)
     |> join(
-      :left,
+      :inner,
       [c],
       ce in ContractEmployee,
       c.id == ce.contract_id and fragment("?::date < ?", ce.start_date, ^billing_date) and
-        fragment("? is null or ?::date >= ?", ce.end_date, ce.end_date, ^billing_date)
+        fragment("(? is null or ?::date >= ?)", ce.end_date, ce.end_date, ^billing_date)
     )
-    |> join(:left, [_, ce], d in Declaration, d.employee_id == ce.employee_id and d.division_id == ce.division_id)
-    |> join(:left, [_, _, d], p in Person, p.id == d.person_id)
-    |> join(:left, [_, ce], dv in Division, dv.id == ce.division_id)
-    |> join(:left, [_, _, d], le in LegalEntity, le.id == d.legal_entity_id)
+    |> join(:inner, [_, ce], d in Declaration, d.employee_id == ce.employee_id and d.division_id == ce.division_id)
+    |> join(:inner, [_, _, d], p in Person, p.id == d.person_id)
+    |> join(:inner, [_, ce, d], dv in Division, dv.id == d.division_id)
+    |> join(:inner, [_, _, d], le in LegalEntity, le.id == d.legal_entity_id)
     |> join(
-      :left,
+      :inner,
       [_, _, d, _],
       dsh in DeclarationStatusHistory,
       dsh.declaration_id == d.id and fragment("?::date <= ?", dsh.inserted_at, ^billing_date)
