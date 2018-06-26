@@ -4,6 +4,7 @@ defmodule Report.Capitation do
   alias Report.Capitation.Cache
   alias Report.Capitation.CapitationReport
   alias Report.Capitation.CapitationReportDetail
+  alias Report.Capitation.CapitationReportError
   alias Report.Capitation.CapitationProducer
   alias Report.Capitation.CapitationConsumer
   alias Report.Repo
@@ -56,6 +57,14 @@ defmodule Report.Capitation do
     fields = ~w(capitation_report_id legal_entity_id contract_id mountain_group age_group declaration_count)a
 
     detail
+    |> cast(params, fields)
+    |> validate_required(fields)
+  end
+
+  def changeset(%CapitationReportError{} = error, params) do
+    fields = ~w(capitation_report_id declaration_id action message)a
+
+    error
     |> cast(params, fields)
     |> validate_required(fields)
   end

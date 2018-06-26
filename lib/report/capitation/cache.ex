@@ -4,6 +4,7 @@ defmodule Report.Capitation.Cache do
   use GenServer
   alias Report.Capitation
   alias Report.Capitation.CapitationReportDetail
+  alias Report.Capitation.CapitationReportError
   alias Report.Repo
 
   def start_link do
@@ -48,18 +49,10 @@ defmodule Report.Capitation.Cache do
   end
 
   @impl true
-  def handle_cast(:dump, %{ets: pid, report_id: report_id} = state) do
-    key_stream =
-      Stream.resource(
-        fn -> :ets.first(pid) end,
-        fn
-          :"$end_of_table" -> {:halt, nil}
-          previous_key -> {[previous_key], :ets.next(pid, previous_key)}
-        end,
-        fn _ -> :ok end
-      )
-
-    key_stream
+  def handle_cast(:dump, %{ets: pid, errors_ets: errors_pid, report_id: report_id} = state) do
+    # Save successfull details
+    pid
+    |> get_key_stream()
     |> Stream.each(fn key ->
       [{_, declaration_count, legal_entity_id, age_group, contract_id, mountain_group}] = :ets.lookup(pid, key)
 
@@ -71,6 +64,23 @@ defmodule Report.Capitation.Cache do
         age_group: age_group,
         contract_id: contract_id,
         mountain_group: mountain_group
+      })
+      |> Repo.insert!()
+    end)
+    |> Stream.run()
+
+    # Save errors
+    errors_pid
+    |> get_key_stream
+    |> Stream.each(fn key ->
+      [{_, declaration_id, action, message}] = :ets.lookup(errors_pid, key)
+
+      %CapitationReportError{}
+      |> Capitation.changeset(%{
+        capitation_report_id: report_id,
+        declaration_id: declaration_id,
+        action: action,
+        message: message
       })
       |> Repo.insert!()
     end)
@@ -109,5 +119,16 @@ defmodule Report.Capitation.Cache do
 
   def dump do
     GenServer.cast(__MODULE__, :dump)
+  end
+
+  defp get_key_stream(pid) do
+    Stream.resource(
+      fn -> :ets.first(pid) end,
+      fn
+        :"$end_of_table" -> {:halt, nil}
+        previous_key -> {[previous_key], :ets.next(pid, previous_key)}
+      end,
+      fn _ -> :ok end
+    )
   end
 end

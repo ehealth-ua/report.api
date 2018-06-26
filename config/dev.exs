@@ -22,8 +22,6 @@ config :report_api, Report.Web.Endpoint,
 
 config :phoenix, :stacktrace_depth, 20
 
-config :report_api, validate_signed_content: false
-
 config :report_api, Report.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: {:system, "DB_NAME", "report_dev"},
