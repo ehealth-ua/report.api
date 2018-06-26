@@ -65,7 +65,7 @@ defmodule Report.Capitation.CapitationProducer do
     |> select([c, _, d, p, dv, le], %{
       id: d.id,
       contract_id: c.id,
-      legal_entity_id: d.legal_entity_id,
+      legal_entity_id: c.contractor_legal_entity_id,
       mountain_group: dv.mountain_group,
       birth_date: p.birth_date,
       seed: d.seed,
