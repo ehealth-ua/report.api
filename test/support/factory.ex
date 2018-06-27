@@ -25,6 +25,7 @@ defmodule Report.Factory do
   alias Report.Replica.Contract
   alias Report.Replica.ContractDivision
   alias Report.Replica.ContractEmployee
+  alias Report.Capitation.CapitationReportDetail
   alias Ecto.UUID
 
   def declaration_factory do
@@ -434,6 +435,46 @@ defmodule Report.Factory do
   def capitation_report_factory do
     %CapitationReport{
       billing_date: Map.put(Date.utc_today(), :day, 1)
+    }
+  end
+
+  def capitation_report_detail_factory do
+    %CapitationReportDetail{
+      declaration_count: Enum.random(1..4),
+      age_group: Enum.random(["0-18", "19-39", "40-60"]),
+      mountain_group: Enum.random([true, false]),
+      contract_id: UUID.generate(),
+      legal_entity_id: UUID.generate(),
+      capitation_report_id: UUID.generate()
+    }
+  end
+
+  def contracts_factory do
+    %Contract{
+      start_date: NaiveDateTime.utc_now(),
+      end_date: NaiveDateTime.utc_now(),
+      status: Enum.random(["ACTIVE", "PENDING", "EXPIRED", "ANYRANDOM"]),
+      contractor_legal_entity_id: UUID.generate(),
+      contractor_owner_id: UUID.generate(),
+      contractor_base: Faker.Pokemon.name(),
+      contractor_payment_details: %{a: 1},
+      contractor_rmsp_amount: Enum.random(1..100),
+      external_contractor_flag: Enum.random([true, false]),
+      nhs_signer_id: UUID.generate(),
+      nhs_signer_base: Faker.Name.first_name(),
+      nhs_legal_entity_id: UUID.generate(),
+      nhs_payment_method: Faker.Company.buzzword(),
+      is_active: Enum.random([true, false]),
+      is_suspended: Enum.random([true, false]),
+      issue_city: Faker.Pizza.pizza(),
+      nhs_contract_price: Enum.random(1..9) / 10 + Enum.random(1..99),
+      contract_number: "contract-number-#{Enum.random(1000..10000)}",
+      contract_request_id: UUID.generate(),
+      inserted_by: UUID.generate(),
+      updated_by: UUID.generate(),
+      status_reason: Enum.random(["BECAUSE", "ITDEPENDSONMANYREASONS", "ANYRANDOM"]),
+      inserted_at: NaiveDateTime.utc_now(),
+      updated_at: NaiveDateTime.utc_now()
     }
   end
 

@@ -12,9 +12,9 @@ defmodule Report.Web.CapitationController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    with %{} = capitation_report_detail <- Capitation.get_by_id(id) do
-      render(conn, "show.json", data: capitation_report_detail)
+  def details(conn, params) do
+    with %Page{} = paging <- Capitation.details(params) do
+      render(conn, "details.json", report_details: paging.entries, paging: paging)
     end
   end
 end

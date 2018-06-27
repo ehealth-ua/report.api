@@ -34,6 +34,10 @@ defmodule Report.Web.Router do
         get("/", CapitationController, :index)
         get("/:id", CapitationController, :show)
       end
+
+      scope "/capitation_report_details" do
+        get("/", CapitationController, :details)
+      end
     end
 
     scope "/reports" do

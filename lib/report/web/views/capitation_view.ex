@@ -6,6 +6,10 @@ defmodule Report.Web.CapitationView do
     render_many(reports, __MODULE__, "show.json", as: :report)
   end
 
+  def render("details.json", %{report_details: reports}) do
+    reports
+  end
+
   def render("show.json", %{report: report}) do
     Map.take(report, ~w(id billing_date inserted_at)a)
   end
