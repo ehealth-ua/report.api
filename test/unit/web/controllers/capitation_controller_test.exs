@@ -10,7 +10,7 @@ defmodule Report.CapitationControllerTest do
 
       response =
         conn
-        |> get("/api/capitation_reports", %{page_size: 1})
+        |> get(capitation_path(conn, :index, %{"page_size" => "1"}))
         |> json_response(200)
 
       assert %{"data" => [%{"id" => response_id1}], "paging" => %{"page_number" => 1, "page_size" => 1}} = response
@@ -18,7 +18,7 @@ defmodule Report.CapitationControllerTest do
 
       response =
         conn
-        |> get("/api/capitation_reports", %{page_size: 1, page: 2})
+        |> get(capitation_path(conn, :index, %{"page" => "2", "page_size" => "1"}))
         |> json_response(200)
 
       assert %{"data" => [%{"id" => response_id2}], "paging" => %{"page_number" => 2, "page_size" => 1}} = response
@@ -26,6 +26,48 @@ defmodule Report.CapitationControllerTest do
       assert response_id2 in [id1, id2]
     end
 
+    test "limit list page size", %{conn: conn} do
+      insert(:capitation_report)
+
+      response =
+        conn
+        |> get(capitation_path(conn, :index, %{"page_size" => "500"}))
+        |> json_response(200)
+
+      assert %{"paging" => %{"page_number" => 1, "page_size" => 100}} = response
+    end
+
+    test "default list page size", %{conn: conn} do
+      insert(:capitation_report)
+
+      response =
+        conn
+        |> get(capitation_path(conn, :index))
+        |> json_response(200)
+
+      assert %{"paging" => %{"page_number" => 1, "page_size" => 50}} = response
+    end
+
+    test "return page on invalid params", %{conn: conn} do
+      insert(:capitation_report)
+
+      response =
+        conn
+        |> get(capitation_path(conn, :index, %{"page" => "aaa", "page_size" => "bbb"}))
+        |> json_response(200)
+
+      assert %{"paging" => %{"page_number" => 1, "page_size" => 50}} = response
+
+      response2 =
+        conn
+        |> get(capitation_path(conn, :index, %{"page" => "aaa", "page_size" => "10bbb"}))
+        |> json_response(200)
+
+      assert %{"paging" => %{"page_number" => 1, "page_size" => 50}} = response2
+    end
+  end
+
+  describe "Capitation report details" do
     test "success get details", %{conn: conn} do
       capitation_reports_ids =
         Enum.reduce(1..4, [], fn _, acc ->

@@ -140,7 +140,16 @@ defmodule Report.Capitation do
   end
 
   def list(params) do
-    Repo.paginate(CapitationReport, params)
+    page_size = Map.get(params, "page_size", "50")
+
+    page_size =
+      case Integer.parse(page_size) do
+        {value, ""} when value > 100 -> 100
+        {value, ""} -> value
+        _ -> 50
+      end
+
+    Repo.paginate(CapitationReport, Map.put(params, "page_size", page_size))
   end
 
   def run do
