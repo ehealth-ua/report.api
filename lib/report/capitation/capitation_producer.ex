@@ -62,17 +62,20 @@ defmodule Report.Capitation.CapitationProducer do
       dsh in DeclarationStatusHistory,
       dsh.declaration_id == d.id and fragment("?::date <= ?", dsh.inserted_at, ^billing_date)
     )
-    |> select([c, _, d, p, dv, le], %{
+    |> select([c, _, d, p, dv, le, dsh], %{
       id: d.id,
       contract_id: c.id,
       legal_entity_id: c.contractor_legal_entity_id,
       mountain_group: dv.mountain_group,
       birth_date: p.birth_date,
       seed: d.seed,
-      edrpou: le.edrpou
+      edrpou: le.edrpou,
+      history_status: dsh.status
     })
     |> distinct([..., dsh], dsh.declaration_id)
     |> order_by([..., dsh], desc: dsh.inserted_at)
+    |> subquery()
+    |> where([a], a.history_status == "active")
     |> offset(^offset)
     |> limit(^limit)
     |> Repo.all()

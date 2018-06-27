@@ -50,6 +50,8 @@ defmodule Report.CapitationTest do
         for _ <- 1..50 do
           insert_declaration(contract_employee, legal_entity_id, billing_datetime)
         end
+
+        insert_declaration(contract_employee, legal_entity_id, billing_datetime, 0)
       end
 
       Capitation.run()
@@ -108,7 +110,7 @@ defmodule Report.CapitationTest do
     end
   end
 
-  defp insert_declaration(contract_employee, legal_entity_id, billing_datetime) do
+  defp insert_declaration(contract_employee, legal_entity_id, billing_datetime, terminated_time \\ 60 * 60 * 24) do
     person = insert(:person)
 
     declaration =
@@ -138,7 +140,7 @@ defmodule Report.CapitationTest do
       :declaration_status_hstr,
       declaration_id: declaration.id,
       status: "terminated",
-      inserted_at: NaiveDateTime.add(billing_datetime, 60 * 60 * 24)
+      inserted_at: NaiveDateTime.add(billing_datetime, terminated_time)
     )
   end
 end
