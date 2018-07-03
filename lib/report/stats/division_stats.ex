@@ -13,6 +13,7 @@ defmodule Report.Stats.DivisionStats do
 
   @type_residence "RESIDENCE"
   @type_owner Employee.type(:owner)
+  @type_pharmacy_owner Employee.type(:pharmacy_owner)
 
   @fields_address ~w(
     area
@@ -47,7 +48,7 @@ defmodule Report.Stats.DivisionStats do
       :inner,
       [..., l],
       e in Employee,
-      e.legal_entity_id == l.id and e.employee_type == ^@type_owner and e.is_active
+      e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
     )
     |> join(:inner, [..., e], innm in assoc(e, :party))
     |> preload([..., l, e, p], legal_entity: {l, employees: {e, party: p}})

@@ -4,6 +4,7 @@ defmodule Report.Replica.Employee do
   use Ecto.Schema
 
   @type_owner "OWNER"
+  @type_pharmacy_owner "PHARMACY_OWNER"
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
@@ -30,4 +31,5 @@ defmodule Report.Replica.Employee do
   end
 
   def type(:owner), do: @type_owner
+  def type(:pharmacy_owner), do: @type_pharmacy_owner
 end
