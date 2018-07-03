@@ -94,14 +94,16 @@ defmodule Report.Capitation.CapitationConsumer do
   end
 
   defp get_age_group(birth_date) do
-    %{year: today_year} = Date.utc_today()
+    %{year: today_year} = today = Date.utc_today()
     %{year: year} = birth_date
+    had_birthday_this_year? = Date.compare(today, %{birth_date | year: today_year}) != :lt
+    full_years = if had_birthday_this_year?, do: today_year - year, else: today_year - year - 1
 
     cond do
-      today_year - year <= 5 -> CapitationReportDetail.age_group(:"0-5")
-      today_year - year <= 17 -> CapitationReportDetail.age_group(:"6-17")
-      today_year - year <= 39 -> CapitationReportDetail.age_group(:"18-39")
-      today_year - year <= 65 -> CapitationReportDetail.age_group(:"40-65")
+      full_years <= 5 -> CapitationReportDetail.age_group(:"0-5")
+      full_years <= 17 -> CapitationReportDetail.age_group(:"6-17")
+      full_years <= 39 -> CapitationReportDetail.age_group(:"18-39")
+      full_years <= 65 -> CapitationReportDetail.age_group(:"40-65")
       true -> CapitationReportDetail.age_group(:"65+")
     end
   end
