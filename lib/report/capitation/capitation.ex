@@ -149,7 +149,9 @@ defmodule Report.Capitation do
         _ -> 50
       end
 
-    Repo.paginate(CapitationReport, Map.put(params, "page_size", page_size))
+    CapitationReport
+    |> order_by(desc: :billing_date)
+    |> Repo.paginate(Map.put(params, "page_size", page_size))
   end
 
   def run do

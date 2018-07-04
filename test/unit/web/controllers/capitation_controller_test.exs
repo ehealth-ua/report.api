@@ -65,6 +65,36 @@ defmodule Report.CapitationControllerTest do
 
       assert %{"paging" => %{"page_number" => 1, "page_size" => 50}} = response2
     end
+
+    test "reports ordered by billing date (latest go first)", %{conn: conn} do
+      %{id: id1} =
+        insert(
+          :capitation_report,
+          billing_date: Map.put(Date.utc_today(), :day, 1)
+        )
+
+      %{id: id2} =
+        insert(
+          :capitation_report,
+          billing_date: Map.put(Date.utc_today(), :day, 2)
+        )
+
+      response =
+        conn
+        |> get(capitation_path(conn, :index, %{"page_size" => "1"}))
+        |> json_response(200)
+
+      assert %{"data" => [%{"id" => response_id1}], "paging" => %{"page_number" => 1, "page_size" => 1}} = response
+      assert response_id1 == id2
+
+      response =
+        conn
+        |> get(capitation_path(conn, :index, %{"page" => "2", "page_size" => "1"}))
+        |> json_response(200)
+
+      assert %{"data" => [%{"id" => response_id2}], "paging" => %{"page_number" => 2, "page_size" => 1}} = response
+      assert response_id2 == id1
+    end
   end
 
   describe "Capitation report details" do
