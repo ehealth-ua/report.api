@@ -44,7 +44,11 @@ defmodule Report.Capitation.CapitationProducer do
 
   defp contract_employees_query(billing_date, offset, limit) do
     Contract
-    |> where([c], c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == @status_verified)
+    |> where(
+      [c],
+      c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == @status_verified and
+        c.is_suspended == false
+    )
     |> join(
       :inner,
       [c],
