@@ -54,12 +54,28 @@ defmodule Report.Capitation.CapitationConsumer do
       end)
 
     ets_pid = Cache.get_ets()
+    contractor_employees_pid = Cache.get_contractor_employees_ets()
     errors_pid = Cache.get_errors_ets()
-    Enum.each(contract_employees, &process_contract_employee(&1, ets_pid, errors_pid))
+    Enum.each(contract_employees, &process_contract_employee(&1, ets_pid, contractor_employees_pid, errors_pid))
     {:noreply, [], producers}
   end
 
-  defp process_contract_employee(contract_employee, ets_pid, errors_pid) do
+  defp process_contract_employee(contract_employee, ets_pid, contractor_employees_pid, errors_pid) do
+    %{
+      contractor_employee_id: contractor_employee_id,
+      declaration_limit: declaration_limit
+    } = contract_employee
+
+    declaration_count =
+      :ets.update_counter(contractor_employees_pid, contractor_employee_id, {2, 1}, {contractor_employee_id, 0})
+
+    process_declaration(contract_employee, ets_pid, errors_pid, declaration_count, declaration_limit)
+  end
+
+  # Do not process overlimited declarations
+  defp process_declaration(_, _, _, count, limit) when count > limit, do: :ok
+
+  defp process_declaration(contract_employee, ets_pid, errors_pid, _, _) do
     %{
       id: id,
       legal_entity_id: legal_entity_id,

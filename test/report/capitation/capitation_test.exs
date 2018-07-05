@@ -41,7 +41,8 @@ defmodule Report.CapitationTest do
           :contract_employee,
           division_id: division.id,
           contract_id: contract.id,
-          start_date: NaiveDateTime.add(billing_datetime, -1000)
+          start_date: NaiveDateTime.add(billing_datetime, -1000),
+          declaration_limit: 99
         )
 
       for _ <- 1..2 do
@@ -51,13 +52,14 @@ defmodule Report.CapitationTest do
           insert_declaration(contract_employee, legal_entity_id, billing_datetime)
         end
 
-        insert_declaration(contract_employee, legal_entity_id, billing_datetime, 0)
+        insert_declaration(contract_employee, legal_entity_id, billing_datetime, -1)
       end
 
       Capitation.run()
       :timer.sleep(1000)
       assert [%CapitationReport{id: report_id, billing_date: ^billing_date}] = Repo.all(CapitationReport)
       details = Repo.all(CapitationReportDetail)
+      assert 99 == Enum.reduce(details, 0, fn detail, acc -> acc + detail.declaration_count end)
       assert Enum.count(details) >= 2
       assert Enum.all?(details, &(Map.get(&1, :contract_id) == contract.id))
       assert Enum.all?(details, &(Map.get(&1, :capitation_report_id) == report_id))

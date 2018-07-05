@@ -9,7 +9,6 @@ defmodule Report.Capitation.CapitationProducer do
   alias Report.Replica.ContractEmployee
   alias Report.Replica.Division
   alias Report.Replica.Declaration
-  alias Report.Replica.DeclarationStatusHistory
   alias Report.Replica.LegalEntity
   alias Report.Replica.Person
   alias Report.Repo
@@ -61,13 +60,22 @@ defmodule Report.Capitation.CapitationProducer do
     |> join(:inner, [_, ce, d], dv in Division, dv.id == d.division_id)
     |> join(:inner, [_, _, d], le in LegalEntity, le.id == d.legal_entity_id)
     |> join(
-      :inner,
+      :left,
       [_, _, d, _],
-      dsh in DeclarationStatusHistory,
-      dsh.declaration_id == d.id and fragment("?::date <= ?", dsh.inserted_at, ^billing_date)
+      dsh in fragment("
+      SELECT DISTINCT declaration_id, last_value(status) OVER (
+          PARTITION BY declaration_id ORDER BY inserted_at
+          RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+      ) as status
+      FROM declarations_status_hstr
+      WHERE inserted_at::date < ?::date
+      ", ^billing_date),
+      dsh.declaration_id == d.id
     )
-    |> select([c, _, d, p, dv, le, dsh], %{
+    |> select([c, ce, d, p, dv, le, dsh], %{
       id: d.id,
+      contractor_employee_id: ce.id,
+      declaration_limit: ce.declaration_limit,
       contract_id: c.id,
       legal_entity_id: c.contractor_legal_entity_id,
       mountain_group: dv.mountain_group,
@@ -76,8 +84,6 @@ defmodule Report.Capitation.CapitationProducer do
       edrpou: le.edrpou,
       history_status: dsh.status
     })
-    |> distinct([..., dsh], dsh.declaration_id)
-    |> order_by([..., dsh], desc: dsh.inserted_at)
     |> subquery()
     |> where([a], a.history_status == "active")
     |> offset(^offset)
