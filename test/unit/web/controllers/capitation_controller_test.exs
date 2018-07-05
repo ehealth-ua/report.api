@@ -2,6 +2,10 @@ defmodule Report.CapitationControllerTest do
   @moduledoc false
 
   use Report.Web.ConnCase
+  alias Report.Capitation.CapitationReportDetail
+  alias Report.Replica.LegalEntity
+  alias Report.Repo
+  import Ecto.Query
 
   describe "List capitation reports" do
     test "success", %{conn: conn} do
@@ -99,50 +103,52 @@ defmodule Report.CapitationControllerTest do
 
   describe "Capitation report details" do
     test "success get details", %{conn: conn} do
-      capitation_reports_ids =
-        Enum.reduce(1..4, [], fn _, acc ->
-          id = Ecto.UUID.generate()
+      for _ <- 1..2 do
+        cr = insert(:capitation_report)
 
-          for _ <- 1..5 do
-            legal_entity_id = Ecto.UUID.generate()
-            insert(:legal_entity, %{id: legal_entity_id, edrpou: "edrpou"})
+        for _ <- 1..3 do
+          legal_entity = insert(:legal_entity)
 
-            for _ <- 1..3 do
-              contract_id = Ecto.UUID.generate()
-              insert(:contracts, id: contract_id)
+          for _ <- 1..2 do
+            contract = insert(:contracts)
 
-              for is_mountain <- [true, false] do
-                for age_group <- ["0-18", "19-39", "40-60"] do
-                  insert(
-                    :capitation_report_detail,
-                    capitation_report_id: id,
-                    contract_id: contract_id,
-                    legal_entity_id: legal_entity_id,
-                    age_group: age_group,
-                    mountain_group: is_mountain
-                  )
-                end
+            for is_mountain <- [true, false] do
+              for age_group <- ["0-18", "19-39", "40-60"] do
+                insert(
+                  :capitation_report_detail,
+                  capitation_report_id: cr.id,
+                  contract_id: contract.id,
+                  legal_entity_id: legal_entity.id,
+                  age_group: age_group,
+                  mountain_group: is_mountain,
+                  declaration_count: 100
+                )
               end
             end
           end
-
-          [id | acc]
-        end)
-
-      for id <- capitation_reports_ids do
-        insert(:capitation_report, %{id: id})
+        end
       end
+
+      cd = CapitationReportDetail |> limit(^1) |> Repo.one()
+
+      le =
+        LegalEntity
+        |> join(:inner, [l], c in CapitationReportDetail, c.legal_entity_id == l.id and c.id == ^cd.id)
+        |> limit(^1)
+        |> Repo.one()
 
       response =
         conn
         |> get("/api/capitation_report_details", %{
-          page_size: 3,
-          edrpou: "edrpou",
-          report_id: hd(capitation_reports_ids)
+          page_size: 2,
+          edrpou: le.edrpou,
+          legal_entity_id: le.id,
+          report_id: cd.capitation_report_id
         })
         |> json_response(200)
 
       assert response["data"]
+      assert length(response["data"]) == 1
 
       Enum.each(response["data"], fn legal ->
         Enum.each(

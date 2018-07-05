@@ -451,6 +451,7 @@ defmodule Report.Factory do
 
   def contracts_factory do
     %Contract{
+      id: UUID.generate(),
       start_date: NaiveDateTime.utc_now(),
       end_date: NaiveDateTime.utc_now(),
       status: Enum.random(["ACTIVE", "PENDING", "EXPIRED", "ANYRANDOM"]),
