@@ -4,6 +4,7 @@ defmodule Report.Capitation.CapitationProducer do
   """
 
   use GenStage
+  alias Report.Capitation
   alias Report.Capitation.Cache
   alias Report.Replica.Contract
   alias Report.Replica.ContractEmployee
@@ -42,12 +43,8 @@ defmodule Report.Capitation.CapitationProducer do
   end
 
   defp contract_employees_query(billing_date, offset, limit) do
-    Contract
-    |> where(
-      [c],
-      c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == @status_verified and
-        c.is_suspended == false
-    )
+    billing_date
+    |> Capitation.get_contracts_query()
     |> join(
       :inner,
       [c],
@@ -62,14 +59,17 @@ defmodule Report.Capitation.CapitationProducer do
     |> join(
       :left,
       [_, _, d, _],
-      dsh in fragment("
+      dsh in fragment(
+        "
       SELECT DISTINCT declaration_id, last_value(status) OVER (
           PARTITION BY declaration_id ORDER BY inserted_at
           RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
       ) as status
       FROM declarations_status_hstr
       WHERE inserted_at::date < ?::date
-      ", ^billing_date),
+      ",
+        ^billing_date
+      ),
       dsh.declaration_id == d.id
     )
     |> select([c, ce, d, p, dv, le, dsh], %{

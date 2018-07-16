@@ -213,6 +213,28 @@ defmodule Report.Capitation do
       {_, producer_pid, _, _} = Enum.find(children, fn {name, _, _, _} -> name == CapitationProducer end)
       {_, consumer_pid, _, _} = Enum.find(children, fn {name, _, _, _} -> name == CapitationConsumer end)
 
+      age_groups = [
+        CapitationReportDetail.age_group(:"0-5"),
+        CapitationReportDetail.age_group(:"6-17"),
+        CapitationReportDetail.age_group(:"18-39"),
+        CapitationReportDetail.age_group(:"40-65"),
+        CapitationReportDetail.age_group(:"65+")
+      ]
+
+      ets_pid = Cache.get_ets()
+
+      billing_date
+      |> get_contracts_query()
+      |> Repo.all()
+      |> Enum.each(fn %Contract{id: id, contractor_legal_entity_id: legal_entity_id} ->
+        for age_group <- age_groups do
+          for mountain_group <- [true, false] do
+            key = CapitationConsumer.get_key(id, legal_entity_id, age_group, mountain_group)
+            :ets.insert(ets_pid, {key, 0, legal_entity_id, age_group, id, mountain_group})
+          end
+        end
+      end)
+
       GenStage.sync_subscribe(
         consumer_pid,
         to: producer_pid,
@@ -243,5 +265,14 @@ defmodule Report.Capitation do
     error
     |> cast(params, fields)
     |> validate_required(fields)
+  end
+
+  def get_contracts_query(billing_date) do
+    where(
+      Contract,
+      [c],
+      c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == ^Contract.status(:verified) and
+        c.is_suspended == false
+    )
   end
 end

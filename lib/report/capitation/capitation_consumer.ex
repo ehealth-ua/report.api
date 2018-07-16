@@ -87,11 +87,7 @@ defmodule Report.Capitation.CapitationConsumer do
     } = contract_employee
 
     age_group = get_age_group(birth_date)
-
-    key =
-      :md5
-      |> :crypto.hash("#{legal_entity_id}:#{age_group}:#{contract_id}:#{mountain_group}")
-      |> Base.encode64()
+    key = get_key(contract_id, legal_entity_id, age_group, mountain_group)
 
     if config()[:capitation_validate_signature] do
       with {_, {:ok, %{"data" => %{"secret_url" => url}}}} <- {:secret_url, get_signed_declaration_url(id)},
@@ -170,5 +166,11 @@ defmodule Report.Capitation.CapitationConsumer do
       %{} ->
         producers
     end
+  end
+
+  def get_key(id, legal_entity_id, age_group, mountain_group) do
+    :md5
+    |> :crypto.hash("#{legal_entity_id}:#{age_group}:#{id}:#{mountain_group}")
+    |> Base.encode64()
   end
 end

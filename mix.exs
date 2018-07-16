@@ -9,7 +9,7 @@ defmodule Report.Mixfile do
       description: "Add description to your package.",
       package: package(),
       version: @version,
-      elixir: "~> 1.5",
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,
@@ -48,14 +48,14 @@ defmodule Report.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:distillery, "~> 1.5"},
+      {:distillery, "~> 1.5.3", runtime: false},
       {:confex, "~> 3.2"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
       {:postgrex, "~> 0.13.2"},
       {:cowboy, "~> 1.1"},
-      {:httpoison, "~> 0.11.1"},
-      {:phoenix, "~> 1.3.0"},
+      {:httpoison, "~> 1.2"},
+      {:phoenix, "~> 1.3.3"},
       {:eview, "~> 0.12.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:geo, "~> 1.5"},
@@ -71,7 +71,7 @@ defmodule Report.Mixfile do
       {:mox, "~> 0.3", only: :test},
       {:faker, "~> 0.9.0", only: [:test]},
       {:ex_machina, "~> 2.2", only: :test},
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:excoveralls, "~> 0.9.1", only: [:dev, :test]},
       {:credo, "~> 0.9.0-rc8", only: [:dev, :test]}
     ]
   end
