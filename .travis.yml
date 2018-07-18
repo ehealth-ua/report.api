@@ -25,7 +25,7 @@ env:
   global:
     - MIX_ENV=test
     - DOCKER_NAMESPACE=edenlabllc
-    - APPS='{"report_api":"report"}'
+    - APPS='{"report_api":"reports"}'
     - POSTGRES_VERSION=9.6
     - secure: "P3zPrTcFnNJv/S6fEwg0rSywqPFU1+k6tORdSYjR932frlYAHhEVausKeqMAd8ny55hmWJT8BHBdWELwoz3el5EaDP+o/A29cV3aSPP4ng2RHo19QWnz2ha8al2f/orfDtZwlV0sFuUJzZAEPgXjgMlbICrRIwQWQEIwXNxVpCajPhCVlysnMUUhlOrQK4HrNqU+TGoCIyU6jXlYGep84BAD+23LgYc5e65Jbx3xIMr61Kd81OS+mbHmnrw0cptcRqvH94xd/p8Z+J6XsUksqvQMeo+HNoIh8l1qUWSnrVvPFLXHevrYqwKPlAKlmlGn7lDJcq9c8oJ6OcGxkrilSsldUvqFgytUpQtCCS8Y6ys2a6oEvwQj9KUWqw49oBTPnHFtC/+CVy94ovaMTY9c0nD4n7OYn7uElJOJGuGebX0ilLVIyQOZn6I9M330AuMh0WDR09UZK1ktnYZOs7teyYJXZ22qoNQZmZqHqUMMw6u2mz8oRsrLvuXXhQWNvstH2iveMM365SAk4vIv5EngEMm+pWpi4FGs1QYj8utRGfo6bWN4Jx1pJwnGji1kbCCYqThH4CZpMs/J3NneWfGbAf6lOoD8tzDZrUAKGI81ea4KlwYIjGNltTQe6LhjUud3hUcuhZp7E1F97Fi2xvodfjZ+QnsxRUzf+hZXVwhD0GI="
     # GitHub Token
