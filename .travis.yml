@@ -7,10 +7,10 @@ services:
   - docker
   - postgresql
 addons:
-  postgresql: "9.5"
+  postgresql: "9.6"
   apt:
     packages:
-      - postgresql-9.5-postgis-2.3
+      - postgresql-9.6-postgis-2.3
       - docker-ce
 elixir:
   - 1.6.6
@@ -23,14 +23,10 @@ notifications:
     on_success: always
 env:
   global:
-    - Chart=reports
     - MIX_ENV=test
-    # Set this to `true` if you want to require each commit to be semver-tagged with [major], [minor] or [patch] tags.
-    - REQUIRE_VERSION_TAGS="false"
-    # Main branch that will build new releases by-default
-    - TRUNK_BRANCH="develop"
-    # Docker Hub token
-    - DOCKER_HUB_ACCOUNT=edenlabllc
+    - DOCKER_NAMESPACE=edenlabllc
+    - APPS='{"report_api":"report"}'
+    - POSTGRES_VERSION=9.6
     - secure: "P3zPrTcFnNJv/S6fEwg0rSywqPFU1+k6tORdSYjR932frlYAHhEVausKeqMAd8ny55hmWJT8BHBdWELwoz3el5EaDP+o/A29cV3aSPP4ng2RHo19QWnz2ha8al2f/orfDtZwlV0sFuUJzZAEPgXjgMlbICrRIwQWQEIwXNxVpCajPhCVlysnMUUhlOrQK4HrNqU+TGoCIyU6jXlYGep84BAD+23LgYc5e65Jbx3xIMr61Kd81OS+mbHmnrw0cptcRqvH94xd/p8Z+J6XsUksqvQMeo+HNoIh8l1qUWSnrVvPFLXHevrYqwKPlAKlmlGn7lDJcq9c8oJ6OcGxkrilSsldUvqFgytUpQtCCS8Y6ys2a6oEvwQj9KUWqw49oBTPnHFtC/+CVy94ovaMTY9c0nD4n7OYn7uElJOJGuGebX0ilLVIyQOZn6I9M330AuMh0WDR09UZK1ktnYZOs7teyYJXZ22qoNQZmZqHqUMMw6u2mz8oRsrLvuXXhQWNvstH2iveMM365SAk4vIv5EngEMm+pWpi4FGs1QYj8utRGfo6bWN4Jx1pJwnGji1kbCCYqThH4CZpMs/J3NneWfGbAf6lOoD8tzDZrUAKGI81ea4KlwYIjGNltTQe6LhjUud3hUcuhZp7E1F97Fi2xvodfjZ+QnsxRUzf+hZXVwhD0GI="
     # GitHub Token
     - secure: "BOn8bjRXn+pMIsOni605x/mMGlQukRjc94BB4HIwDoaJ9obJfFdRiTHZwAzG51hnz84BUOvlL2nPCaCh3CCBeH/smdaRb6DdhzWiV6nD3f5soh9FkCvGIn2rUKwcmJZbT5NlclQZexW/O2ESE+X1llGQIOl18/4iXGUcVcG6t80uuLYpac18S0LDycA3rh3rmcqHEG/NnQf4aaG+Q4BMunBrkr59fSDaqJqQbrkKDb9VkxJ7+CFvWwbO3SIYBkexjTFccfAKCVSgglARpqR3V93QDUSAtyfPbnt3grUe2VCuoN6m4+KIaQeHMQTa41fKuRFL8BZpRJxqw3oU5Sy4LiKGSC5JrbtOoz3MFilEqbOsls2B1LIPYsGOs6bn/DQeg4maxaGZtRCQmkWYFU10phfNcCb6Qn3gKTHUALb6GIm8P/ahDxM28USDVlG77d6+WwHU8wVC/hffbPFUTztvo8KpRA4A9aSEDvito+DJySVo74f+1aKsluK7IYDe/8y+Pzw8geTgpM1tgr3JNsxcA6norlDPFnZHXHQjoIC9ZaCqxOxUq4vp04FxgIRhccMi+Fp+ChLUIvnzq3IsCqrwgc+aVXlfXrfibn4hAvfz1Z4vFTtOaAMjQHba/XDFG7BOZCXsfdSzUmCJTEt1HeTKkEVqGMAgLUAfgQbKtTvLDrk="
@@ -39,36 +35,16 @@ branches:
   except:
     - /^[0-9]*\.[0-9]*\.[0-9]*/
 before_install:
-  # Expose MQ and DB to Docker container
-  - sudo ./bin/ci/init-db.sh
-before_script:
-  # Extract project name and version from mix.exs
-  - source ./bin/ci/release/fetch-project-environment.sh
-  # Load information about new version
-  - source ./bin/ci/release/fetch-source-version.sh
-  # Load information about changelog
-  - source ./bin/ci/release/fetch-changelog.sh
-script:
-  # Increment version in mix.exs
-  - ./bin/ci/release/put-source-version.sh
-  # Run all tests except pending ones
-  - ./bin/mix_tests.sh || travis_terminate 1
-  # Build Docker container
-  - ./bin/ci/release/build-container.sh || travis_terminate 1
-  # Initialize DB for Docker container
-  - source .env; PGPASSWORD="${DB_PASSWORD}"; psql -U ${DB_USER} -w -c"CREATE DATABASE ${DB_NAME}"
-  # Run Docker container
-  - ./bin/ci/release/start-container.sh || travis_terminate 1
-  - sleep 5
-  - docker ps
-  - RUNNING_CONTAINERS=`docker ps | wc -l`;
-    if [ "${RUNNING_CONTAINERS//[[:space:]]/}" == "1" ]; then
-      echo "[E] Container is not started\!";
-      docker logs report_api --details --since 5h;
-      exit 1;
-    fi;
-  # Run acceptance tests on Docker container
-  # - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
-  - ./bin/ci/release/push-changes.sh || travis_terminate 1
-  - openssl aes-256-cbc -K $encrypted_7e692fa65543_key -iv $encrypted_7e692fa65543_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
-  - sudo ./bin/deploy.sh || travis_terminate 1
+  - sudo apt-get install jq
+  - curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella/init-db.sh -o init-db.sh; sudo sh ./init-db.sh
+jobs:
+  include:
+    - stage: "test and build"
+      # run tests
+      script: (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella/tests.sh -o tests.sh; bash ./tests.sh) || travis_terminate 1
+      # Build Docker container
+    - stage: "test and build"
+      # "Decrypting deploy key..."
+      script:
+      - openssl aes-256-cbc -K $encrypted_7e692fa65543_key -iv $encrypted_7e692fa65543_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+      - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1

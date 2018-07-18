@@ -1,14 +1,12 @@
 defmodule Report.Mixfile do
   use Mix.Project
 
-  @version "1.152.0"
-
   def project do
     [
       app: :report_api,
       description: "Add description to your package.",
       package: package(),
-      version: @version,
+      version: "0.1.0",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
