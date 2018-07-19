@@ -15,8 +15,6 @@ defmodule Report.Capitation.CapitationProducer do
   alias Report.Repo
   import Ecto.Query
 
-  @status_verified Contract.status(:verified)
-
   def start_link(offset) do
     GenStage.start_link(__MODULE__, offset, name: __MODULE__)
   end
