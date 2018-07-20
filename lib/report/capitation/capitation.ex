@@ -2,14 +2,14 @@ defmodule Report.Capitation do
   @moduledoc false
 
   alias Report.Capitation.Cache
+  alias Report.Capitation.CapitationConsumer
+  alias Report.Capitation.CapitationProducer
   alias Report.Capitation.CapitationReport
   alias Report.Capitation.CapitationReportDetail
   alias Report.Capitation.CapitationReportError
-  alias Report.Capitation.CapitationProducer
-  alias Report.Capitation.CapitationConsumer
-  alias Report.Repo
-  alias Report.Replica.LegalEntity
   alias Report.Replica.Contract
+  alias Report.Replica.LegalEntity
+  alias Report.Repo
   import Ecto.Changeset
   import Ecto.Query
 

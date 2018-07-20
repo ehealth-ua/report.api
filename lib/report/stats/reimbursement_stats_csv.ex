@@ -1,8 +1,8 @@
 defmodule Report.Stats.ReimbursementStatsCSV do
   @moduledoc false
 
-  alias Report.Replica.MedicationRequest
   alias Report.Replica.INNMDosageIngredient
+  alias Report.Replica.MedicationRequest
   alias Report.Repo
   import Report.Stats.ReimbursementStatsValidator, only: [validate: 1]
   import Ecto.Query

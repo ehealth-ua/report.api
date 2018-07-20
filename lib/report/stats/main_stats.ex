@@ -9,16 +9,16 @@ defmodule Report.Stats.MainStats do
   import Report.Replica.Replicas
   import Report.Stats.MainStatsValidator
 
-  alias Report.Repo
   alias Report.Replica.Declaration
   alias Report.Replica.DeclarationStatusHistory
   alias Report.Replica.Division
   alias Report.Replica.DivisionAddress
   alias Report.Replica.Employee
   alias Report.Replica.LegalEntity
-  alias Report.Replica.Region
   alias Report.Replica.MedicationRequest
   alias Report.Replica.MedicationRequestStatusHistory
+  alias Report.Replica.Region
+  alias Report.Repo
   alias Report.Stats.HistogramStatsRequest
 
   def get_main_stats do

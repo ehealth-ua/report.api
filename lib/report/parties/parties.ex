@@ -1,9 +1,9 @@
 defmodule Report.Parties do
   @moduledoc false
 
-  alias Report.Repo
   alias Report.Parties.Search
   alias Report.Replica.Party
+  alias Report.Repo
   import Ecto.Changeset
   import Ecto.Query
 

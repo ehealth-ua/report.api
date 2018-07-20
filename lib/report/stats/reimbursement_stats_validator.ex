@@ -3,13 +3,13 @@ defmodule Report.Stats.ReimbursementStatsValidator do
 
   import Ecto.Changeset
   import Ecto.Query
-  alias Report.Repo
-  alias Report.Stats.ReimbursementRequest
-  alias Report.Stats.ReimbursementCSVRequest
-  alias Report.Replica.PartyUser
-  alias Report.Replica.Party
   alias Report.Replica.Employee
   alias Report.Replica.LegalEntity
+  alias Report.Replica.Party
+  alias Report.Replica.PartyUser
+  alias Report.Repo
+  alias Report.Stats.ReimbursementCSVRequest
+  alias Report.Stats.ReimbursementRequest
   alias Report.Stats.ReimbursementRequest.EmbeddedData
   alias Report.Stats.ReimbursementRequest.Period
 
