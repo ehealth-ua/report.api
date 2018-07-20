@@ -6,8 +6,9 @@ defmodule Report.ReleaseTasks do
 
       report/bin/report command Elixir.Report.ReleaseTasks migrate
   """
-  alias Ecto.Migrator
+
   alias Ecto.Migration.Runner
+  alias Ecto.Migrator
 
   @start_apps [
     :logger,

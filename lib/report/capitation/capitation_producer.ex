@@ -6,10 +6,9 @@ defmodule Report.Capitation.CapitationProducer do
   use GenStage
   alias Report.Capitation
   alias Report.Capitation.Cache
-  alias Report.Replica.Contract
   alias Report.Replica.ContractEmployee
-  alias Report.Replica.Division
   alias Report.Replica.Declaration
+  alias Report.Replica.Division
   alias Report.Replica.LegalEntity
   alias Report.Replica.Person
   alias Report.Repo

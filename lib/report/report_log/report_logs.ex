@@ -1,8 +1,9 @@
 defmodule Report.ReportLogs do
   @moduledoc false
-  alias Report.ReportLog
-  alias Report.Repo
+
   import Ecto.Changeset
+  alias Report.Repo
+  alias Report.ReportLog
 
   def list_report_logs do
     Repo.all(ReportLog)

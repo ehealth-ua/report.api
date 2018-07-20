@@ -70,7 +70,7 @@ defmodule Report.Mixfile do
       {:faker, "~> 0.9.0", only: [:test]},
       {:ex_machina, "~> 2.2", only: :test},
       {:excoveralls, "~> 0.9.1", only: [:dev, :test]},
-      {:credo, "~> 0.9.0-rc8", only: [:dev, :test]}
+      {:credo, "~> 0.9.3", only: [:dev, :test]}
     ]
   end
 

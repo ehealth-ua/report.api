@@ -1,14 +1,14 @@
 defmodule Report.Stats.ReimbursementStats do
   @moduledoc false
 
-  alias Report.Repo
   alias Report.Connection
-  alias Report.Replica.LegalEntity
-  alias Report.Replica.MedicationRequest
   alias Report.Replica.Employee
-  alias Scrivener.Page
-  alias Scrivener.Config
+  alias Report.Replica.LegalEntity
   alias Report.Replica.MedicationDispense.Details
+  alias Report.Replica.MedicationRequest
+  alias Report.Repo
+  alias Scrivener.Config
+  alias Scrivener.Page
   import Report.Stats.ReimbursementStatsValidator, only: [validate: 3]
   import Ecto.Query
 

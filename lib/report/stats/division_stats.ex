@@ -6,9 +6,9 @@ defmodule Report.Stats.DivisionStats do
   import Report.Replica.Replicas
   import Report.Stats.DivisionStatsValidator
 
-  alias Report.Repo
   alias Report.Replica.Division
   alias Report.Replica.Employee
+  alias Report.Repo
   alias Report.Stats.DivisionsRequest
 
   @type_residence "RESIDENCE"
