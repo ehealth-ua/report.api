@@ -63,7 +63,7 @@ defmodule Report.Capitation.CapitationProducer do
           RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
       ) as status
       FROM declarations_status_hstr
-      WHERE inserted_at::date < ?::date
+      WHERE inserted_at < ?::date
       ",
         ^billing_date
       ),

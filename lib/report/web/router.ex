@@ -30,14 +30,8 @@ defmodule Report.Web.Router do
     pipe_through(:api)
 
     scope "/api" do
-      scope "/capitation_reports" do
-        get("/", CapitationController, :index)
-        get("/:id", CapitationController, :show)
-      end
-
-      scope "/capitation_report_details" do
-        get("/", CapitationController, :details)
-      end
+      get("/capitation_reports", CapitationController, :index)
+      get("/capitation_report_details", CapitationController, :details)
     end
 
     scope "/reports" do
