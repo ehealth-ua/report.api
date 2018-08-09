@@ -176,7 +176,7 @@ defmodule Report.Capitation do
         ci.capitation_report_id == d.report_id
     )
     |> join(:left, [d, ci], l in LegalEntity, l.id == d.legal_entity_id)
-    |> join(:right, [d, ci, l], r in CapitationReport, r.id == d.report_id)
+    |> join(:inner, [d, ci, l], r in CapitationReport, r.id == d.report_id)
     |> group_by([d, ci, l, r], [r.billing_date, d.report_id, d.legal_entity_id, l.edrpou, l.name])
     |> report_id_condition(params)
     |> edrpou_condition(params)
