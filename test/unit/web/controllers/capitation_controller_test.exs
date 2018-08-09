@@ -102,7 +102,21 @@ defmodule Report.CapitationControllerTest do
   end
 
   describe "Capitation report details" do
-    test "success get details", %{conn: conn} do
+    test "get details not found", %{conn: conn} do
+      cr = insert(:capitation_report)
+
+      response =
+        conn
+        |> get("/api/capitation_report_details", %{
+          page_size: 2,
+          report_id: cr.id
+        })
+        |> json_response(200)
+
+      assert response["data"] == []
+    end
+
+    test "get details success", %{conn: conn} do
       for _ <- 1..2 do
         cr = insert(:capitation_report)
 
