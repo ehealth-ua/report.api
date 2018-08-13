@@ -14,41 +14,72 @@ defmodule Report.Capitation.CapitationProducer do
   alias Report.Repo
   import Ecto.Query
 
-  def start_link(offset) do
-    GenStage.start_link(__MODULE__, offset, name: __MODULE__)
+  def start_link(index) do
+    GenStage.start_link(__MODULE__, index, name: __MODULE__)
   end
 
-  def init(offset) do
-    {:producer, offset}
+  def init(index) do
+    {:producer, %{index: index, offset: 0}}
   end
 
-  def handle_demand(demand, offset) when demand > 0 do
+  def handle_demand(demand, state) when demand > 0 do
     case Cache.get_billing_date() do
       {:ok, billing_date} when not is_nil(billing_date) ->
-        contract_employees = contract_employees_query(billing_date, offset, demand)
-        contract_employees_count = Enum.count(contract_employees)
+        index = state.index
+        offset = state.offset
+        {index, offset, contract_employees} = get_contract_employees(index, billing_date, offset, demand)
 
-        if contract_employees_count == 0 do
-          {:noreply, [nil], 0}
-        else
-          {:noreply, contract_employees, offset + contract_employees_count}
+        case contract_employees do
+          [nil] ->
+            {:noreply, [nil], %{index: 0, offset: 0}}
+
+          _ ->
+            {:noreply, contract_employees, get_new_state(state, index, offset, Enum.count(contract_employees), demand)}
         end
 
       _ ->
-        {:noreply, [nil], 0}
+        {:noreply, [nil], %{index: 0, offset: 0}}
     end
   end
 
-  defp contract_employees_query(billing_date, offset, limit) do
-    billing_date
-    |> Capitation.get_contracts_query()
-    |> join(
-      :inner,
-      [c],
-      ce in ContractEmployee,
-      c.id == ce.contract_id and fragment("?::date < ?", ce.start_date, ^billing_date) and
-        fragment("(? is null or ?::date >= ?)", ce.end_date, ce.end_date, ^billing_date)
-    )
+  defp get_new_state(state, index, _, data_length, data_demand) when data_length < data_demand do
+    state
+    |> Map.put(:index, index + 1)
+    |> Map.put(:offset, 0)
+  end
+
+  defp get_new_state(state, index, offset, data_length, _) do
+    state
+    |> Map.put(:index, index)
+    |> Map.put(:offset, offset + data_length)
+  end
+
+  defp get_contract_employees(index, billing_date, offset, limit) do
+    ids_ets_pid = Cache.get_ids_ets()
+
+    key =
+      ids_ets_pid
+      |> Cache.get_key_stream()
+      |> Enum.at(index)
+
+    if is_nil(key) do
+      {index, offset, [nil]}
+    else
+      [{_, contract_id, contract_employee_id}] = :ets.lookup(ids_ets_pid, key)
+      contract_employees = contract_employees_query(billing_date, contract_id, contract_employee_id, offset, limit)
+
+      if Enum.empty?(contract_employees) do
+        get_contract_employees(index + 1, billing_date, 0, limit)
+      else
+        {index, offset, contract_employees}
+      end
+    end
+  end
+
+  defp contract_employees_query(billing_date, contract_id, contract_employee_id, offset, limit) do
+    contract_id
+    |> Capitation.get_contracts_query_by_id()
+    |> Capitation.get_contract_employees_query_by_id(contract_employee_id)
     |> join(:inner, [_, ce], d in Declaration, d.employee_id == ce.employee_id and d.division_id == ce.division_id)
     |> join(:inner, [_, _, d], p in Person, p.id == d.person_id)
     |> join(:inner, [_, ce, d], dv in Division, dv.id == d.division_id)
