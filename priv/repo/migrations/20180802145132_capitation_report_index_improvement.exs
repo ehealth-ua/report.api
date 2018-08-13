@@ -5,7 +5,8 @@ defmodule Report.Repo.Migrations.CapitationReportIndexImprovement do
 
   def change do
     execute("""
-    create index concurrently declarations_status_hstr_inserted_at_declaration_id_index on declarations_status_hstr(inserted_at, declaration_id);
+    create index concurrently if not exists declarations_status_hstr_capitation_index
+      on declarations_status_hstr (declaration_id, inserted_at, status)
     """)
   end
 end

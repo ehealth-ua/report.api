@@ -8,6 +8,7 @@ defmodule Report.Capitation do
   alias Report.Capitation.CapitationReportDetail
   alias Report.Capitation.CapitationReportError
   alias Report.Replica.Contract
+  alias Report.Replica.ContractEmployee
   alias Report.Replica.LegalEntity
   alias Report.Repo
   import Ecto.Changeset
@@ -235,6 +236,18 @@ defmodule Report.Capitation do
         end
       end)
 
+      ids_ets_pid = Cache.get_ids_ets()
+
+      billing_date
+      |> get_contracts_query()
+      |> get_contract_employees_query(billing_date)
+      |> select([c, ce], {c.id, ce.id})
+      |> Repo.all()
+      |> Enum.each(fn {contract_id, contract_employee_id} ->
+        key = contract_id <> "_" <> contract_employee_id
+        :ets.insert(ids_ets_pid, {key, contract_id, contract_employee_id})
+      end)
+
       GenStage.sync_subscribe(
         consumer_pid,
         to: producer_pid,
@@ -274,5 +287,28 @@ defmodule Report.Capitation do
       c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == ^Contract.status(:verified) and
         c.is_suspended == false
     )
+  end
+
+  def get_contracts_query_by_id(contract_id) do
+    where(
+      Contract,
+      [c],
+      c.id == ^contract_id
+    )
+  end
+
+  def get_contract_employees_query(query, billing_date) do
+    join(
+      query,
+      :inner,
+      [c],
+      ce in ContractEmployee,
+      c.id == ce.contract_id and fragment("?::date < ?", ce.start_date, ^billing_date) and
+        fragment("(? is null or ?::date >= ?)", ce.end_date, ce.end_date, ^billing_date)
+    )
+  end
+
+  def get_contract_employees_query_by_id(query, contract_employee_id) do
+    join(query, :inner, [c], ce in ContractEmployee, c.id == ce.contract_id and ce.id == ^contract_employee_id)
   end
 end

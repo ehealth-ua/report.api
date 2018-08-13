@@ -16,7 +16,15 @@ defmodule Report.Capitation.Cache do
     capitation_pid = :ets.new(:capitation, [:set, :public])
     contractor_employees_pid = :ets.new(:contractor_employees, [:set, :public])
     error_pid = :ets.new(:capitation_errors, [:set, :public])
-    {:ok, %{ets: capitation_pid, contractor_employees_ets: contractor_employees_pid, errors_ets: error_pid}}
+    ids_pid = :ets.new(:capitation_ids, [:set, :public])
+
+    {:ok,
+     %{
+       ets: capitation_pid,
+       contractor_employees_ets: contractor_employees_pid,
+       errors_ets: error_pid,
+       ids_ets: ids_pid
+     }}
   end
 
   @impl true
@@ -51,6 +59,11 @@ defmodule Report.Capitation.Cache do
 
   @impl true
   def handle_call(:contractor_employees_ets, _from, %{contractor_employees_ets: ets} = state) do
+    {:reply, ets, state}
+  end
+
+  @impl true
+  def handle_call(:ids_ets, _from, %{ids_ets: ets} = state) do
     {:reply, ets, state}
   end
 
@@ -127,11 +140,15 @@ defmodule Report.Capitation.Cache do
     GenServer.call(__MODULE__, :errors_ets)
   end
 
+  def get_ids_ets do
+    GenServer.call(__MODULE__, :ids_ets)
+  end
+
   def dump do
     GenServer.cast(__MODULE__, :dump)
   end
 
-  defp get_key_stream(pid) do
+  def get_key_stream(pid) do
     Stream.resource(
       fn -> :ets.first(pid) end,
       fn
