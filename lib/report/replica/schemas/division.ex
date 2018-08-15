@@ -7,7 +7,6 @@ defmodule Report.Replica.Division do
   schema "divisions" do
     field(:email, :string)
     field(:name, :string, null: false)
-    field(:addresses, {:array, :map}, null: false)
     field(:external_id, :string)
     field(:phones, {:array, :map}, null: false)
     field(:mountain_group, :boolean)
@@ -18,7 +17,7 @@ defmodule Report.Replica.Division do
     field(:working_hours, :map)
 
     belongs_to(:legal_entity, Report.Replica.LegalEntity, type: Ecto.UUID)
-    has_many(:division_addresses, Report.Replica.DivisionAddress, foreign_key: :division_id)
+    has_many(:addresses, Report.Replica.DivisionAddress, foreign_key: :division_id)
 
     timestamps(type: :utc_datetime)
   end

@@ -3,6 +3,8 @@ defmodule Report.Replica.DivisionAddress do
 
   use Ecto.Schema
 
+  @derive {Poison.Encoder, except: [:__meta__, :id, :division, :division_id]}
+
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "division_addresses" do
     field(:zip, :string)

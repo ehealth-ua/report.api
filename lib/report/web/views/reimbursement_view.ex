@@ -2,6 +2,7 @@ defmodule Report.Web.ReimbursementView do
   @moduledoc false
 
   use Report.Web, :view
+  alias Report.Repo
 
   def render("index.json", %{stats: stats}) do
     render_many(stats, __MODULE__, "reimbursement.json")
@@ -62,9 +63,11 @@ defmodule Report.Web.ReimbursementView do
   end
 
   def render("division.json", %{division: division}) do
+    division = Repo.preload(division, :addresses)
+
     division
     |> Map.take(~w(id name mountain_group)a)
-    |> Map.merge(%{"address" => Enum.find(Map.get(division, :addresses, %{}), &(Map.get(&1, "type") == "RESIDENCE"))})
+    |> Map.merge(%{"address" => Enum.find(Map.get(division, :addresses, %{}), &(Map.get(&1, :type) == "RESIDENCE"))})
   end
 
   def render("medication.json", %{medication: medication}) do
