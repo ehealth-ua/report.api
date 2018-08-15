@@ -11,7 +11,7 @@ defmodule Report.Stats.DivisionsRequest do
   @type_drugstore "DRUGSTORE"
   @type_drugstore_point "DRUGSTORE_POINT"
 
-  schema "divisions" do
+  embedded_schema do
     field(:id, Ecto.UUID)
     field(:type, :string)
     field(:name, :string)

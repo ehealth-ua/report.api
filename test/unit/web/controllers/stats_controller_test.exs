@@ -311,54 +311,59 @@ defmodule Report.Web.StatsControllerTest do
       legal_entity = insert(:legal_entity)
       insert(:employee, legal_entity: legal_entity, employee_type: Employee.type(:owner))
 
-      address1 = [
-        %{
-          type: "REGISTRATION",
-          area: "Одеська",
-          region: "Бердичівський",
-          settlement: "Одеса"
-        },
-        %{
-          type: "RESIDENCE",
-          area: "Київська",
-          region: "Київський",
-          settlement: "Київ"
-        }
-      ]
+      division1 = insert(:division, legal_entity: legal_entity, addresses: [])
 
-      address2 = [
-        %{
-          type: "REGISTRATION",
-          area: "Львівська",
-          region: "Жмеринковський",
-          settlement: "Солотвино"
-        },
-        %{
-          type: "RESIDENCE",
-          area: "Київська",
-          region: "Броварський",
-          settlement: "Бровари"
-        }
-      ]
+      insert(:division_address, %{
+        division_id: division1.id,
+        type: "REGISTRATION",
+        area: "Одеська",
+        region: "Бердичівський",
+        settlement: "Одеса"
+      })
 
-      address3 = [
-        %{
-          type: "REGISTRATION",
-          area: "Київська",
-          region: "Київський",
-          settlement: "Київ"
-        },
-        %{
-          type: "RESIDENCE",
-          area: "Польтавська",
-          region: "Броварський",
-          settlement: "Лубни"
-        }
-      ]
+      insert(:division_address, %{
+        division_id: division1.id,
+        type: "RESIDENCE",
+        area: "Київська",
+        region: "Київський",
+        settlement: "Київ"
+      })
 
-      division1 = insert(:division, legal_entity: legal_entity, addresses: address1)
-      division2 = insert(:division, legal_entity: legal_entity, addresses: address2)
-      division3 = insert(:division, legal_entity: legal_entity, addresses: address3)
+      division2 = insert(:division, legal_entity: legal_entity, addresses: [])
+
+      insert(:division_address, %{
+        division_id: division2.id,
+        type: "REGISTRATION",
+        area: "Львівська",
+        region: "Жмеринковський",
+        settlement: "Солотвино"
+      })
+
+      insert(:division_address, %{
+        division_id: division2.id,
+        type: "RESIDENCE",
+        area: "Київська",
+        region: "Броварський",
+        settlement: "Бровари"
+      })
+
+      division3 = insert(:division, legal_entity: legal_entity, addresses: [])
+
+      insert(:division_address, %{
+        division_id: division3.id,
+        type: "REGISTRATION",
+        area: "Київська",
+        region: "Київський",
+        settlement: "Київ"
+      })
+
+      insert(:division_address, %{
+        division_id: division3.id,
+        type: "RESIDENCE",
+        area: "Польтавська",
+        region: "Броварський",
+        settlement: "Лубни"
+      })
 
       # By all address params
       params = %{area: "Київська", region: "Київський", settlement: "Київ"}

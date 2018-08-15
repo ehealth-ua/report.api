@@ -5,6 +5,7 @@ defmodule Report.Web.EmployeeView do
   alias Report.Replica.Division
   alias Report.Replica.LegalEntity
   alias Report.Replica.Party
+  alias Report.Repo
 
   def render("index.json", %{paging: paging}) do
     render_many(paging.entries, __MODULE__, "list_item.json", as: :employee)
@@ -73,6 +74,8 @@ defmodule Report.Web.EmployeeView do
   end
 
   defp render_association(map, %Division{} = division) do
+    division = Repo.preload(division, :addresses)
+
     data =
       division
       |> Map.take(~w(
@@ -80,7 +83,7 @@ defmodule Report.Web.EmployeeView do
         name
         type
       )a)
-      |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, "type") == "RESIDENCE")))
+      |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, :type) == "RESIDENCE")))
 
     Map.put(map, :division, render_association(data, division.legal_entity))
   end
@@ -125,13 +128,15 @@ defmodule Report.Web.EmployeeView do
   end
 
   defp render_association_list(map, %Division{} = division) do
+    division = Repo.preload(division, :addresses)
+
     data =
       division
       |> Map.take(~w(
         id
         name
       )a)
-      |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, "type") == "RESIDENCE")))
+      |> Map.put(:addresses, Enum.find(division.addresses, &(Map.get(&1, :type) == "RESIDENCE")))
 
     Map.put(map, :division, render_association(data, division.legal_entity))
   end

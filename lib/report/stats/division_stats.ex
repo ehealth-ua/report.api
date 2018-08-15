@@ -23,20 +23,22 @@ defmodule Report.Stats.DivisionStats do
 
   def get_map_stats(params) do
     with %Ecto.Changeset{valid?: true} = changeset <- divisions_changeset(%DivisionsRequest{}, params),
-         divisions <- divisions_by_changeset(changeset, params) do
+         division_ids <- division_ids_by_changeset(changeset),
+         divisions <- divisions_by_ids(division_ids, params) do
       {:ok, divisions}
     end
   end
 
-  def divisions_by_changeset(changeset, params) do
+  def division_ids_by_changeset(changeset) do
     Division
-    |> select([d], d)
+    |> select([d], {d.id})
     |> params_query(%{
       "id" => get_change(changeset, :id),
       "type" => get_change(changeset, :type),
       "status" => "ACTIVE",
       "is_active" => true
     })
+    |> join(:inner, [d], da in assoc(d, :addresses))
     |> query_legal_entity_id(get_change(changeset, :legal_entity_id))
     |> query_name(get_change(changeset, :name))
     |> query_locations(changeset.changes)
@@ -50,8 +52,24 @@ defmodule Report.Stats.DivisionStats do
       e in Employee,
       e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
     )
+    |> Repo.all()
+    |> Enum.map(fn {id} -> id end)
+  end
+
+  def divisions_by_ids(ids, params) do
+    Division
+    |> select([d], d)
+    |> where([d], d.id in ^ids)
+    |> join(:inner, [d], l in assoc(d, :legal_entity))
+    |> join(
+      :inner,
+      [..., l],
+      e in Employee,
+      e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
+    )
     |> join(:inner, [..., e], innm in assoc(e, :party))
     |> preload([..., l, e, p], legal_entity: {l, employees: {e, party: p}})
+    |> preload([:addresses])
     |> Repo.paginate(params)
   end
 
@@ -76,16 +94,22 @@ defmodule Report.Stats.DivisionStats do
     params = prepare_address_params(changes)
 
     if map_size(params) > 1 do
-      where(query, [d], fragment("? @> ?", d.addresses, ^[params]))
+      Enum.reduce(params, query, fn {key, val}, acc ->
+        query_addresses_by_param(acc, key, val)
+      end)
     else
       query
     end
   end
 
+  defp query_addresses_by_param(query, field, value) do
+    where(query, [..., da], field(da, ^field) == ^value)
+  end
+
   defp prepare_address_params(changes) do
-    Enum.reduce(changes, %{"type" => @type_residence}, fn {key, val}, acc ->
+    Enum.reduce(changes, %{type: @type_residence}, fn {key, val}, acc ->
       case key in @fields_address do
-        true -> Map.put(acc, Atom.to_string(key), val)
+        true -> Map.put(acc, key, val)
         _ -> acc
       end
     end)
