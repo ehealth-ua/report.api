@@ -1,6 +1,7 @@
 defmodule Report.Capitation do
   @moduledoc false
 
+  alias Ecto.Adapters.SQL
   alias Report.Capitation.Cache
   alias Report.Capitation.CapitationConsumer
   alias Report.Capitation.CapitationProducer
@@ -13,6 +14,7 @@ defmodule Report.Capitation do
   alias Report.Repo
   import Ecto.Changeset
   import Ecto.Query
+  require Logger
 
   defp edrpou_condition(query, %{"edrpou" => edrpou}) do
     where(query, [d, ci, l, r], l.edrpou == ^edrpou)
@@ -203,7 +205,12 @@ defmodule Report.Capitation do
   def run do
     billing_date = Map.put(Date.utc_today(), :day, 1)
     Cache.set_billing_date(billing_date)
+    Task.start_link(fn -> initialize(billing_date) end)
 
+    :ok
+  end
+
+  def initialize(billing_date) do
     with {:ok, report} <-
            %CapitationReport{}
            |> changeset(%{billing_date: billing_date})
@@ -222,37 +229,44 @@ defmodule Report.Capitation do
         CapitationReportDetail.age_group(:"65+")
       ]
 
-      ets_pid = Cache.get_ets()
+      case create_materialized_view(billing_date) do
+        :ok ->
+          ets_pid = Cache.get_ets()
 
-      billing_date
-      |> get_contracts_query()
-      |> Repo.all()
-      |> Enum.each(fn %Contract{id: id, contractor_legal_entity_id: legal_entity_id} ->
-        for age_group <- age_groups do
-          for mountain_group <- [true, false] do
-            key = CapitationConsumer.get_key(id, legal_entity_id, age_group, mountain_group)
-            :ets.insert(ets_pid, {key, 0, legal_entity_id, age_group, id, mountain_group})
-          end
-        end
-      end)
+          billing_date
+          |> get_contracts_query()
+          |> Repo.all()
+          |> Enum.each(fn %Contract{id: id, contractor_legal_entity_id: legal_entity_id} ->
+            for age_group <- age_groups do
+              for mountain_group <- [true, false] do
+                key = CapitationConsumer.get_key(id, legal_entity_id, age_group, mountain_group)
+                :ets.insert(ets_pid, {key, 0, legal_entity_id, age_group, id, mountain_group})
+              end
+            end
+          end)
 
-      ids_ets_pid = Cache.get_ids_ets()
+          ids_ets_pid = Cache.get_ids_ets()
 
-      billing_date
-      |> get_contracts_query()
-      |> get_contract_employees_query(billing_date)
-      |> select([c, ce], {c.id, ce.id})
-      |> Repo.all()
-      |> Enum.each(fn {contract_id, contract_employee_id} ->
-        key = contract_id <> "_" <> contract_employee_id
-        :ets.insert(ids_ets_pid, {key, contract_id, contract_employee_id})
-      end)
+          billing_date
+          |> get_contracts_query()
+          |> get_contract_employees_query(billing_date)
+          |> select([c, ce], {c.id, ce.id})
+          |> Repo.all()
+          |> Enum.each(fn {contract_id, contract_employee_id} ->
+            key = contract_id <> "_" <> contract_employee_id
+            :ets.insert(ids_ets_pid, {key, contract_id, contract_employee_id})
+          end)
 
-      GenStage.sync_subscribe(
-        consumer_pid,
-        to: producer_pid,
-        max_demand: CapitationConsumer.config()[:max_demand]
-      )
+          GenStage.sync_subscribe(
+            consumer_pid,
+            to: producer_pid,
+            max_demand: CapitationConsumer.config()[:max_demand]
+          )
+
+        {:error, error} ->
+          Cache.set_report_id(nil)
+          Logger.error(fn -> "Error during materialized view creation: #{error}" end)
+      end
     end
   end
 
@@ -310,5 +324,33 @@ defmodule Report.Capitation do
 
   def get_contract_employees_query_by_id(query, contract_employee_id) do
     join(query, :inner, [c], ce in ContractEmployee, c.id == ce.contract_id and ce.id == ^contract_employee_id)
+  end
+
+  defp create_materialized_view(billing_date) do
+    queries = [
+      "DROP MATERIALIZED VIEW IF EXISTS mv_declarations_status_hstr;",
+      "CREATE MATERIALIZED VIEW mv_declarations_status_hstr
+      AS (
+        SELECT distinct
+          declaration_id,
+          last_value(status) OVER (
+            PARTITION BY declaration_id ORDER BY inserted_at
+            RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+          ) as status
+        FROM declarations_status_hstr
+        WHERE inserted_at < '#{Date.to_string(billing_date)}');",
+      "CREATE INDEX mv_declarations_status_hstr_declaration_id_index
+        ON mv_declarations_status_hstr (declaration_id);"
+    ]
+
+    Enum.reduce_while(queries, :ok, fn query, acc ->
+      case SQL.query(Repo, query, [], timeout: :infinity) do
+        {:ok, _} ->
+          {:cont, acc}
+
+        {:error, %Postgrex.Error{postgres: %{message: message}}} ->
+          {:halt, {:error, message}}
+      end
+    end)
   end
 end
