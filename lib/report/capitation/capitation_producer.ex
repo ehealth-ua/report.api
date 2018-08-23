@@ -27,7 +27,7 @@ defmodule Report.Capitation.CapitationProducer do
       {:ok, billing_date} when not is_nil(billing_date) ->
         index = state.index
         offset = state.offset
-        {index, offset, contract_employees} = get_contract_employees(index, billing_date, offset, demand)
+        {index, offset, contract_employees} = get_contract_employees(index, offset, demand)
 
         case contract_employees do
           [nil] ->
@@ -54,7 +54,7 @@ defmodule Report.Capitation.CapitationProducer do
     |> Map.put(:offset, offset + data_length)
   end
 
-  defp get_contract_employees(index, billing_date, offset, limit) do
+  defp get_contract_employees(index, offset, limit) do
     ids_ets_pid = Cache.get_ids_ets()
 
     key =
@@ -66,17 +66,17 @@ defmodule Report.Capitation.CapitationProducer do
       {index, offset, [nil]}
     else
       [{_, contract_id, contract_employee_id}] = :ets.lookup(ids_ets_pid, key)
-      contract_employees = contract_employees_query(billing_date, contract_id, contract_employee_id, offset, limit)
+      contract_employees = contract_employees_query(contract_id, contract_employee_id, offset, limit)
 
       if Enum.empty?(contract_employees) do
-        get_contract_employees(index + 1, billing_date, 0, limit)
+        get_contract_employees(index + 1, 0, limit)
       else
         {index, offset, contract_employees}
       end
     end
   end
 
-  defp contract_employees_query(billing_date, contract_id, contract_employee_id, offset, limit) do
+  defp contract_employees_query(contract_id, contract_employee_id, offset, limit) do
     contract_id
     |> Capitation.get_contracts_query_by_id()
     |> Capitation.get_contract_employees_query_by_id(contract_employee_id)
@@ -87,17 +87,7 @@ defmodule Report.Capitation.CapitationProducer do
     |> join(
       :left,
       [_, _, d, _],
-      dsh in fragment(
-        "
-      SELECT DISTINCT declaration_id, last_value(status) OVER (
-          PARTITION BY declaration_id ORDER BY inserted_at
-          RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-      ) as status
-      FROM declarations_status_hstr
-      WHERE inserted_at < ?::date
-      ",
-        ^billing_date
-      ),
+      dsh in fragment("SELECT * FROM mv_declarations_status_hstr"),
       dsh.declaration_id == d.id
     )
     |> select([c, ce, d, p, dv, le, dsh], %{
@@ -113,7 +103,7 @@ defmodule Report.Capitation.CapitationProducer do
       history_status: dsh.status
     })
     |> subquery()
-    |> where([a], a.history_status == "active")
+    |> where([a], a.history_status == "active" or is_nil(a.history_status))
     |> offset(^offset)
     |> limit(^limit)
     |> Repo.all()
