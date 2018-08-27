@@ -215,6 +215,35 @@ defmodule Report.CapitationTest do
 
       insert_declaration(contract_employee, legal_entity_id, billing_datetime, -1)
 
+      # set #6, 28 decalarations (68 total)
+
+      contract =
+        insert(
+          :contract,
+          start_date: Date.add(billing_date, -1),
+          end_date: Date.add(billing_date, 1),
+          status: Contract.status(:verified)
+        )
+
+      division = insert(:division)
+
+      contract_employee =
+        insert(
+          :contract_employee,
+          division_id: division.id,
+          contract_id: contract.id,
+          start_date: NaiveDateTime.add(billing_datetime, -1000),
+          declaration_limit: 99
+        )
+
+      %{id: legal_entity_id} = insert(:legal_entity)
+
+      for _ <- 1..28 do
+        insert_declaration(contract_employee, legal_entity_id, billing_datetime)
+      end
+
+      insert_declaration(contract_employee, legal_entity_id, billing_datetime, -1)
+
       # function testing
 
       current_value = System.get_env("CAPITATION_MAX_DEMAND") || "500"
@@ -224,7 +253,7 @@ defmodule Report.CapitationTest do
       :timer.sleep(1000)
       assert [%CapitationReport{id: report_id, billing_date: ^billing_date}] = Repo.all(CapitationReport)
       details = Repo.all(CapitationReportDetail)
-      assert 40 == Enum.reduce(details, 0, fn detail, acc -> acc + detail.declaration_count end)
+      assert 68 == Enum.reduce(details, 0, fn detail, acc -> acc + detail.declaration_count end)
       assert Enum.all?(details, &(Map.get(&1, :capitation_report_id) == report_id))
 
       on_exit(fn ->

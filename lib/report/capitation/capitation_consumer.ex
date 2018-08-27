@@ -50,7 +50,7 @@ defmodule Report.Capitation.CapitationConsumer do
     # Bump the amount of pending events for the given producer
     producers =
       Map.update!(producers, from, fn pending ->
-        pending + length(contract_employees)
+        pending + config()[:max_demand]
       end)
 
     ets_pid = Cache.get_ets()
