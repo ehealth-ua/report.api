@@ -106,6 +106,6 @@ defmodule Report.Capitation.CapitationProducer do
     |> where([a], a.history_status == "active" or is_nil(a.history_status))
     |> offset(^offset)
     |> limit(^limit)
-    |> Repo.all()
+    |> Repo.all(timeout: :infinity)
   end
 end
