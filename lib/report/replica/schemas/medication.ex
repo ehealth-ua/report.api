@@ -8,7 +8,7 @@ defmodule Report.Replica.Medication do
     field(:name, :string)
     field(:form, :string)
     field(:type, :string)
-    field(:code_atc, :string)
+    field(:code_atc, {:array, :string})
     field(:certificate, :string)
     field(:certificate_expired_at, :date)
     field(:container, :map)

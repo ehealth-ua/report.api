@@ -255,6 +255,7 @@ defmodule Report.Factory do
       party: build(:party),
       legal_entity: build(:legal_entity),
       payment_id: UUID.generate(),
+      payment_amount: 20.5,
       division: build(:division),
       medical_program: build(:medical_program),
       medication_request: build(:medication_request)
@@ -307,7 +308,7 @@ defmodule Report.Factory do
       certificate: to_string(3_300_000_000 + :rand.uniform(99_999_999)),
       certificate_expired_at: ~D[2012-04-17],
       is_active: true,
-      code_atc: "C08CA0",
+      code_atc: ["C08CA0"],
       updated_by: UUID.generate(),
       inserted_by: UUID.generate()
     }

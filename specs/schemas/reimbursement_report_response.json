@@ -253,7 +253,10 @@
                 "description": "Medication dispense Identifier"
               },
               "dispensed_by": {
-                "type": ["string", "null"],
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "description": "pharmacist who created dispense"
               },
               "dispensed_at": {
@@ -274,7 +277,10 @@
                       "description": "Identifier of brand medications"
                     },
                     "code_atc": {
-                      "type": "string"
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "name": {
                       "type": "string"
