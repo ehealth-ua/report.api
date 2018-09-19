@@ -72,26 +72,36 @@ defmodule Report.Stats.ReimbursementStatsCSV do
     query
     |> select([mr, md, m_req, e_req, p_req, le_req, le_dis, _ing, innm, d, m_det], %{
       medication_request: %{mr | medication: m_req},
-      medication_dispense: md,
-      legal_entity_dis: le_dis,
-      legal_entity_req: le_req,
-      employee: e_req,
-      party: p_req,
-      innm: innm,
-      details: d,
-      medication_details: m_det
+      medication_dispense: %{
+        dispensed_at: md.dispensed_at,
+        payment_id: md.payment_id,
+        payment_amount: md.payment_amount
+      },
+      legal_entity_dis: %{name: le_dis.name, edrpou: le_dis.edrpou},
+      legal_entity_req: %{name: le_req.name, edrpou: le_req.edrpou},
+      employee: %{id: e_req.id},
+      party: %{last_name: p_req.last_name, first_name: p_req.first_name, second_name: p_req.second_name},
+      innm: %{name: innm.name},
+      details: %{
+        medication_qty: d.medication_qty,
+        sell_amount: d.sell_amount,
+        reimbursement_amount: d.reimbursement_amount,
+        discount_amount: d.discount_amount,
+        sell_price: d.sell_price
+      },
+      medication_details: %{name: m_det.name, form: m_det.form, package_qty: m_det.package_qty}
     })
     |> Repo.all()
     |> Enum.map(fn item ->
       medication_request = item.medication_request
       medication_dispense = item.medication_dispense
-      dispense_legal_entity = item.legal_entity_dis || %{}
-      legal_entity = item.legal_entity_req || %{}
-      employee = item.employee || %{}
-      party = item.party || %{}
-      innm = item.innm || %{}
-      details = item.details || %{}
-      medication_details = item.medication_details || %{}
+      dispense_legal_entity = item.legal_entity_dis
+      legal_entity = item.legal_entity_req
+      employee = item.employee
+      party = item.party
+      innm = item.innm
+      details = item.details
+      medication_details = item.medication_details
 
       %{
         msp_name: Map.get(legal_entity, :name),
