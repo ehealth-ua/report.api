@@ -130,17 +130,40 @@ defmodule Report.Web.EmployeeControllerTest do
 
       insert(:employee, party: party)
 
-      conn1 = get(conn, employee_path(conn, :index), %{full_name: "First SECOND last name"})
-      assert resp = json_response(conn1, 200)
+      resp =
+        conn
+        |> get(employee_path(conn, :index), %{full_name: "First SECOND last name"})
+        |> json_response(200)
+
       assert 1 == Enum.count(resp["data"])
 
-      conn2 = get(conn, employee_path(conn, :index), %{full_name: "first"})
-      assert resp = json_response(conn2, 200)
+      resp =
+        conn
+        |> get(employee_path(conn, :index), %{full_name: "first"})
+        |> json_response(200)
+
       assert 1 == Enum.count(resp["data"])
 
-      conn3 = get(conn, employee_path(conn, :index), %{full_name: "LAST"})
-      assert resp = json_response(conn3, 200)
+      resp =
+        conn
+        |> get(employee_path(conn, :index), %{full_name: "LAST"})
+        |> json_response(200)
+
       assert 1 == Enum.count(resp["data"])
+
+      resp =
+        conn
+        |> get(employee_path(conn, :index), %{full_name: "fir Sec lA"})
+        |> json_response(200)
+
+      assert 1 == Enum.count(resp["data"])
+
+      resp =
+        conn
+        |> get(employee_path(conn, :index), %{full_name: "rst cond ast"})
+        |> json_response(200)
+
+      assert Enum.empty?(resp["data"])
     end
 
     test "search by speciality", %{conn: conn} do

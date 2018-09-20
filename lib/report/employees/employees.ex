@@ -95,6 +95,7 @@ defmodule Report.Employees do
       changes
       |> Map.get(:full_name, "")
       |> String.split()
+      |> Enum.map(fn word -> word <> ":*" end)
       |> Enum.join(" & ")
       |> String.downcase()
 
