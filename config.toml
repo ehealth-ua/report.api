@@ -1,0 +1,6 @@
+[core."Core.Repo"]
+database = "report_dev"
+username = "postgres"
+password = "postgres"
+hostname = "travis"
+port = 5432
