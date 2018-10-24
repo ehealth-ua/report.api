@@ -6,6 +6,7 @@ defmodule Core.Capitation do
   alias Core.CapitationReportError
   alias Core.Replica.Contract
   alias Core.Replica.LegalEntity
+  alias Core.Replica.RelatedLegalEntity
   alias Core.Repo
   import Ecto.Changeset
   import Ecto.Query
@@ -28,11 +29,22 @@ defmodule Core.Capitation do
   end
 
   defp legal_entity_condition(query, %{"legal_entity_id" => legal_entity_id}) do
-    where(query, [d, ci, l, r], l.id == ^legal_entity_id)
+    legal_entities_query =
+      LegalEntity
+      |> join(
+        :left,
+        [l],
+        rle in RelatedLegalEntity,
+        l.id == rle.merged_from_id and rle.merged_to_id == ^legal_entity_id
+      )
+      |> group_by([l, rle], [l.id, rle.merged_to_id])
+      |> having([l, rle], l.id == ^legal_entity_id or rle.merged_to_id == ^legal_entity_id)
+
+    join(query, :left, [d, ci], l in subquery(legal_entities_query), l.id == d.legal_entity_id)
   end
 
   defp legal_entity_condition(query, _) do
-    where(query, true)
+    join(query, :left, [d, ci], l in LegalEntity, l.id == d.legal_entity_id)
   end
 
   def details(params) do
@@ -93,7 +105,12 @@ defmodule Core.Capitation do
             crd1.attributes
           )
       })
-      |> group_by([crd1], [crd1.capitation_report_id, crd1.legal_entity_id, crd1.contract_id, crd1.contract_number])
+      |> group_by([crd1], [
+        crd1.capitation_report_id,
+        crd1.legal_entity_id,
+        crd1.contract_id,
+        crd1.contract_number
+      ])
 
     total_count_age_groups_subquery =
       subquery(
@@ -173,12 +190,17 @@ defmodule Core.Capitation do
       ci.contract_id == d.contract_id and ci.legal_entity_id == d.legal_entity_id and
         ci.capitation_report_id == d.report_id
     )
-    |> join(:left, [d, ci], l in LegalEntity, l.id == d.legal_entity_id)
+    |> legal_entity_condition(params)
     |> join(:inner, [d, ci, l], r in CapitationReport, r.id == d.report_id)
-    |> group_by([d, ci, l, r], [r.billing_date, d.report_id, d.legal_entity_id, l.edrpou, l.name])
+    |> group_by([d, ci, l, r], [
+      r.billing_date,
+      d.report_id,
+      d.legal_entity_id,
+      l.edrpou,
+      l.name
+    ])
     |> report_id_condition(params)
     |> edrpou_condition(params)
-    |> legal_entity_condition(params)
     |> Repo.paginate(params)
   end
 
@@ -206,7 +228,8 @@ defmodule Core.Capitation do
   end
 
   def changeset(%CapitationReportDetail{} = detail, params) do
-    fields = ~w(capitation_report_id legal_entity_id contract_id mountain_group age_group declaration_count)a
+    fields =
+      ~w(capitation_report_id legal_entity_id contract_id mountain_group age_group declaration_count)a
 
     detail
     |> cast(params, fields)

@@ -10,6 +10,7 @@ defmodule Core.Factory do
   alias Core.Replica.Employee
   alias Core.Replica.Person
   alias Core.Replica.LegalEntity
+  alias Core.Replica.RelatedLegalEntity
   alias Core.Replica.MSP
   alias Core.Replica.Division
   alias Core.Replica.DivisionAddress
@@ -217,6 +218,16 @@ defmodule Core.Factory do
       phones: [],
       mis_verified: "VERIFIED",
       nhs_verified: true
+    }
+  end
+
+  def related_legal_entity_factory do
+    %RelatedLegalEntity{
+      merged_from_id: UUID.generate(),
+      merged_to_id: UUID.generate(),
+      inserted_by: UUID.generate(),
+      is_active: false,
+      reason: "related legal entity"
     }
   end
 

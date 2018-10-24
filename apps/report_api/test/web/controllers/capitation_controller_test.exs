@@ -17,7 +17,11 @@ defmodule Report.CapitationControllerTest do
         |> get(capitation_path(conn, :index, %{"page_size" => "1"}))
         |> json_response(200)
 
-      assert %{"data" => [%{"id" => response_id1}], "paging" => %{"page_number" => 1, "page_size" => 1}} = response
+      assert %{
+               "data" => [%{"id" => response_id1}],
+               "paging" => %{"page_number" => 1, "page_size" => 1}
+             } = response
+
       assert response_id1 in [id1, id2]
 
       response =
@@ -25,7 +29,11 @@ defmodule Report.CapitationControllerTest do
         |> get(capitation_path(conn, :index, %{"page" => "2", "page_size" => "1"}))
         |> json_response(200)
 
-      assert %{"data" => [%{"id" => response_id2}], "paging" => %{"page_number" => 2, "page_size" => 1}} = response
+      assert %{
+               "data" => [%{"id" => response_id2}],
+               "paging" => %{"page_number" => 2, "page_size" => 1}
+             } = response
+
       assert response_id2 != response_id1
       assert response_id2 in [id1, id2]
     end
@@ -88,7 +96,11 @@ defmodule Report.CapitationControllerTest do
         |> get(capitation_path(conn, :index, %{"page_size" => "1"}))
         |> json_response(200)
 
-      assert %{"data" => [%{"id" => response_id1}], "paging" => %{"page_number" => 1, "page_size" => 1}} = response
+      assert %{
+               "data" => [%{"id" => response_id1}],
+               "paging" => %{"page_number" => 1, "page_size" => 1}
+             } = response
+
       assert response_id1 == id2
 
       response =
@@ -96,7 +108,11 @@ defmodule Report.CapitationControllerTest do
         |> get(capitation_path(conn, :index, %{"page" => "2", "page_size" => "1"}))
         |> json_response(200)
 
-      assert %{"data" => [%{"id" => response_id2}], "paging" => %{"page_number" => 2, "page_size" => 1}} = response
+      assert %{
+               "data" => [%{"id" => response_id2}],
+               "paging" => %{"page_number" => 2, "page_size" => 1}
+             } = response
+
       assert response_id2 == id1
     end
   end
@@ -147,7 +163,12 @@ defmodule Report.CapitationControllerTest do
 
       le =
         LegalEntity
-        |> join(:inner, [l], c in CapitationReportDetail, c.legal_entity_id == l.id and c.id == ^cd.id)
+        |> join(
+          :inner,
+          [l],
+          c in CapitationReportDetail,
+          c.legal_entity_id == l.id and c.id == ^cd.id
+        )
         |> limit(^1)
         |> Repo.one()
 
@@ -166,7 +187,14 @@ defmodule Report.CapitationControllerTest do
 
       Enum.each(response["data"], fn legal ->
         Enum.each(
-          ["report_id", "legal_entity_name", "legal_entity_id", "edrpou", "billing_date", "capitation_contracts"],
+          [
+            "report_id",
+            "legal_entity_name",
+            "legal_entity_id",
+            "edrpou",
+            "billing_date",
+            "capitation_contracts"
+          ],
           fn k ->
             assert Map.has_key?(legal, k)
 
@@ -175,13 +203,61 @@ defmodule Report.CapitationControllerTest do
                 assert Map.has_key?(contract, k)
               end)
 
+              assert MapSet.new([%{"0-18" => 200}, %{"19-39" => 200}, %{"40-60" => 200}]) ==
+                       MapSet.new(contract["total"])
+
               Enum.each(contract["details"], fn detail ->
-                Enum.each(["attributes", "mountain_group"], fn k -> assert Map.has_key?(detail, k) end)
+                Enum.each(["attributes", "mountain_group"], fn k ->
+                  assert Map.has_key?(detail, k)
+                end)
               end)
             end)
           end
         )
       end)
+    end
+
+    test "get details success from relaited legal entities", %{conn: conn} do
+      cr = insert(:capitation_report)
+      legal_entity = insert(:legal_entity, edrpou: "0123456789")
+      child_legal_entity = insert(:legal_entity, edrpou: "9876543210")
+
+      insert(
+        :related_legal_entity,
+        merged_to_id: legal_entity.id,
+        merged_from_id: child_legal_entity.id
+      )
+
+      Enum.each([child_legal_entity, legal_entity], fn le ->
+        contract = insert(:contracts)
+
+        insert(
+          :capitation_report_detail,
+          capitation_report_id: cr.id,
+          contract_id: contract.id,
+          legal_entity_id: le.id,
+          age_group: "0-18",
+          declaration_count: 100
+        )
+      end)
+
+      response =
+        conn
+        |> get("/api/capitation_report_details", %{
+          page_size: 2,
+          legal_entity_id: legal_entity.id
+        })
+        |> json_response(200)
+
+      reports = response["data"]
+      assert reports
+      assert length(reports) == 2
+
+      assert ["0123456789", "9876543210"] ==
+               reports
+               |> Enum.reduce([], fn %{"edrpou" => edrpou}, acc -> [edrpou | acc] end)
+               |> MapSet.new()
+               |> MapSet.to_list()
     end
   end
 end
