@@ -16,36 +16,29 @@ defmodule Core.Capitation do
     where(query, [d, ci, l, r], l.edrpou == ^edrpou)
   end
 
-  defp edrpou_condition(query, _) do
-    where(query, true)
-  end
+  defp edrpou_condition(query, _), do: query
 
   defp report_id_condition(query, %{"report_id" => report_id}) do
     where(query, [d, ci, l, r], r.id == ^report_id)
   end
 
-  defp report_id_condition(query, _) do
-    where(query, true)
-  end
+  defp report_id_condition(query, _), do: query
 
   defp legal_entity_condition(query, %{"legal_entity_id" => legal_entity_id}) do
-    legal_entities_query =
-      LegalEntity
-      |> join(
-        :left,
-        [l],
-        rle in RelatedLegalEntity,
-        l.id == rle.merged_from_id and rle.merged_to_id == ^legal_entity_id
-      )
-      |> group_by([l, rle], [l.id, rle.merged_to_id])
-      |> having([l, rle], l.id == ^legal_entity_id or rle.merged_to_id == ^legal_entity_id)
+    related =
+      RelatedLegalEntity
+      |> select([r], r.merged_from_id)
+      |> where([r], r.merged_to_id == ^legal_entity_id)
+      |> Repo.all()
 
-    join(query, :left, [d, ci], l in subquery(legal_entities_query), l.id == d.legal_entity_id)
+    where(
+      query,
+      [d, ci],
+      d.legal_entity_id in ^[legal_entity_id | related]
+    )
   end
 
-  defp legal_entity_condition(query, _) do
-    join(query, :left, [d, ci], l in LegalEntity, l.id == d.legal_entity_id)
-  end
+  defp legal_entity_condition(query, _), do: query
 
   def details(params) do
     count_age_group_subquery =
@@ -190,7 +183,7 @@ defmodule Core.Capitation do
       ci.contract_id == d.contract_id and ci.legal_entity_id == d.legal_entity_id and
         ci.capitation_report_id == d.report_id
     )
-    |> legal_entity_condition(params)
+    |> join(:left, [d, ci], l in LegalEntity, l.id == d.legal_entity_id)
     |> join(:inner, [d, ci, l], r in CapitationReport, r.id == d.report_id)
     |> group_by([d, ci, l, r], [
       r.billing_date,
@@ -201,6 +194,7 @@ defmodule Core.Capitation do
     ])
     |> report_id_condition(params)
     |> edrpou_condition(params)
+    |> legal_entity_condition(params)
     |> Repo.paginate(params)
   end
 

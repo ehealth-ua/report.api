@@ -220,17 +220,68 @@ defmodule Report.CapitationControllerTest do
     test "get details success from relaited legal entities", %{conn: conn} do
       cr = insert(:capitation_report)
       legal_entity = insert(:legal_entity, edrpou: "0123456789")
-      child_legal_entity = insert(:legal_entity, edrpou: "9876543210")
+      child_legal_entity1 = insert(:legal_entity, edrpou: "9876543210")
+      child_legal_entity2 = insert(:legal_entity, edrpou: "8899771122")
 
       insert(
         :related_legal_entity,
         merged_to_id: legal_entity.id,
-        merged_from_id: child_legal_entity.id
+        merged_from_id: child_legal_entity1.id
       )
 
-      Enum.each([child_legal_entity, legal_entity], fn le ->
+      insert(
+        :related_legal_entity,
+        merged_to_id: legal_entity.id,
+        merged_from_id: child_legal_entity2.id
+      )
+
+      Enum.each([child_legal_entity1, child_legal_entity2, legal_entity], fn le ->
         contract = insert(:contracts)
 
+        insert(
+          :capitation_report_detail,
+          capitation_report_id: cr.id,
+          contract_id: contract.id,
+          legal_entity_id: le.id,
+          age_group: "0-18",
+          declaration_count: 100
+        )
+      end)
+
+      response =
+        conn
+        |> get("/api/capitation_report_details", %{
+          page_size: 3,
+          legal_entity_id: legal_entity.id
+        })
+        |> json_response(200)
+
+      assert %{
+               "page_number" => 1,
+               "page_size" => 3,
+               "total_entries" => 3,
+               "total_pages" => 1
+             } == response["paging"]
+
+      reports = response["data"]
+
+      assert reports
+      assert length(reports) == 3
+
+      assert ["0123456789", "8899771122", "9876543210"] ==
+               reports
+               |> Enum.reduce([], fn %{"edrpou" => edrpou}, acc -> [edrpou | acc] end)
+               |> MapSet.new()
+               |> MapSet.to_list()
+    end
+
+    test "get details success only from legal entity if no merged", %{conn: conn} do
+      cr = insert(:capitation_report)
+      contract = insert(:contracts)
+      legal_entity = insert(:legal_entity, edrpou: "0123456789")
+      another_legal_entity = insert(:legal_entity, edrpou: "9876543210")
+
+      Enum.each([another_legal_entity, legal_entity], fn le ->
         insert(
           :capitation_report_detail,
           capitation_report_id: cr.id,
@@ -250,14 +301,7 @@ defmodule Report.CapitationControllerTest do
         |> json_response(200)
 
       reports = response["data"]
-      assert reports
-      assert length(reports) == 2
-
-      assert ["0123456789", "9876543210"] ==
-               reports
-               |> Enum.reduce([], fn %{"edrpou" => edrpou}, acc -> [edrpou | acc] end)
-               |> MapSet.new()
-               |> MapSet.to_list()
+      assert [%{"edrpou" => "0123456789"}] = reports
     end
   end
 end
