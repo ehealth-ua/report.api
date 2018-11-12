@@ -67,7 +67,6 @@ defmodule Report.Web.EmployeeView do
         science_degree
         about_myself
       )a)
-      |> Map.put(:is_available, (party.declaration_count || 0) < party.declaration_limit)
       |> Map.put(:specialities, specialities)
 
     Map.put(map, :party, data)
@@ -121,7 +120,6 @@ defmodule Report.Web.EmployeeView do
         documents
         phones
       )a)
-      |> Map.put(:is_available, (party.declaration_count || 0) < party.declaration_limit)
       |> Map.put(:specialities, specialities)
 
     Map.put(map, :party, data)

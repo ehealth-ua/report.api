@@ -26,7 +26,6 @@ defmodule Core.Employees do
     |> where([e], e.status == "APPROVED")
     |> where([e], not is_nil(e.division_id))
     |> join(:left, [e], p in assoc(e, :party))
-    |> add_is_available_search(changes)
     # |> preload([e, p], party: p)
     |> join(:left, [e, p], d in assoc(e, :division))
     # |> preload([e, p, d], division: d)
@@ -75,19 +74,6 @@ defmodule Core.Employees do
 
   defp changeset(params) do
     cast(%Search{}, params, Search.__schema__(:fields))
-  end
-
-  defp add_is_available_search(query, changes) do
-    case Map.get(changes, :is_available) do
-      true ->
-        where(query, [e, p], is_nil(p.declaration_count) or p.declaration_count < p.declaration_limit)
-
-      false ->
-        where(query, [e, p], not is_nil(p.declaration_count) and p.declaration_count >= p.declaration_limit)
-
-      _ ->
-        query
-    end
   end
 
   defp add_full_name_search(query, changes) do

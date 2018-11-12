@@ -13,6 +13,5 @@ defmodule Core.Employees.Search do
     field(:area, :string)
     field(:region, :string)
     field(:settlement, :string)
-    field(:is_available, :boolean)
   end
 end

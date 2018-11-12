@@ -253,7 +253,6 @@ defmodule Core.Factory do
       first_name: "some first_name",
       last_name: "some last_name",
       second_name: "some second_name",
-      declaration_count: 0,
       declaration_limit: 2000
     }
   end

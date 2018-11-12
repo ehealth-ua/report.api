@@ -13,7 +13,6 @@ defmodule Core.Replica.Party do
     field(:qualifications, {:array, :map})
     field(:specialities, {:array, :map})
     field(:science_degree, :map)
-    field(:declaration_count, :integer)
     field(:declaration_limit, :integer)
     field(:about_myself, :string)
     field(:working_experience, :integer)

@@ -29,9 +29,6 @@
                             "specialities": {
                                 "type": "array",
                                 "description": "блок інформації про отримання сертифікату спеціалісту та проходження атестацій"
-                            },
-                            "is_available": {
-                                "type": "boolean"
                             }
                         },
                         "required": [
@@ -39,8 +36,7 @@
                             "first_name",
                             "second_name",
                             "last_name",
-                            "specialities",
-                            "is_available"
+                            "specialities"
                         ],
                         "additionalProperties": false
                     },

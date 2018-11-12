@@ -103,7 +103,6 @@ defmodule Report.Web.EmployeeControllerTest do
                  "party" => %{
                    "first_name" => "some first_name",
                    "id" => party.id,
-                   "is_available" => true,
                    "last_name" => "some last_name",
                    "second_name" => "some second_name",
                    "specialities" => [
@@ -241,21 +240,6 @@ defmodule Report.Web.EmployeeControllerTest do
       assert employee.id == hd(resp["data"])["id"]
     end
 
-    test "search is_available = false", %{conn: conn} do
-      party1 = insert(:party, declaration_count: 100, declaration_limit: 5)
-      party2 = insert(:party, declaration_count: 0, declaration_limit: 100)
-      insert(:employee, party: party1)
-      insert(:employee, party: party2)
-
-      conn1 = get(conn, employee_path(conn, :index), %{is_available: false})
-      assert resp = json_response(conn1, 200)
-      assert 1 == Enum.count(resp["data"])
-
-      conn2 = get(conn, employee_path(conn, :index), %{is_available: true})
-      assert resp = json_response(conn2, 200)
-      assert 1 == Enum.count(resp["data"])
-    end
-
     test "search by id", %{conn: conn} do
       employee = insert(:employee)
       insert(:employee)
@@ -378,7 +362,6 @@ defmodule Report.Web.EmployeeControllerTest do
                  "about_myself" => nil,
                  "first_name" => employee.party.first_name,
                  "id" => employee.party.id,
-                 "is_available" => true,
                  "last_name" => employee.party.last_name,
                  "second_name" => employee.party.second_name,
                  "working_experience" => nil,
