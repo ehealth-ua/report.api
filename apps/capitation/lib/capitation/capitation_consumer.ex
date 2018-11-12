@@ -44,8 +44,12 @@ defmodule Capitation.CapitationConsumer do
   @doc "Time to stop consumer and dump events to storage"
   def handle_events([nil], _from, producers) do
     Cache.dump()
-    @worker.stop_application()
-    {:stop, :normal, producers}
+
+    if Application.get_env(:capitation, :stop?) do
+      {:stop, :normal, producers}
+    else
+      @worker.stop_application()
+    end
   end
 
   def handle_events(contract_employees, from, producers) do

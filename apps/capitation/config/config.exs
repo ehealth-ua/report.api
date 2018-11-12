@@ -12,7 +12,9 @@ config :capitation, Capitation.CapitationConsumer,
   max_demand: {:system, :integer, "CAPITATION_MAX_DEMAND", 500},
   capitation_validate_signature: {:system, :boolean, "CAPITATION_REPORT_VALIDATE_SIGNATURE", true}
 
-config :capitation, worker: Capitation.Worker
+config :capitation,
+  worker: Capitation.Worker,
+  stop?: {:system, :boolean, "CAPITATION_APP_STOP?", true}
 
 config :capitation, Capitation.Application, env: Mix.env()
 

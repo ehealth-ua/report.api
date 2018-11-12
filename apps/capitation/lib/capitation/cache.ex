@@ -2,6 +2,7 @@ defmodule Capitation.Cache do
   @moduledoc false
 
   use GenServer
+  require Logger
   alias Core.Capitation
   alias Core.CapitationReportDetail
   alias Core.CapitationReportError
@@ -69,6 +70,7 @@ defmodule Capitation.Cache do
 
   @impl true
   def handle_cast(:dump, %{ets: pid, errors_ets: errors_pid, report_id: report_id} = state) do
+    Logger.info("Dumping capitation results...")
     # Save successfull details
     pid
     |> get_key_stream()
@@ -88,6 +90,9 @@ defmodule Capitation.Cache do
     end)
     |> Stream.run()
 
+    records_count = pid |> get_key_stream() |> Enum.count()
+    Logger.info("Capitation details: #{records_count} records")
+
     # Save errors
     errors_pid
     |> get_key_stream
@@ -104,6 +109,9 @@ defmodule Capitation.Cache do
       |> Repo.insert!()
     end)
     |> Stream.run()
+
+    records_count = errors_pid |> get_key_stream() |> Enum.count()
+    Logger.info("Capitation errors: #{records_count} records")
 
     # Drop capitation supervision tree
     # [{supervisor_pid, _}] = Registry.lookup(:capitation_registry, "supervisor")
