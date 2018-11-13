@@ -45,10 +45,10 @@ defmodule Capitation.CapitationConsumer do
   def handle_events([nil], _from, producers) do
     Cache.dump()
 
-    if Application.get_env(:capitation, :stop?) do
-      {:stop, :normal, producers}
-    else
+    if Confex.fetch_env!(:capitation, :stop?) do
       @worker.stop_application()
+    else
+      {:stop, :normal, producers}
     end
   end
 
