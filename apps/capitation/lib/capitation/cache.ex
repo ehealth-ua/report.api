@@ -116,6 +116,7 @@ defmodule Capitation.Cache do
     Logger.info("Capitation errors: #{records_count} records")
 
     if Confex.fetch_env!(:capitation, :stop?) do
+      Logger.flush()
       @worker.stop_application()
     else
       {:noreply, state}
