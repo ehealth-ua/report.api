@@ -14,7 +14,7 @@ config :capitation, Capitation.CapitationConsumer,
 
 config :capitation,
   worker: Capitation.Worker,
-  stop?: {:system, :boolean, "CAPITATION_APP_STOP?", true}
+  stop?: {:system, :boolean, "CAPITATION_APP_STOP", true}
 
 config :capitation, Capitation.Application, env: Mix.env()
 
