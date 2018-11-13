@@ -8,7 +8,6 @@ defmodule Capitation.CapitationConsumer do
   alias Core.CapitationReportError
 
   @media_storage_api Application.get_env(:core, :api_resolvers)[:media_storage]
-  @worker Application.get_env(:capitation, :worker)
 
   def start_link(_) do
     GenStage.start_link(__MODULE__, :ok, name: :capitation_consumer)
@@ -44,12 +43,7 @@ defmodule Capitation.CapitationConsumer do
   @doc "Time to stop consumer and dump events to storage"
   def handle_events([nil], _from, producers) do
     Cache.dump()
-
-    if Confex.fetch_env!(:capitation, :stop?) do
-      @worker.stop_application()
-    else
-      {:stop, :normal, producers}
-    end
+    {:stop, :normal, producers}
   end
 
   def handle_events(contract_employees, from, producers) do

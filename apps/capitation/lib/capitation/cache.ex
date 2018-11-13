@@ -8,6 +8,8 @@ defmodule Capitation.Cache do
   alias Core.CapitationReportError
   alias Core.Repo
 
+  @worker Application.get_env(:capitation, :worker)
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
@@ -113,11 +115,11 @@ defmodule Capitation.Cache do
     records_count = errors_pid |> get_key_stream() |> Enum.count()
     Logger.info("Capitation errors: #{records_count} records")
 
-    # Drop capitation supervision tree
-    # [{supervisor_pid, _}] = Registry.lookup(:capitation_registry, "supervisor")
-    # Supervisor.stop(supervisor_pid, :normal, 5_000)
-
-    {:noreply, state}
+    if Confex.fetch_env!(:capitation, :stop?) do
+      @worker.stop_application()
+    else
+      {:noreply, state}
+    end
   end
 
   def get_billing_date do
