@@ -12,7 +12,7 @@ defmodule Report.Application do
     children = [{Endpoint, []}]
 
     children =
-      if Application.get_env(:core, :env) == :prod do
+      if Application.get_env(:core, :environment) == :prod do
         children ++
           [
             {Cluster.Supervisor, [Application.get_env(:core, :topologies), [name: Report.ClusterSupervisor]]}
