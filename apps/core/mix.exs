@@ -11,8 +11,7 @@ defmodule Core.Mixfile do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      package: package(),
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: Mix.compilers(),
       build_embedded: Mix.env() == :prod,
@@ -44,7 +43,7 @@ defmodule Core.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:toml, "~> 0.3.0"},
+      {:confex_config_provider, "~> 0.1.0"},
       {:confex, "~> 3.2"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.2"},
@@ -63,17 +62,6 @@ defmodule Core.Mixfile do
       {:ex_machina, "~> 2.2", only: :test},
       {:excoveralls, "~> 0.9.1", only: [:dev, :test]},
       {:credo, "~> 0.9.3", only: [:dev, :test]}
-    ]
-  end
-
-  # Settings for publishing in Hex package manager:
-  defp package do
-    [
-      contributors: ["Nebo #15"],
-      maintainers: ["Nebo #15"],
-      licenses: ["LISENSE.md"],
-      links: %{github: "https://github.com/Nebo15/report"},
-      files: ~w(lib LICENSE.md mix.exs README.md)
     ]
   end
 

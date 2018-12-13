@@ -1,7 +1,5 @@
 use Mix.Config
 
-config :core, :environment, :test
-
 # Configure your database
 config :core, Core.Repo,
   adapter: Ecto.Adapters.Postgres,
@@ -12,7 +10,8 @@ config :core, Core.Repo,
 config :core,
   api_resolvers: [
     media_storage: MediaStorageMock
-  ]
+  ],
+  rpc_worker: RpcWorkerMock
 
 # Run acceptance test in concurrent mode
 config :core, sql_sandbox: true

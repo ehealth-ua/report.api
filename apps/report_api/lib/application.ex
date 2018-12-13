@@ -9,13 +9,17 @@ defmodule Report.Application do
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
-    import Supervisor.Spec
+    children = [{Endpoint, []}]
 
-    # Define workers and child supervisors to be supervised
-    children = [
-      # Start the endpoint when the application starts
-      supervisor(Endpoint, [])
-    ]
+    children =
+      if Application.get_env(:core, :env) == :prod do
+        children ++
+          [
+            {Cluster.Supervisor, [Application.get_env(:core, :topologies), [name: Report.ClusterSupervisor]]}
+          ]
+      else
+        children
+      end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

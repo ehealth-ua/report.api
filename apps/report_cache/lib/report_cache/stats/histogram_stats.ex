@@ -1,16 +1,16 @@
-defmodule Core.Stats.Cache.HistogramStats do
+defmodule ReportCache.Stats.HistogramStats do
   @moduledoc """
   Used to update histogram stats cache
   """
 
   use GenServer
-  use Confex, otp_app: :core
+  use Confex, otp_app: :report_cache
   use Timex
-  alias Core.Stats.Cache
   alias Core.Stats.HistogramStatsRequest
   alias Core.Stats.MainStats
+  alias ReportCache.Stats.Cache
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 

@@ -44,8 +44,6 @@ defmodule Report.Web.Router do
       end
     end
 
-    get("/page", PageController, :index)
-
     scope "/stats/employees" do
       get("/", EmployeeController, :index)
       get("/:id", EmployeeController, :show)

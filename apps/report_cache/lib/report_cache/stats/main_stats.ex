@@ -1,14 +1,14 @@
-defmodule Core.Stats.Cache.RegionStats do
+defmodule ReportCache.Stats.MainStats do
   @moduledoc """
-  Used to update region stats cache
+  Used to update main stats cache
   """
 
   use GenServer
-  use Confex, otp_app: :core
-  alias Core.Stats.Cache
-  alias Core.Stats.MainStats
+  use Confex, otp_app: :report_cache
+  alias ReportCache.Stats.Cache
+  import Core.Stats.MainStats, only: [get_main_stats: 0]
 
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
@@ -18,8 +18,8 @@ defmodule Core.Stats.Cache.RegionStats do
   end
 
   def handle_info(:update_stats, state) do
-    with {:ok, stats} <- MainStats.get_regions_stats() do
-      Cache.set_regions_stats(stats)
+    with {:ok, stats} <- get_main_stats() do
+      Cache.set_main_stats(stats)
     end
 
     set_stats()

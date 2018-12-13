@@ -24,11 +24,7 @@ release :report_api do
     ]
   )
 
-  set(
-    config_providers: [
-      {Toml.Provider, [path: "/app/config.toml"]}
-    ]
-  )
+  set(config_providers: [ConfexConfigProvider])
 end
 
 release :capitation do
@@ -40,9 +36,17 @@ release :capitation do
     ]
   )
 
+  set(config_providers: [ConfexConfigProvider])
+end
+
+release :report_cache do
+  set(version: current_version(:report_cache))
+
   set(
-    config_providers: [
-      {Toml.Provider, [path: "/app/config.toml"]}
+    applications: [
+      report_cache: :permanent
     ]
   )
+
+  set(config_providers: [ConfexConfigProvider])
 end

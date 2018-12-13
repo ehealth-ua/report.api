@@ -7,7 +7,7 @@ defmodule ReportApi.Mixfile do
     [
       app: :report_api,
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -49,7 +49,6 @@ defmodule ReportApi.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:toml, "~> 0.3.0"},
       {:confex, "~> 3.2"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.2"},
@@ -58,6 +57,7 @@ defmodule ReportApi.Mixfile do
       {:eview, "~> 0.12.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:plug_logger_json, "~> 0.5"},
+      {:libcluster, "~> 3.0", git: "https://github.com/AlexKovalevych/libcluster.git", branch: "kube_namespaces"},
       {:mox, "~> 0.3", only: :test},
       {:ex_machina, "~> 2.2", only: :test},
       {:core, in_umbrella: true}

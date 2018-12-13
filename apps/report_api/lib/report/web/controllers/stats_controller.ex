@@ -3,15 +3,16 @@ defmodule Report.Web.StatsController do
 
   use Report.Web, :controller
 
-  alias Core.Stats.Cache
   alias Core.Stats.DivisionStats
   alias Core.Stats.MainStats
   alias Scrivener.Page
 
   action_fallback(Report.Web.FallbackController)
 
+  @rpc_worker Application.get_env(:core, :rpc_worker)
+
   def index(conn, _params) do
-    with {:ok, main_stats} <- Cache.get_main_stats() do
+    with {:ok, main_stats} <- @rpc_worker.run("reports", ReportCache.Rpc, :get_main_stats, []) do
       render(conn, "index.json", stats: main_stats)
     end
   end
@@ -23,13 +24,13 @@ defmodule Report.Web.StatsController do
   end
 
   def regions(conn, _) do
-    with {:ok, main_stats} <- Cache.get_regions_stats() do
+    with {:ok, main_stats} <- @rpc_worker.run("reports", ReportCache.Rpc, :get_regions_stats, []) do
       render(conn, "regions.json", stats: main_stats)
     end
   end
 
   def histogram(conn, _params) do
-    with {:ok, main_stats} <- Cache.get_histogram_stats() do
+    with {:ok, main_stats} <- @rpc_worker.run("reports", ReportCache.Rpc, :get_histogram_stats, []) do
       render(conn, "index.json", stats: main_stats)
     end
   end

@@ -1,11 +1,11 @@
-defmodule Core.Stats.Cache do
+defmodule ReportCache.Stats.Cache do
   @moduledoc """
   Agent used to cache heavy stats results
   """
 
   use Agent
 
-  def start_link do
+  def start_link(_) do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
   end
 

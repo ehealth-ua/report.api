@@ -2,21 +2,14 @@ defmodule Report.Web.StatsControllerTest do
   @moduledoc false
 
   use Report.Web.ConnCase
-  import Report.Web.Router.Helpers
-  alias Core.Stats.HistogramStatsRequest
   alias Core.Replica.Employee
-  alias NExJsonSchema.Validator
+  alias Core.Stats.HistogramStatsRequest
   alias Ecto.UUID
-  alias Core.Stats.Cache.MainStats
-  alias Core.Stats.Cache.RegionStats
-  alias Core.Stats.Cache.HistogramStats
+  alias NExJsonSchema.Validator
+  import Report.Web.Router.Helpers
 
   test "get main stats", %{conn: conn} do
-    {:ok, pid} = MainStats.start_link()
-    :timer.sleep(200)
-
-    on_exit(fn -> Process.exit(pid, :normal) end)
-
+    expect_get_main_stats()
     conn = get(conn, stats_path(conn, :index))
 
     schema =
@@ -44,9 +37,7 @@ defmodule Report.Web.StatsControllerTest do
   end
 
   test "get regions stats", %{conn: conn} do
-    {:ok, pid} = RegionStats.start_link()
-    :timer.sleep(200)
-    on_exit(fn -> Process.exit(pid, :normal) end)
+    expect_get_regions_stats(2)
 
     schema =
       "test/data/stats/regions_stats_response.json"
@@ -62,9 +53,7 @@ defmodule Report.Web.StatsControllerTest do
   end
 
   test "get histogram stats", %{conn: conn} do
-    {:ok, pid} = HistogramStats.start_link()
-    :timer.sleep(200)
-    on_exit(fn -> Process.exit(pid, :normal) end)
+    expect_get_histogram_stats(2)
 
     conn =
       get(

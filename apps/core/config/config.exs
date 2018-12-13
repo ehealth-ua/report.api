@@ -25,7 +25,10 @@ use Mix.Config
 #     :var_name, "${ENV_VAR_NAME}"
 config :core,
   namespace: Core,
-  ecto_repos: [Core.Repo]
+  ecto_repos: [Core.Repo],
+  environment: Mix.env()
+
+config :core, Core.Rpc.Worker, max_attempts: {:system, :integer, "RPC_MAX_ATTEMPTS", 3}
 
 # Configure your database
 config :core, Core.Repo,
@@ -66,15 +69,21 @@ config :core, Core.MediaStorage,
 config :core,
   api_resolvers: [
     media_storage: Core.MediaStorage
+  ],
+  rpc_worker: Core.Rpc.Worker
+
+config :core,
+  topologies: [
+    k8s_report_cache: [
+      strategy: Elixir.Cluster.Strategy.Kubernetes,
+      config: [
+        mode: :dns,
+        kubernetes_node_basename: "report_cache",
+        kubernetes_selector: "app=cache",
+        kubernetes_namespace: "reports",
+        polling_interval: 10_000
+      ]
+    ]
   ]
-
-config :core, Core.Stats.Cache.MainStats, cache_ttl: {:system, :integer, "MAIN_STATS_CACHE_TTL", 60_000}
-
-config :core, Core.Stats.Cache.RegionStats, cache_ttl: {:system, :integer, "REGIONS_STATS_CACHE_TTL", 60_000}
-
-config :core, Core.Stats.Cache.HistogramStats, cache_ttl: {:system, :integer, "HISTOGRAM_STATS_CACHE_TTL", 60_000}
-
-config :core, Core.Stats.MainStats,
-  declarations_by_regions_timeout: {:system, :integer, "DECLARATIONS_BY_REGIONS_TIMEOUT", 60_000 * 5}
 
 import_config "#{Mix.env()}.exs"

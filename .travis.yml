@@ -13,9 +13,9 @@ addons:
       - postgresql-9.6-postgis-2.3
       - docker-ce
 elixir:
-  - 1.6.6
+  - 1.7.4
 otp_release:
-  - 20.3.8
+  - 21.1.1
 notifications:
   slack:
     rooms:
@@ -51,6 +51,12 @@ jobs:
       - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
     - stage: "test and build"
       env: APPS='[{"app":"capitation","chart":"reports","namespace":"reports","job":"true"}]'
+      # "Decrypting deploy key..."
+      script:
+      - openssl aes-256-cbc -K $encrypted_7e692fa65543_key -iv $encrypted_7e692fa65543_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d
+      - (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_v2/docker.sh -o docker.sh; bash ./docker.sh) || travis_terminate 1
+    - stage: "test and build"
+      env: APPS='[{"app":"report_cache","chart":"reports","namespace":"reports","deployment":"cache","label":"cache"}]'
       # "Decrypting deploy key..."
       script:
       - openssl aes-256-cbc -K $encrypted_7e692fa65543_key -iv $encrypted_7e692fa65543_iv -in eHealth-8110bd102a69.json.enc -out eHealth-8110bd102a69.json -d

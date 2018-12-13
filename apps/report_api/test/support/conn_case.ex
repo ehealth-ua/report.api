@@ -22,6 +22,7 @@ defmodule Report.Web.ConnCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+      import Core.Expectations.Rpc
       import Core.Factory
       alias Core.Repo
 
