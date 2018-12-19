@@ -75,20 +75,18 @@ defmodule Capitation.API do
   end
 
   def get_contracts_query(billing_date) do
-    where(
-      Contract,
+    Contract
+    |> where(
       [c],
-      c.start_date < ^billing_date and c.end_date >= ^billing_date and c.status == ^Contract.status(:verified) and
-        c.is_suspended == false
+      c.start_date < ^billing_date and c.end_date >= ^billing_date
     )
+    |> where([c], c.status == ^Contract.status(:verified))
+    |> where([c], c.is_suspended == false)
+    |> where([c], c.type == "CAPITATION")
   end
 
   def get_contracts_query_by_id(contract_id) do
-    where(
-      Contract,
-      [c],
-      c.id == ^contract_id
-    )
+    where(Contract, [c], c.id == ^contract_id)
   end
 
   def get_contract_employees_query(query, billing_date) do

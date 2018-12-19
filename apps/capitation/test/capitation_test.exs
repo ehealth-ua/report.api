@@ -38,6 +38,15 @@ defmodule Capitation.Test do
           status: Contract.status(:verified)
         )
 
+      contract_reimbursement =
+        insert(
+          :contract,
+          start_date: Date.add(billing_date, -1),
+          end_date: Date.add(billing_date, 1),
+          status: Contract.status(:verified),
+          type: "REIMBURSEMENT"
+        )
+
       billing_datetime = NaiveDateTime.from_erl!({Date.to_erl(billing_date), {0, 0, 0}})
       division = insert(:division)
 
@@ -50,14 +59,25 @@ defmodule Capitation.Test do
           declaration_limit: 99
         )
 
+      contract_reimbursement_employee =
+        insert(
+          :contract_employee,
+          division_id: division.id,
+          contract_id: contract_reimbursement.id,
+          start_date: NaiveDateTime.add(billing_datetime, -1000),
+          declaration_limit: 99
+        )
+
       for _ <- 1..2 do
         %{id: legal_entity_id} = insert(:legal_entity)
 
         for _ <- 1..50 do
           insert_declaration(contract_employee, legal_entity_id, billing_datetime)
+          insert_declaration(contract_reimbursement_employee, legal_entity_id, billing_datetime)
         end
 
         insert_declaration(contract_employee, legal_entity_id, billing_datetime, -1)
+        insert_declaration(contract_reimbursement_employee, legal_entity_id, billing_datetime, -1)
       end
 
       child_spec = [

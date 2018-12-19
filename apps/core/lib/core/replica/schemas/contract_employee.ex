@@ -2,8 +2,8 @@ defmodule Core.Replica.ContractEmployee do
   @moduledoc false
 
   use Ecto.Schema
-  alias Ecto.UUID
   alias Core.Replica.Contract
+  alias Ecto.UUID
 
   @primary_key {:id, :binary_id, autogenerate: true}
 

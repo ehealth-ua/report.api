@@ -2,9 +2,9 @@ defmodule Core.Replica.Contract do
   @moduledoc false
 
   use Ecto.Schema
-  alias Ecto.UUID
   alias Core.Replica.ContractDivision
   alias Core.Replica.ContractEmployee
+  alias Ecto.UUID
 
   @status_verified "VERIFIED"
   @status_terminated "TERMINATED"
@@ -40,6 +40,7 @@ defmodule Core.Replica.Contract do
     field(:parent_contract_id, UUID)
     field(:id_form, :string)
     field(:nhs_signed_date, :date)
+    field(:type, :string)
 
     has_many(:contract_employees, ContractEmployee)
     has_many(:contract_divisions, ContractDivision)

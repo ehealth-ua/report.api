@@ -418,7 +418,8 @@ defmodule Core.Factory do
       is_active: true,
       is_suspended: false,
       inserted_by: UUID.generate(),
-      updated_by: UUID.generate()
+      updated_by: UUID.generate(),
+      type: "CAPITATION"
     }
   end
 
