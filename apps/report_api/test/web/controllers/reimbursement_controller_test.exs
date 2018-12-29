@@ -199,6 +199,9 @@ defmodule Report.Web.ReimbursementControllerTest do
       %{id: medication_dispense_id, medication_request: medication_request} = insert(:medication_dispense)
       %{legal_entity: legal_entity} = Repo.preload(medication_request.employee, :legal_entity)
 
+      # will not be include in report
+      insert(:medication_dispense, medication_request: build(:medication_request, intent: "plan"))
+
       %{user_id: user_id, party: party} =
         :party_user
         |> insert()
@@ -267,6 +270,9 @@ defmodule Report.Web.ReimbursementControllerTest do
       %{id: medication_dispense_id, medication_request: medication_request} = insert(:medication_dispense)
       %{legal_entity: legal_entity} = Repo.preload(medication_request.employee, :legal_entity)
 
+      # will not be include in report
+      insert(:medication_dispense, medication_request: build(:medication_request, intent: "plan"))
+
       %{user_id: user_id, party: party} =
         :party_user
         |> insert()
@@ -308,6 +314,9 @@ defmodule Report.Web.ReimbursementControllerTest do
     test "get stats by dispense and request periods", %{conn: conn} do
       legal_entity = insert(:legal_entity, type: "PHARMACY")
       %{id: medication_dispense_id} = insert(:medication_dispense, legal_entity: legal_entity)
+
+      # will not be include in report
+      insert(:medication_dispense, medication_request: build(:medication_request, intent: "plan"))
 
       %{user_id: user_id, party: party} =
         :party_user
@@ -380,6 +389,9 @@ defmodule Report.Web.ReimbursementControllerTest do
     test "get stats by dispense period", %{conn: conn} do
       %{id: medication_dispense_id, medication_request: medication_request} =
         insert(:medication_dispense, status: "PROCESSED")
+
+      # will not be include in report
+      insert(:medication_dispense, medication_request: build(:medication_request, intent: "plan"))
 
       legal_entity = insert(:legal_entity, id: medication_request.legal_entity_id)
       insert(:employee, legal_entity: legal_entity)

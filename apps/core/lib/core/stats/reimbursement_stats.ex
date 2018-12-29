@@ -92,7 +92,10 @@ defmodule Core.Stats.ReimbursementStats do
 
   defp get_data_query(%{from: dispense_from, to: dispense_to}, %{from: request_from, to: request_to}, legal_entity) do
     MedicationRequest
-    |> where([mr], fragment("? BETWEEN ? AND ?", mr.created_at, ^request_from, ^request_to))
+    |> where(
+      [mr],
+      fragment("? BETWEEN ? AND ?", mr.created_at, ^request_from, ^request_to) and mr.intent == "order"
+    )
     |> join_medication_dispense()
     |> where([mr, md], fragment("? BETWEEN ? AND ?", md.dispensed_at, ^dispense_from, ^dispense_to))
     |> do_get_data(legal_entity)
@@ -107,7 +110,10 @@ defmodule Core.Stats.ReimbursementStats do
 
   defp get_data_query(_, %{from: from, to: to}, legal_entity) do
     MedicationRequest
-    |> where([mr], fragment("? BETWEEN ? AND ?", mr.created_at, ^from, ^to))
+    |> where(
+      [mr],
+      fragment("? BETWEEN ? AND ?", mr.created_at, ^from, ^to) and mr.intent == "order"
+    )
     |> join_medication_dispense()
     |> do_get_data(legal_entity)
   end

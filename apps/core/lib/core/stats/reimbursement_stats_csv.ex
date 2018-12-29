@@ -56,7 +56,7 @@ defmodule Core.Stats.ReimbursementStatsCSV do
       mr.id == md.medication_request_id and md.status == "PROCESSED" and md.is_active
     )
     |> where([mr, md], fragment("? BETWEEN ? AND ?", md.dispensed_at, ^from, ^to))
-    |> where([mr], mr.is_active)
+    |> where([mr], mr.is_active and mr.intent == "order")
     |> join(:left, [mr, md], m_req in assoc(mr, :medication))
     |> join(:left, [mr, md], e_req in assoc(mr, :employee))
     |> join(:left, [mr, md, m_req, e_req], p_req in assoc(e_req, :party))

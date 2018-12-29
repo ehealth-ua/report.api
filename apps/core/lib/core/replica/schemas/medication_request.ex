@@ -2,6 +2,7 @@ defmodule Core.Replica.MedicationRequest do
   @moduledoc false
 
   use Ecto.Schema
+  alias Ecto.UUID
 
   @derive {Poison.Encoder, except: [:__meta__]}
 
@@ -13,22 +14,26 @@ defmodule Core.Replica.MedicationRequest do
     field(:ended_at, :date)
     field(:dispense_valid_from, :date)
     field(:dispense_valid_to, :date)
-    field(:person_id, Ecto.UUID)
-    field(:employee_id, Ecto.UUID)
-    field(:division_id, Ecto.UUID)
-    field(:legal_entity_id, Ecto.UUID)
-    field(:medication_id, Ecto.UUID)
+    field(:person_id, UUID)
+    field(:employee_id, UUID)
+    field(:division_id, UUID)
+    field(:legal_entity_id, UUID)
+    field(:medication_id, UUID)
     field(:medication_qty, :float)
     field(:status, :string)
     field(:is_active, :boolean)
     field(:rejected_at, :date)
-    field(:rejected_by, Ecto.UUID)
+    field(:rejected_by, UUID)
     field(:reject_reason, :string)
-    field(:medication_request_requests_id, Ecto.UUID)
-    field(:medical_program_id, Ecto.UUID)
-    field(:inserted_by, Ecto.UUID)
-    field(:updated_by, Ecto.UUID)
+    field(:medication_request_requests_id, UUID)
+    field(:medical_program_id, UUID)
+    field(:inserted_by, UUID)
+    field(:updated_by, UUID)
     field(:verification_code, :string)
+    field(:intent, :string)
+    field(:category, :string)
+    field(:context, :map)
+    field(:dosage_instruction, {:array, :map})
 
     has_one(:medication_dispense, Core.Replica.MedicationDispense)
     belongs_to(:employee, Core.Replica.Employee, define_field: false)
