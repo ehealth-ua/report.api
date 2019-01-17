@@ -21,7 +21,7 @@
   "ex_machina": {:hex, :ex_machina, "2.2.0", "fec496331e04fc2db2a1a24fe317c12c0c4a50d2beb8ebb3531ed1f0d84be0ed", [:mix], [{:ecto, "~> 2.1", [hex: :ecto, repo: "hexpm", optional: true]}], "hexpm"},
   "excoveralls": {:hex, :excoveralls, "0.9.1", "14fd20fac51ab98d8e79615814cc9811888d2d7b28e85aa90ff2e30dcf3191d6", [:mix], [{:hackney, ">= 0.12.0", [hex: :hackney, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm"},
   "exjsx": {:hex, :exjsx, "4.0.0", "60548841e0212df401e38e63c0078ec57b33e7ea49b032c796ccad8cde794b5c", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, repo: "hexpm", optional: false]}], "hexpm"},
-  "faker": {:hex, :faker, "0.9.0", "b22c55967fbd3413b9e5c121e59e75a553065587cf31e5aa2271b6fae2775cde", [:mix], [], "hexpm"},
+  "faker": {:hex, :faker, "0.11.2", "c2251639f7418f54159fabcacfa0949f467ae77e9046001a8f091455d46905dd", [:mix], [], "hexpm"},
   "flow": {:hex, :flow, "0.13.0", "7188ef047c6831ffb2f25ec0cef9bef02e7ae520632a64debdb65ae96bdc223e", [:mix], [{:gen_stage, "~> 0.13.0", [hex: :gen_stage, repo: "hexpm", optional: false]}], "hexpm"},
   "gen_stage": {:hex, :gen_stage, "0.14.0", "65ae78509f85b59d360690ce3378d5096c3130a0694bab95b0c4ae66f3008fad", [:mix], [], "hexpm"},
   "geo": {:hex, :geo, "1.5.0", "14301aae05bc9124f36b3726e028830477d2ee6b397b7a00b98eca3da06de193", [:mix], [{:ecto, "~> 2.1", [hex: :ecto, repo: "hexpm", optional: true]}, {:poison, "~> 1.5 or ~> 2.0 or ~> 3.0", [hex: :poison, repo: "hexpm", optional: true]}, {:postgrex, "~> 0.13", [hex: :postgrex, repo: "hexpm", optional: true]}], "hexpm"},
