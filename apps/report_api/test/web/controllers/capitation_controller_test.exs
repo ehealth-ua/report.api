@@ -118,6 +118,40 @@ defmodule Report.CapitationControllerTest do
   end
 
   describe "Capitation report details" do
+    test "invalid legal_entity_id", %{conn: conn} do
+      resp =
+        conn
+        |> get("/api/capitation_report_details", %{
+          legal_entity_id: "not UUID"
+        })
+        |> json_response(422)
+
+      assert [%{"entry" => "$.legal_entity_id"}] = resp["error"]["invalid"]
+    end
+
+    test "invalid report_id", %{conn: conn} do
+      resp =
+        conn
+        |> get("/api/capitation_report_details", %{
+          report_id: "not UUID"
+        })
+        |> json_response(422)
+
+      assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] =
+               resp["error"]["invalid"]
+    end
+
+    test "invalid edrpou", %{conn: conn} do
+      resp =
+        conn
+        |> get("/api/capitation_report_details", %{
+          edrpou: "0123"
+        })
+        |> json_response(422)
+
+      assert [%{"entry" => "$.edrpou"}] = resp["error"]["invalid"]
+    end
+
     test "get details not found", %{conn: conn} do
       cr = insert(:capitation_report)
 
