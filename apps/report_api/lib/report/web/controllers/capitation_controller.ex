@@ -2,8 +2,8 @@ defmodule Report.Web.CapitationController do
   @moduledoc false
   use Report.Web, :controller
   alias Core.Capitation
-  alias Scrivener.Page
   alias Report.Validators.JsonSchema
+  alias Scrivener.Page
 
   action_fallback(Report.Web.FallbackController)
 
