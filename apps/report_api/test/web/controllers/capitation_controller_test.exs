@@ -141,6 +141,18 @@ defmodule Report.CapitationControllerTest do
                resp["error"]["invalid"]
     end
 
+    test "invalid UUID-like report_id", %{conn: conn} do
+      resp =
+        conn
+        |> get("/api/capitation_report_details", %{
+          report_id: "3160405192-08e07522-ba03-4a8f-a07e-c752e09ca84f"
+        })
+        |> json_response(422)
+
+      assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] =
+               resp["error"]["invalid"]
+    end
+
     test "invalid edrpou", %{conn: conn} do
       resp =
         conn
