@@ -6,8 +6,6 @@ defmodule Report.Application do
   alias Confex.Resolver
   alias Report.Web.Endpoint
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
   def start(_type, _args) do
     children = [{Endpoint, []}]
 
@@ -15,14 +13,13 @@ defmodule Report.Application do
       if Application.get_env(:core, :environment) == :prod do
         children ++
           [
-            {Cluster.Supervisor, [Application.get_env(:core, :topologies), [name: Report.ClusterSupervisor]]}
+            {Cluster.Supervisor,
+             [Application.get_env(:core, :topologies), [name: Report.ClusterSupervisor]]}
           ]
       else
         children
       end
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Report.Supervisor]
     Supervisor.start_link(children, opts)
   end
