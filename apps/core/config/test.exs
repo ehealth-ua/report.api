@@ -2,7 +2,6 @@ use Mix.Config
 
 # Configure your database
 config :core, Core.Repo,
-  adapter: Ecto.Adapters.Postgres,
   pool: Ecto.Adapters.SQL.Sandbox,
   database: "report_test",
   ownership_timeout: 120_000_000

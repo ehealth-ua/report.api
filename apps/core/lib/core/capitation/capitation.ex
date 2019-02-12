@@ -222,8 +222,7 @@ defmodule Core.Capitation do
   end
 
   def changeset(%CapitationReportDetail{} = detail, params) do
-    fields =
-      ~w(capitation_report_id legal_entity_id contract_id mountain_group age_group declaration_count)a
+    fields = ~w(capitation_report_id legal_entity_id contract_id mountain_group age_group declaration_count)a
 
     detail
     |> cast(params, fields)

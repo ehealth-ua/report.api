@@ -400,7 +400,7 @@ defmodule Core.Factory do
           contract: %{
             number: "1234567",
             issued_at: NaiveDateTime.utc_now(),
-            expires_at: NaiveDateTime.add(NaiveDateTime.utc_now(), days_to_seconds(365), :seconds)
+            expires_at: NaiveDateTime.add(NaiveDateTime.utc_now(), days_to_seconds(365), :second)
           },
           divisions: [
             %{

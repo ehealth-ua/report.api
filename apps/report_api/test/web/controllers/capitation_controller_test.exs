@@ -137,8 +137,7 @@ defmodule Report.CapitationControllerTest do
         })
         |> json_response(422)
 
-      assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] =
-               resp["error"]["invalid"]
+      assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] = resp["error"]["invalid"]
     end
 
     test "invalid UUID-like report_id", %{conn: conn} do
@@ -149,8 +148,7 @@ defmodule Report.CapitationControllerTest do
         })
         |> json_response(422)
 
-      assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] =
-               resp["error"]["invalid"]
+      assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] = resp["error"]["invalid"]
     end
 
     test "invalid edrpou", %{conn: conn} do

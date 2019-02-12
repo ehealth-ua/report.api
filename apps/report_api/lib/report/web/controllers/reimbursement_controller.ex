@@ -5,13 +5,16 @@ defmodule Report.Web.ReimbursementController do
 
   alias Core.Stats.ReimbursementStats
   alias Core.Stats.ReimbursementStatsCSV
+  alias Report.Web.ReimbursementView
   alias Scrivener.Page
 
   action_fallback(Report.Web.FallbackController)
 
   def index(%Plug.Conn{req_headers: headers} = conn, params) do
     with %Page{} = paging <- ReimbursementStats.get_stats(params, headers) do
-      render(conn, "index.json", stats: paging.entries, paging: paging)
+      conn
+      |> put_view(ReimbursementView)
+      |> render("index.json", stats: paging.entries, paging: paging)
     end
   end
 

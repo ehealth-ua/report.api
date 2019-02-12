@@ -27,8 +27,7 @@ defmodule Core.Integration.DivisionStatsTest do
 
       id = division.id
       assert [%Division{id: ^id}] = map_stats
-
-      {:ok, %Page{entries: []}} = DivisionStats.get_map_stats(Map.put(params, :page, 2))
+      {:ok, %Page{entries: []}} = DivisionStats.get_map_stats(Map.merge(params, %{page: 2, page_size: 1}))
     end
 
     test "search drugstores" do

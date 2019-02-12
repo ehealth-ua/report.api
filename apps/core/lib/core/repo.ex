@@ -4,7 +4,7 @@ defmodule Core.Repo do
 
   More info: https://hexdocs.pm/ecto/Ecto.Repo.html
   """
-  use Ecto.Repo, otp_app: :core
+  use Ecto.Repo, otp_app: :core, adapter: Ecto.Adapters.Postgres
   use Scrivener, page_size: 10, max_page_size: 500
   alias Confex.Resolver
 

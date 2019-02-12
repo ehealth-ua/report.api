@@ -5,8 +5,8 @@ defmodule Core.Replica.Declaration do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "declarations" do
     field(:employee_id, Ecto.UUID)
-    field(:start_date, Timex.Ecto.Date)
-    field(:end_date, Timex.Ecto.Date)
+    field(:start_date, :date)
+    field(:end_date, :date)
     field(:status, :string)
     field(:signed_at, :utc_datetime)
     field(:created_by, Ecto.UUID)
