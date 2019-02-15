@@ -47,6 +47,7 @@ defmodule Core.Mixfile do
       {:kube_rpc, git: "https://github.com/edenlabllc/kube_rpc.git"},
       {:confex, "~> 3.4"},
       {:poison, "~> 3.1"},
+      {:jason, "~> 1.0"},
       {:httpoison, "~> 1.2"},
       {:ecto, "~> 2.1"},
       {:phoenix_ecto, "~> 3.2.1"},
