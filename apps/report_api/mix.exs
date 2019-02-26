@@ -41,9 +41,7 @@ defmodule ReportApi.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:phoenix, "~> 1.4.0"},
       {:eview, git: "https://github.com/Nebo15/eview.git", branch: "master"},
-      {:plug_logger_json, "~> 0.5"},
-      {:libcluster, "~> 3.0",
-       git: "https://github.com/AlexKovalevych/libcluster.git", branch: "kube_namespaces"},
+      {:libcluster, "~> 3.0", git: "https://github.com/AlexKovalevych/libcluster.git", branch: "kube_namespaces"},
       {:mox, "~> 0.3", only: :test},
       {:ex_machina, "~> 2.2", only: :test},
       {:core, in_umbrella: true}

@@ -2,27 +2,6 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-# This configuration is loaded before any dependency and is restricted
-# to this project. If another project depends on this project, this
-# file won't be loaded nor affect the parent project. For this reason,
-# if you want to provide default values for your application for
-# 3rd-party users, it should be done in your "mix.exs" file.
-
-# You can configure for your application as:
-#
-#     config :core, key: :value
-#
-# And access this configuration in your application as:
-#
-#     Application.get_env(:core, :key)
-#
-# Or configure a 3rd-party app:
-#
-#     config :logger, level: :info
-#
-# Or read environment variables in runtime (!) as:
-#
-#     :var_name, "${ENV_VAR_NAME}"
 config :core,
   namespace: Core,
   ecto_repos: [Core.Repo],
@@ -30,28 +9,14 @@ config :core,
 
 config :core, Core.Rpc.Worker, max_attempts: {:system, :integer, "RPC_MAX_ATTEMPTS", 3}
 
-# Configure your database
-config :core, Core.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  database: "report_dev",
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  port: 5432,
-  ownership_timeout: :infinity,
-  pool_size: 20,
-  types: Core.PostgresTypes,
-  loggers: [{Ecto.LoggerJSON, :log, [:info]}]
-
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
-
 config :ssl, protocol_version: :"tlsv1.2"
 
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$message\n",
-  handle_otp_reports: true,
+config :logger_json, :backend,
+  formatter: EhealthLogger.Formatter,
+  metadata: :all
+
+config :logger,
+  backends: [LoggerJSON],
   level: :info
 
 config :core, Core.MediaStorage,

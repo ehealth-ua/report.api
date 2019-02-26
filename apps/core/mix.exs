@@ -56,14 +56,11 @@ defmodule Core.Mixfile do
       {:csv, "~> 2.0.0"},
       {:jvalid, "~> 0.6.0"},
       {:scrivener_ecto, "~> 1.3.0"},
-      {:gen_stage, "~> 0.14.0"},
-      {:ecto_logger_json, git: "https://github.com/edenlabllc/ecto_logger_json.git", branch: "query_params"},
       {:mox, "~> 0.3", only: :test},
+      {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
       {:faker, "~> 0.11", only: [:test]},
       {:ex_machina, "~> 2.0", only: :test},
-      {:excoveralls, "~> 0.9.1", only: [:dev, :test]},
-      {:postgrex, "~> 0.13", override: true},
-      {:credo, "~> 0.9.3", only: [:dev, :test]}
+      {:postgrex, "~> 0.13", override: true}
     ]
   end
 

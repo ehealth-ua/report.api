@@ -2,12 +2,6 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$message\n",
-  handle_otp_reports: true,
-  level: :info
-
 config :capitation, Capitation.CapitationConsumer,
   max_demand: {:system, :integer, "CAPITATION_MAX_DEMAND", 500},
   capitation_validate_signature: {:system, :boolean, "CAPITATION_REPORT_VALIDATE_SIGNATURE", true}

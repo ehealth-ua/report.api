@@ -10,4 +10,5 @@ config :core, Core.Repo,
   pool_size: "${DB_POOL_SIZE}",
   timeout: 15_000,
   pool_timeout: 15_000,
-  loggers: [{Ecto.LoggerJSON, :log, [:info]}]
+  types: Core.PostgresTypes,
+  loggers: [{EhealthLogger.Ecto, :log, [:info]}]

@@ -52,8 +52,6 @@ defmodule Capitation.Mixfile do
       {:gen_stage, "~> 0.14.0"},
       {:mox, "~> 0.3", only: :test},
       {:ex_machina, "~> 2.2", only: :test},
-      {:excoveralls, "~> 0.9.1", only: [:dev, :test]},
-      {:credo, "~> 0.9.3", only: [:dev, :test]},
       {:core, in_umbrella: true}
     ]
   end

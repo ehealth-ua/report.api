@@ -6,11 +6,8 @@ defmodule Report.Web.Router do
 
   More info at: https://hexdocs.pm/phoenix/Phoenix.Router.html
   """
+
   use Report.Web, :router
-  use Plug.ErrorHandler
-
-  alias Plug.LoggerJSON
-
   require Logger
 
   pipeline :api do
@@ -56,11 +53,4 @@ defmodule Report.Web.Router do
       post("/parties/declaration_count", ApiController, :declaration_count)
     end
   end
-
-  defp handle_errors(%Plug.Conn{status: 500} = conn, %{kind: kind, reason: reason, stack: stacktrace}) do
-    LoggerJSON.log_error(kind, reason, stacktrace)
-    send_resp(conn, 500, Poison.encode!(%{errors: %{detail: "Internal server error"}}))
-  end
-
-  defp handle_errors(_, _), do: nil
 end
