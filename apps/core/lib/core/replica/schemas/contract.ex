@@ -45,6 +45,6 @@ defmodule Core.Replica.Contract do
     has_many(:contract_employees, ContractEmployee)
     has_many(:contract_divisions, ContractDivision)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

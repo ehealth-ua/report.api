@@ -42,6 +42,6 @@ defmodule Core.Replica.MedicationRequest do
     belongs_to(:medication, Core.Replica.Medication, define_field: false)
     belongs_to(:legal_entity, Core.Replica.LegalEntity, define_field: false)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

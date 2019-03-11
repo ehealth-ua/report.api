@@ -9,7 +9,7 @@ defmodule Core.Replica.Settlement do
     field(:mountain_group, :boolean)
     field(:koatuu, :string)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
 
     belongs_to(:region, Core.Replica.Region, type: Ecto.UUID)
     belongs_to(:district, Core.Replica.District, type: Ecto.UUID)

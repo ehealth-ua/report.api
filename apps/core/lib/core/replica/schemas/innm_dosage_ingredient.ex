@@ -13,6 +13,6 @@ defmodule Core.Replica.INNMDosageIngredient do
     belongs_to(:innm_dosage, Medication, type: Ecto.UUID, foreign_key: :parent_id)
     belongs_to(:innm, INNM, type: Ecto.UUID, foreign_key: :innm_child_id)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

@@ -27,6 +27,6 @@ defmodule Core.Replica.LegalEntity do
     has_one(:medical_service_provider, {"medical_service_providers", Core.Replica.MSP}, on_replace: :delete)
     has_many(:employees, Core.Replica.Employee, on_replace: :delete)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

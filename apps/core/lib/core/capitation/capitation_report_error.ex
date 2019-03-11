@@ -14,6 +14,6 @@ defmodule Core.CapitationReportError do
     field(:declaration_id, UUID)
     field(:action, :string)
     field(:message, :string)
-    timestamps(updated_at: false)
+    timestamps(type: :utc_datetime, updated_at: false)
   end
 end

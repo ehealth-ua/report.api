@@ -15,6 +15,6 @@ defmodule Core.Replica.INNM do
 
     has_many(:ingredients, INNMDosageIngredient, foreign_key: :innm_child_id)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

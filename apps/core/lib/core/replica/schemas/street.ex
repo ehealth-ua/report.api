@@ -8,7 +8,7 @@ defmodule Core.Replica.Street do
     field(:name, :string)
     field(:type, :string)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
 
     has_many(:aliases, Core.Replica.StreetsAliases)
 

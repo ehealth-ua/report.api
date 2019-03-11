@@ -9,6 +9,6 @@ defmodule Core.Replica.PartyUser do
 
     belongs_to(:party, Core.Replica.Party, type: Ecto.UUID)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

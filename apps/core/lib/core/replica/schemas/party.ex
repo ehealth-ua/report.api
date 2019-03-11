@@ -19,6 +19,6 @@ defmodule Core.Replica.Party do
 
     has_many(:users, Core.Replica.PartyUser, foreign_key: :party_id)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

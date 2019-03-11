@@ -7,7 +7,7 @@ defmodule Core.Replica.Region do
   schema "regions" do
     field(:name, :string)
     field(:koatuu, :string)
-    timestamps()
+    timestamps(type: :utc_datetime)
 
     has_many(:districts, Core.Replica.District)
   end

@@ -12,6 +12,6 @@ defmodule Core.Replica.RelatedLegalEntity do
     field(:merged_from_id, Ecto.UUID)
     field(:merged_to_id, Ecto.UUID)
 
-    timestamps(updated_at: false)
+    timestamps(type: :utc_datetime, updated_at: false)
   end
 end

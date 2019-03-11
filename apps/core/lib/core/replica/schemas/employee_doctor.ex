@@ -47,6 +47,6 @@ defmodule Core.Replica.EmployeeDoctor do
 
     belongs_to(:employee, Core.Replica.Employee, type: Ecto.UUID)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

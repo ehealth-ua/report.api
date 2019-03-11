@@ -19,6 +19,6 @@ defmodule Core.Replica.Medication do
     field(:inserted_by, Ecto.UUID)
     field(:updated_by, Ecto.UUID)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

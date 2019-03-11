@@ -8,7 +8,7 @@ defmodule Core.Replica.District do
     field(:name, :string)
     field(:koatuu, :string)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
 
     belongs_to(:region, Core.Replica.Region, type: Ecto.UUID)
 

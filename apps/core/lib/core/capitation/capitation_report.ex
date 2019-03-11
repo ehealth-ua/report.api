@@ -7,6 +7,6 @@ defmodule Core.CapitationReport do
 
   schema "capitation_reports" do
     field(:billing_date, :date)
-    timestamps(updated_at: false)
+    timestamps(type: :utc_datetime, updated_at: false)
   end
 end

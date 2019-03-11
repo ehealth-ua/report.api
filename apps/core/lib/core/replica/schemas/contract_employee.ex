@@ -19,6 +19,6 @@ defmodule Core.Replica.ContractEmployee do
 
     belongs_to(:contract, Contract, type: UUID)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end
