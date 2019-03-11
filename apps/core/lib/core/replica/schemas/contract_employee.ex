@@ -12,8 +12,8 @@ defmodule Core.Replica.ContractEmployee do
     field(:staff_units, :float)
     field(:declaration_limit, :integer)
     field(:division_id, UUID)
-    field(:start_date, :naive_datetime)
-    field(:end_date, :naive_datetime)
+    field(:start_date, :utc_datetime)
+    field(:end_date, :utc_datetime)
     field(:inserted_by, UUID)
     field(:updated_by, UUID)
 
