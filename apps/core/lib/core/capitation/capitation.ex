@@ -53,7 +53,7 @@ defmodule Core.Capitation do
           age_group: crd.age_group,
           cnt: sum(crd.declaration_count)
         })
-        |> join(:left, [crd], contr in Contract, contr.id == crd.contract_id)
+        |> join(:left, [crd], contr in Contract, on: contr.id == crd.contract_id)
         |> group_by([crd, contr], [
           crd.capitation_report_id,
           crd.legal_entity_id,
@@ -145,8 +145,9 @@ defmodule Core.Capitation do
         :inner,
         [t],
         c in subquery(capitation_contracts_details_query),
-        c.contract_id == t.contract_id and c.legal_entity_id == t.legal_entity_id and
-          c.capitation_report_id == t.capitation_report_id
+        on:
+          c.contract_id == t.contract_id and c.legal_entity_id == t.legal_entity_id and
+            c.capitation_report_id == t.capitation_report_id
       )
 
     main_report_detail_query =
@@ -180,11 +181,12 @@ defmodule Core.Capitation do
       :left,
       [d],
       ci in subquery(total_details_query),
-      ci.contract_id == d.contract_id and ci.legal_entity_id == d.legal_entity_id and
-        ci.capitation_report_id == d.report_id
+      on:
+        ci.contract_id == d.contract_id and ci.legal_entity_id == d.legal_entity_id and
+          ci.capitation_report_id == d.report_id
     )
-    |> join(:left, [d, ci], l in LegalEntity, l.id == d.legal_entity_id)
-    |> join(:inner, [d, ci, l], r in CapitationReport, r.id == d.report_id)
+    |> join(:left, [d, ci], l in LegalEntity, on: l.id == d.legal_entity_id)
+    |> join(:inner, [d, ci, l], r in CapitationReport, on: r.id == d.report_id)
     |> group_by([d, ci, l, r], [
       r.billing_date,
       d.report_id,

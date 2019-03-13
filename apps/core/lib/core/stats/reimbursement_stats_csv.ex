@@ -53,7 +53,7 @@ defmodule Core.Stats.ReimbursementStatsCSV do
       :left,
       [mr],
       md in assoc(mr, :medication_dispense),
-      mr.id == md.medication_request_id and md.status == "PROCESSED" and md.is_active
+      on: mr.id == md.medication_request_id and md.status == "PROCESSED" and md.is_active
     )
     |> where([mr, md], fragment("? BETWEEN ? AND ?", md.dispensed_at, ^from, ^to))
     |> where([mr], mr.is_active and mr.intent == "order")
@@ -62,7 +62,7 @@ defmodule Core.Stats.ReimbursementStatsCSV do
     |> join(:left, [mr, md, m_req, e_req], p_req in assoc(e_req, :party))
     |> join(:left, [mr, md], le_req in assoc(mr, :legal_entity))
     |> join(:left, [mr, md], le_dis in assoc(md, :legal_entity))
-    |> join(:left, [mr, md], ing in INNMDosageIngredient, ing.parent_id == mr.medication_id and ing.is_primary)
+    |> join(:left, [mr, md], ing in INNMDosageIngredient, on: ing.parent_id == mr.medication_id and ing.is_primary)
     |> join(:left, [..., ing], innm in assoc(ing, :innm))
     |> join(:left, [mr, md], d in assoc(md, :details))
     |> join(:left, [..., d], m_det in assoc(d, :medication))

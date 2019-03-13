@@ -13,7 +13,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
     test "party not found", %{conn: conn} do
       %{id: legal_entity_id} = insert(:legal_entity)
-      data = Poison.encode!(%{"client_id" => legal_entity_id})
+      data = Jason.encode!(%{"client_id" => legal_entity_id})
 
       conn = Plug.Conn.put_req_header(conn, Connection.header(:consumer_metadata), data)
       conn = get(conn, reimbursement_path(conn, :index))
@@ -22,7 +22,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
     test "legal_entity is not active", %{conn: conn} do
       %{id: legal_entity_id} = insert(:legal_entity, is_active: false)
-      data = Poison.encode!(%{"client_id" => legal_entity_id})
+      data = Jason.encode!(%{"client_id" => legal_entity_id})
 
       conn =
         conn
@@ -37,7 +37,7 @@ defmodule Report.Web.ReimbursementControllerTest do
       %{id: legal_entity_id} = insert(:legal_entity)
       %{user_id: user_id} = insert(:party_user)
 
-      data = Poison.encode!(%{"client_id" => legal_entity_id})
+      data = Jason.encode!(%{"client_id" => legal_entity_id})
 
       conn =
         conn
@@ -58,7 +58,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:employee, party: party, legal_entity: legal_entity, is_active: false)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -79,7 +79,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:employee, party: party)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -100,7 +100,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:employee, party: party, legal_entity: legal_entity)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -121,7 +121,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:employee, party: party, legal_entity: legal_entity)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -166,7 +166,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:medication, id: medication_id)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -240,7 +240,7 @@ defmodule Report.Web.ReimbursementControllerTest do
         insert_details(medication_dispense_id)
       end)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -259,7 +259,7 @@ defmodule Report.Web.ReimbursementControllerTest do
       schema =
         "specs/schemas/reimbursement_report_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       resp = json_response(conn, 200)
       :ok = NExJsonSchema.Validator.validate(schema, resp)
@@ -285,7 +285,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:medication, id: medication_id)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -304,7 +304,7 @@ defmodule Report.Web.ReimbursementControllerTest do
       schema =
         "specs/schemas/reimbursement_report_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       resp = json_response(conn, 200)
       :ok = NExJsonSchema.Validator.validate(schema, resp)
@@ -330,7 +330,7 @@ defmodule Report.Web.ReimbursementControllerTest do
 
       insert(:medication, id: medication_id)
 
-      data = Poison.encode!(%{"client_id" => legal_entity.id})
+      data = Jason.encode!(%{"client_id" => legal_entity.id})
 
       conn =
         conn
@@ -351,7 +351,7 @@ defmodule Report.Web.ReimbursementControllerTest do
       schema =
         "specs/schemas/reimbursement_report_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       resp = json_response(conn, 200)
       :ok = NExJsonSchema.Validator.validate(schema, resp)

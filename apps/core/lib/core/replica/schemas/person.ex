@@ -1,8 +1,8 @@
 defmodule Core.Replica.Person do
   @moduledoc false
   use Ecto.Schema
+
   @primary_key {:id, Ecto.UUID, autogenerate: true}
-  @derive {Poison.Encoder, except: [:__meta__]}
   schema "persons" do
     field(:birth_date, :date)
     field(:death_date, :date)

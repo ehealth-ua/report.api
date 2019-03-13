@@ -5,8 +5,8 @@ defmodule Core.Integration.DivisionStatsTest do
 
   alias Core.Replica.Division
   alias Core.Replica.Employee
-  alias Core.Stats.DivisionStats
   alias Core.Stats.DivisionsRequest
+  alias Core.Stats.DivisionStats
   alias Scrivener.Page
 
   describe "get_map_stats/1" do

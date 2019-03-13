@@ -21,7 +21,7 @@ defmodule Core.ResponseDecoder do
   def decode_response(""), do: {:ok, ""}
 
   def decode_response(response) do
-    case Poison.decode(response) do
+    case Jason.decode(response) do
       {:ok, body} -> {:ok, body}
       _ -> {:error, {:response_json_decoder, response}}
     end

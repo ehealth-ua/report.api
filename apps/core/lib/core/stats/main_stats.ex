@@ -63,7 +63,7 @@ defmodule Core.Stats.MainStats do
     msps =
       LegalEntity
       |> params_query(msp_params())
-      |> join(:left, [le], d in Division, d.legal_entity_id == le.id)
+      |> join(:left, [le], d in Division, on: d.legal_entity_id == le.id)
       |> where([le, d], d.id == ^id)
       |> count_query()
 
@@ -297,7 +297,7 @@ defmodule Core.Stats.MainStats do
     query
     |> params_query(%{"status" => "APPROVED"})
     |> params_query(%{"is_active" => true})
-    |> join(:left, [e], da in DivisionAddress, da.division_id == e.division_id)
+    |> join(:left, [e], da in DivisionAddress, on: da.division_id == e.division_id)
     |> where([..., da], da.type == "RESIDENCE")
     |> group_by([..., da], da.area)
     |> select([..., da], %{region: da.area, count: count(da.id)})
@@ -307,7 +307,7 @@ defmodule Core.Stats.MainStats do
   defp medication_requests_by_regions do
     MedicationRequest
     |> join(:left, [mr], e in assoc(mr, :employee))
-    |> join(:left, [mr], da in DivisionAddress, da.division_id == mr.division_id)
+    |> join(:left, [mr], da in DivisionAddress, on: da.division_id == mr.division_id)
     |> where([..., da], da.type == "RESIDENCE")
     |> group_by([..., da], da.area)
     |> select([..., da], %{region: da.area, count: count(da.id)})
@@ -317,7 +317,7 @@ defmodule Core.Stats.MainStats do
   defp declarations_by_regions do
     Declaration
     |> declaration_query()
-    |> join(:left, [d], da in DivisionAddress, da.division_id == d.division_id)
+    |> join(:left, [d], da in DivisionAddress, on: da.division_id == d.division_id)
     |> where([..., da], da.type == "RESIDENCE")
     |> group_by([..., da], da.area)
     |> select([..., da], %{region: da.area, count: count(da.id)})

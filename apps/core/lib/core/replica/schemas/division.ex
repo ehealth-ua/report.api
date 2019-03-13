@@ -13,7 +13,7 @@ defmodule Core.Replica.Division do
     field(:type, :string, null: false)
     field(:status, :string, null: false)
     field(:is_active, :boolean, default: false)
-    field(:location, Geo.Geometry)
+    field(:location, Geo.PostGIS.Geometry)
     field(:working_hours, :map)
 
     belongs_to(:legal_entity, Core.Replica.LegalEntity, type: Ecto.UUID)

@@ -120,9 +120,9 @@ defmodule Core.Stats.ReimbursementStats do
 
   defp do_get_data(query, legal_entity) do
     query
-    |> join(:left, [mr, md], e in Employee, e.id == mr.employee_id)
+    |> join(:left, [mr, md], e in Employee, on: e.id == mr.employee_id)
     |> join(:left, [mr, md, e], p_req in assoc(e, :party))
-    |> join(:left, [mr, md, e, p_req], le in LegalEntity, le.id == e.legal_entity_id)
+    |> join(:left, [mr, md, e, p_req], le in LegalEntity, on: le.id == e.legal_entity_id)
     |> join(:left, [mr], d_req in assoc(mr, :division))
     |> join(:left, [mr], mp_req in assoc(mr, :medical_program))
     |> join(:left, [mr], m in assoc(mr, :medication))
@@ -146,6 +146,6 @@ defmodule Core.Stats.ReimbursementStats do
   end
 
   defp join_medication_dispense(query) do
-    join(query, :left, [mr], md in assoc(mr, :medication_dispense), mr.id == md.medication_request_id)
+    join(query, :left, [mr], md in assoc(mr, :medication_dispense), on: mr.id == md.medication_request_id)
   end
 end

@@ -47,8 +47,9 @@ defmodule Core.Factory do
   end
 
   def declaration_factory do
-    start_date = Faker.NaiveDateTime.forward(1)
-    end_date = NaiveDateTime.add(start_date, 31_540_000)
+    start_date = Date.add(Date.utc_today(), 1)
+    end_date = Date.add(start_date, 365)
+    signed_at = NaiveDateTime.from_erl!({Date.to_erl(start_date), {0, 0, 0}})
 
     %Declaration{
       declaration_request_id: UUID.generate(),
@@ -57,7 +58,7 @@ defmodule Core.Factory do
       start_date: start_date,
       end_date: end_date,
       status: "active",
-      signed_at: start_date,
+      signed_at: signed_at,
       created_by: UUID.generate(),
       updated_by: UUID.generate(),
       is_active: true,
@@ -105,15 +106,15 @@ defmodule Core.Factory do
   end
 
   def employee_factory do
-    start_date = Faker.Date.forward(-2)
-    end_date = Faker.Date.forward(365)
+    start_date = Date.add(Date.utc_today(), -2)
+    end_date = Date.add(Date.utc_today(), 365)
 
     %Employee{
       employee_type: "DOCTOR",
-      position: Faker.Pokemon.name(),
+      position: "some position",
       start_date: start_date,
       end_date: end_date,
-      status_reason: Faker.Beer.style(),
+      status_reason: "",
       inserted_by: UUID.generate(),
       updated_by: UUID.generate(),
       status: "APPROVED",
@@ -129,7 +130,7 @@ defmodule Core.Factory do
 
     %Division{
       email: sequence(:email, &"division-#{&1}@example.com"),
-      name: Faker.Pokemon.name(),
+      name: "foo",
       status: "ACTIVE",
       is_active: true,
       type: "CLINIC",
@@ -162,8 +163,12 @@ defmodule Core.Factory do
   end
 
   def person_factory do
+    birth_date = Date.utc_today()
+    year = Enum.random((birth_date.year - 60)..birth_date.year)
+    birth_date = %{birth_date | year: year}
+
     %Person{
-      birth_date: Faker.Date.date_of_birth(19..70),
+      birth_date: birth_date,
       addresses: [
         %{
           zip: "02090",
@@ -202,11 +207,11 @@ defmodule Core.Factory do
       edrpou: sequence(:edrpou, &"2007772#{&1}"),
       email: sequence(:email, &"legal-entity-#{&1}@example.com"),
       kveds: ["test"],
-      name: Faker.Pokemon.name(),
-      public_name: Faker.Company.name(),
-      short_name: Faker.Company.suffix(),
-      legal_form: Faker.Pokemon.name(),
-      owner_property_type: Faker.Beer.style(),
+      name: "Клініка Борис",
+      public_name: "some public_name",
+      short_name: "some short_name",
+      legal_form: "240",
+      owner_property_type: "STATE",
       status: "ACTIVE",
       type: "MSP",
       inserted_by: UUID.generate(),
@@ -457,17 +462,17 @@ defmodule Core.Factory do
       status: Enum.random(["ACTIVE", "PENDING", "EXPIRED", "ANYRANDOM"]),
       contractor_legal_entity_id: UUID.generate(),
       contractor_owner_id: UUID.generate(),
-      contractor_base: Faker.Pokemon.name(),
+      contractor_base: "на підставі закону про Медичне обслуговування населення",
       contractor_payment_details: %{a: 1},
       contractor_rmsp_amount: Enum.random(1..100),
       external_contractor_flag: Enum.random([true, false]),
       nhs_signer_id: UUID.generate(),
-      nhs_signer_base: Faker.Name.first_name(),
+      nhs_signer_base: "на підставі наказу",
       nhs_legal_entity_id: UUID.generate(),
-      nhs_payment_method: Faker.Company.buzzword(),
+      nhs_payment_method: "prepayment",
       is_active: Enum.random([true, false]),
       is_suspended: Enum.random([true, false]),
-      issue_city: Faker.Pizza.pizza(),
+      issue_city: "Київ",
       nhs_contract_price: Enum.random(1..9) / 10 + Enum.random(1..99),
       contract_number: "contract-number-#{Enum.random(1000..10000)}",
       contract_request_id: UUID.generate(),

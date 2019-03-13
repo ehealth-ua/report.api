@@ -15,7 +15,7 @@ defmodule Core.Integration.MainStatsTest do
     schema =
       "test/data/stats/main_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     schema = Map.put(schema, "properties", get_in(schema, ~w(properties data properties)))
     :ok = NExJsonSchema.Validator.validate(schema, main_stats)
@@ -32,7 +32,7 @@ defmodule Core.Integration.MainStatsTest do
     schema =
       "test/data/stats/division_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     :ok = NExJsonSchema.Validator.validate(schema, main_stats)
 
@@ -54,7 +54,7 @@ defmodule Core.Integration.MainStatsTest do
     schema =
       "test/data/stats/regions_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     assert 4 == main_stats |> List.first() |> get_in(["stats", "doctors"])
 
@@ -92,7 +92,7 @@ defmodule Core.Integration.MainStatsTest do
     schema =
       "test/data/stats/histogram_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     schema =
       schema
@@ -150,7 +150,7 @@ defmodule Core.Integration.MainStatsTest do
     schema =
       "test/data/stats/histogram_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     schema =
       schema
@@ -218,7 +218,7 @@ defmodule Core.Integration.MainStatsTest do
     schema =
       "test/data/stats/histogram_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     schema =
       schema

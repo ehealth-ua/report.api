@@ -30,7 +30,7 @@ defmodule Core.MediaStorage do
   def create_signed_url(data) do
     config()[:endpoint]
     |> Kernel.<>("/media_content_storage_secrets")
-    |> post!(Poison.encode!(data), [{"Content-Type", "application/json"}], options())
+    |> post!(Jason.encode!(data), [{"Content-Type", "application/json"}], options())
     |> ResponseDecoder.check_response()
   end
 
@@ -40,10 +40,10 @@ defmodule Core.MediaStorage do
     response =
       config()[:endpoint]
       |> Kernel.<>("/validate_signed_entity")
-      |> post(Poison.encode!(rules), [{"Content-Type", "application/json"}], options())
+      |> post(Jason.encode!(rules), [{"Content-Type", "application/json"}], options())
 
     case check_gcs_response(response) do
-      {:ok, body} -> {:ok, Poison.decode!(body)}
+      {:ok, body} -> {:ok, Jason.decode!(body)}
       _ -> validate_signed_entity(rules, retry: retry - 1, timeout: timeout + 1000)
     end
   end

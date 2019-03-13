@@ -211,7 +211,7 @@ defmodule Report.CapitationControllerTest do
           :inner,
           [l],
           c in CapitationReportDetail,
-          c.legal_entity_id == l.id and c.id == ^cd.id
+          on: c.legal_entity_id == l.id and c.id == ^cd.id
         )
         |> limit(^1)
         |> Repo.one()

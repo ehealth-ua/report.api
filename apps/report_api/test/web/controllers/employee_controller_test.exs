@@ -71,7 +71,7 @@ defmodule Report.Web.EmployeeControllerTest do
       schema =
         "test/data/stats/employee_stats_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       :ok = NExJsonSchema.Validator.validate(schema, resp)
 
@@ -106,7 +106,7 @@ defmodule Report.Web.EmployeeControllerTest do
                    "last_name" => "some last_name",
                    "second_name" => "some second_name",
                    "specialities" => [
-                     Map.put(employee.speciality |> Poison.encode!() |> Poison.decode!(), "speciality_officio", true)
+                     Map.put(employee.speciality |> Jason.encode!() |> Jason.decode!(), "speciality_officio", true)
                      | specialities
                    ]
                  }
@@ -316,7 +316,7 @@ defmodule Report.Web.EmployeeControllerTest do
           :employee,
           party: party,
           division: division,
-          speciality: Map.put(hd(specialities), :speciality_officio, true)
+          speciality: Map.put(hd(specialities), "speciality_officio", true)
         )
 
       insert(:employee)
@@ -327,7 +327,7 @@ defmodule Report.Web.EmployeeControllerTest do
       schema =
         "test/data/stats/employee_stats_details_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       :ok = NExJsonSchema.Validator.validate(schema, resp)
 
@@ -367,10 +367,10 @@ defmodule Report.Web.EmployeeControllerTest do
                  "working_experience" => nil,
                  "educations" => educations,
                  "specialities" => [
-                   Map.put(employee.speciality |> Poison.encode!() |> Poison.decode!(), "speciality_officio", true)
+                   Map.put(employee.speciality |> Jason.encode!() |> Jason.decode!(), "speciality_officio", true)
                  ],
-                 "qualifications" => qualifications |> Poison.encode!() |> Poison.decode!(),
-                 "science_degree" => science_degree |> Poison.encode!() |> Poison.decode!()
+                 "qualifications" => qualifications |> Jason.encode!() |> Jason.decode!(),
+                 "science_degree" => science_degree |> Jason.encode!() |> Jason.decode!()
                },
                "position" => employee.position,
                "legal_entity" => %{

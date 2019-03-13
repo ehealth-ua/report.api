@@ -79,15 +79,15 @@ defmodule Capitation.CapitationProducer do
     contract_id
     |> API.get_contracts_query_by_id()
     |> API.get_contract_employees_query_by_id(contract_employee_id)
-    |> join(:inner, [_, ce], d in Declaration, d.employee_id == ce.employee_id and d.division_id == ce.division_id)
-    |> join(:inner, [_, _, d], p in Person, p.id == d.person_id)
-    |> join(:inner, [_, ce, d], dv in Division, dv.id == d.division_id)
-    |> join(:inner, [_, _, d], le in LegalEntity, le.id == d.legal_entity_id)
+    |> join(:inner, [_, ce], d in Declaration, on: d.employee_id == ce.employee_id and d.division_id == ce.division_id)
+    |> join(:inner, [_, _, d], p in Person, on: p.id == d.person_id)
+    |> join(:inner, [_, ce, d], dv in Division, on: dv.id == d.division_id)
+    |> join(:inner, [_, _, d], le in LegalEntity, on: le.id == d.legal_entity_id)
     |> join(
       :left,
       [_, _, d, _],
       dsh in fragment("SELECT * FROM mv_declarations_status_hstr"),
-      dsh.declaration_id == d.id
+      on: dsh.declaration_id == d.id
     )
     |> select([c, ce, d, p, dv, le, dsh], %{
       id: d.id,

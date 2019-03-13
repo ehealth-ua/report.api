@@ -43,24 +43,22 @@ defmodule Core.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:confex_config_provider, "~> 0.1.0"},
-      {:kube_rpc, git: "https://github.com/edenlabllc/kube_rpc.git"},
+      {:kube_rpc, "~> 0.1.0"},
       {:confex, "~> 3.4"},
-      {:poison, "~> 3.1"},
       {:jason, "~> 1.0"},
       {:httpoison, "~> 1.2"},
-      {:ecto, "~> 2.1"},
-      {:phoenix_ecto, "~> 3.2.1"},
-      {:geo, "~> 1.5"},
+      {:ecto, "~> 3.0"},
+      {:ecto_sql, "~> 3.0"},
+      {:phoenix_ecto, "~> 4.0"},
+      {:geo_postgis, "~> 3.1"},
       {:timex, "~> 3.3.0"},
       {:csv, "~> 2.0.0"},
       {:jvalid, "~> 0.6.0"},
-      {:scrivener_ecto, "~> 1.3.0"},
-      {:mox, "~> 0.3", only: :test},
+      {:scrivener_ecto, git: "https://github.com/AlexKovalevych/scrivener_ecto.git", branch: "fix_page_number"},
+      {:mox, "~> 0.5.0", only: [:test]},
       {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
-      {:faker, "~> 0.11", only: [:test]},
-      {:ex_machina, "~> 2.0", only: :test},
-      {:postgrex, "~> 0.13", override: true}
+      {:ex_machina, "~> 2.2", only: [:dev, :test]},
+      {:postgrex, "~> 0.14.1"}
     ]
   end
 

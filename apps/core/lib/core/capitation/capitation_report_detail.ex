@@ -18,7 +18,6 @@ defmodule Core.CapitationReportDetail do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @derive {Poison.Encoder, only: [:legal_entity_id]}
   schema "capitation_report_details" do
     field(:capitation_report_id, UUID)
     field(:legal_entity_id, UUID)

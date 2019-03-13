@@ -1,9 +1,9 @@
 defmodule Core.Replica.ReplicasTest do
   @moduledoc false
+
   use Core.DataCase, async: true
   import Core.Factory
   alias Core.Replica.Replicas
-  alias Core.Repo
 
   describe "Replicas API" do
     setup do
@@ -13,21 +13,6 @@ defmodule Core.Replica.ReplicasTest do
 
     test "list_declarations/0" do
       declarations = Replicas.list_declarations()
-      assert length(declarations) == 15
-    end
-
-    test "stream_declarations_beetween/0", %{declarations: declarations} do
-      stream =
-        Replicas.stream_declarations_beetween(
-          List.first(declarations).inserted_at,
-          List.last(declarations).inserted_at
-        )
-
-      {:ok, declarations} =
-        Repo.transaction(fn ->
-          Enum.to_list(stream)
-        end)
-
       assert length(declarations) == 15
     end
 

@@ -28,7 +28,7 @@ defmodule Core.Connection do
 
   defp decode_client_metadata(metadata) do
     metadata
-    |> Poison.decode()
+    |> Jason.decode()
     |> process_decoded_data()
   end
 

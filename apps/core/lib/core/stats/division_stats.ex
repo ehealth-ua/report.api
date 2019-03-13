@@ -50,7 +50,7 @@ defmodule Core.Stats.DivisionStats do
       :inner,
       [..., l],
       e in Employee,
-      e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
+      on: e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
     )
     |> Repo.all()
     |> Enum.map(fn {id} -> id end)
@@ -65,7 +65,7 @@ defmodule Core.Stats.DivisionStats do
       :inner,
       [..., l],
       e in Employee,
-      e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
+      on: e.legal_entity_id == l.id and e.employee_type in [@type_owner, @type_pharmacy_owner] and e.is_active
     )
     |> join(:inner, [..., e], innm in assoc(e, :party))
     |> preload([..., l, e, p], legal_entity: {l, employees: {e, party: p}})

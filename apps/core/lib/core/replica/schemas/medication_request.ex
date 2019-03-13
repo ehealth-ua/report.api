@@ -4,8 +4,6 @@ defmodule Core.Replica.MedicationRequest do
   use Ecto.Schema
   alias Ecto.UUID
 
-  @derive {Poison.Encoder, except: [:__meta__]}
-
   @primary_key {:id, :binary_id, autogenerate: false}
   schema "medication_requests" do
     field(:request_number, :string)

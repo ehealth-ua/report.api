@@ -15,7 +15,7 @@ defmodule Report.Web.StatsControllerTest do
     schema =
       "test/data/stats/main_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     :ok = Validator.validate(schema, json_response(conn, 200))
   end
@@ -31,7 +31,7 @@ defmodule Report.Web.StatsControllerTest do
     schema =
       "test/data/stats/division_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     :ok = Validator.validate(schema, json_response(conn, 200))
   end
@@ -42,7 +42,7 @@ defmodule Report.Web.StatsControllerTest do
     schema =
       "test/data/stats/regions_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     conn = get(conn, stats_path(conn, :regions))
     :ok = Validator.validate(schema, json_response(conn, 200))
@@ -84,7 +84,7 @@ defmodule Report.Web.StatsControllerTest do
     schema =
       "test/data/stats/histogram_stats_response.json"
       |> File.read!()
-      |> Poison.decode!()
+      |> Jason.decode!()
 
     :ok = Validator.validate(schema, json_response(conn, 200))
   end
@@ -103,7 +103,7 @@ defmodule Report.Web.StatsControllerTest do
       schema =
         "test/data/stats/divisions_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       :ok = Validator.validate(schema, resp)
     end
@@ -202,12 +202,12 @@ defmodule Report.Web.StatsControllerTest do
         )
 
       assert map_stats = response(conn, 200)
-      map_stats = Poison.decode!(map_stats)
+      map_stats = Jason.decode!(map_stats)
 
       schema =
         "test/data/stats/divisions_response.json"
         |> File.read!()
-        |> Poison.decode!()
+        |> Jason.decode!()
 
       :ok = Validator.validate(schema, map_stats)
 

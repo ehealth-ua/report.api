@@ -95,13 +95,14 @@ defmodule Capitation.API do
       :inner,
       [c],
       ce in ContractEmployee,
-      c.id == ce.contract_id and fragment("?::date < ?", ce.start_date, ^billing_date) and
-        fragment("(? is null or ?::date >= ?)", ce.end_date, ce.end_date, ^billing_date)
+      on:
+        c.id == ce.contract_id and fragment("?::date < ?", ce.start_date, ^billing_date) and
+          fragment("(? is null or ?::date >= ?)", ce.end_date, ce.end_date, ^billing_date)
     )
   end
 
   def get_contract_employees_query_by_id(query, contract_employee_id) do
-    join(query, :inner, [c], ce in ContractEmployee, c.id == ce.contract_id and ce.id == ^contract_employee_id)
+    join(query, :inner, [c], ce in ContractEmployee, on: c.id == ce.contract_id and ce.id == ^contract_employee_id)
   end
 
   defp create_materialized_view(billing_date) do

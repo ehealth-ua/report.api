@@ -2,7 +2,6 @@ use Mix.Config
 
 # Configure your database
 config :core, Core.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   database: "report_test",
   password: "postgres",
