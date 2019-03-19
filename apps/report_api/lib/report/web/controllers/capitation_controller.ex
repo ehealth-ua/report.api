@@ -1,6 +1,8 @@
 defmodule Report.Web.CapitationController do
   @moduledoc false
+
   use Report.Web, :controller
+
   alias Core.Capitation
   alias Report.Validators.JsonSchema
   alias Report.Web.CapitationView

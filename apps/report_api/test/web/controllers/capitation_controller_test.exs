@@ -2,10 +2,12 @@ defmodule Report.CapitationControllerTest do
   @moduledoc false
 
   use Report.Web.ConnCase
+
+  import Ecto.Query
+
   alias Core.CapitationReportDetail
   alias Core.Replica.LegalEntity
   alias Core.Repo
-  import Ecto.Query
 
   describe "List capitation reports" do
     test "success", %{conn: conn} do
@@ -121,9 +123,7 @@ defmodule Report.CapitationControllerTest do
     test "invalid legal_entity_id", %{conn: conn} do
       resp =
         conn
-        |> get("/api/capitation_report_details", %{
-          legal_entity_id: "not UUID"
-        })
+        |> get(capitation_path(conn, :details, %{legal_entity_id: "not UUID"}))
         |> json_response(422)
 
       assert [%{"entry" => "$.legal_entity_id"}] = resp["error"]["invalid"]
@@ -132,9 +132,7 @@ defmodule Report.CapitationControllerTest do
     test "invalid report_id", %{conn: conn} do
       resp =
         conn
-        |> get("/api/capitation_report_details", %{
-          report_id: "not UUID"
-        })
+        |> get(capitation_path(conn, :details, %{report_id: "not UUID"}))
         |> json_response(422)
 
       assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] = resp["error"]["invalid"]
@@ -143,9 +141,7 @@ defmodule Report.CapitationControllerTest do
     test "invalid UUID-like report_id", %{conn: conn} do
       resp =
         conn
-        |> get("/api/capitation_report_details", %{
-          report_id: "3160405192-08e07522-ba03-4a8f-a07e-c752e09ca84f"
-        })
+        |> get(capitation_path(conn, :details, %{report_id: "3160405192-08e07522-ba03-4a8f-a07e-c752e09ca84f"}))
         |> json_response(422)
 
       assert [%{"entry" => "$.report_id", "entry_type" => "json_data_property"}] = resp["error"]["invalid"]
@@ -154,9 +150,7 @@ defmodule Report.CapitationControllerTest do
     test "invalid edrpou", %{conn: conn} do
       resp =
         conn
-        |> get("/api/capitation_report_details", %{
-          edrpou: "0123"
-        })
+        |> get(capitation_path(conn, :details, %{edrpou: "0123"}))
         |> json_response(422)
 
       assert [%{"entry" => "$.edrpou"}] = resp["error"]["invalid"]
@@ -167,10 +161,7 @@ defmodule Report.CapitationControllerTest do
 
       response =
         conn
-        |> get("/api/capitation_report_details", %{
-          page_size: 2,
-          report_id: cr.id
-        })
+        |> get(capitation_path(conn, :details, %{page_size: 2, report_id: cr.id}))
         |> json_response(200)
 
       assert response["data"] == []
@@ -218,12 +209,14 @@ defmodule Report.CapitationControllerTest do
 
       response =
         conn
-        |> get("/api/capitation_report_details", %{
-          page_size: 2,
-          edrpou: le.edrpou,
-          legal_entity_id: le.id,
-          report_id: cd.capitation_report_id
-        })
+        |> get(
+          capitation_path(conn, :details, %{
+            page_size: 2,
+            edrpou: le.edrpou,
+            legal_entity_id: le.id,
+            report_id: cd.capitation_report_id
+          })
+        )
         |> json_response(200)
 
       assert response["data"]
@@ -294,10 +287,7 @@ defmodule Report.CapitationControllerTest do
 
       response =
         conn
-        |> get("/api/capitation_report_details", %{
-          page_size: 3,
-          legal_entity_id: legal_entity.id
-        })
+        |> get(capitation_path(conn, :details, %{page_size: 3, legal_entity_id: legal_entity.id}))
         |> json_response(200)
 
       assert %{
@@ -338,10 +328,7 @@ defmodule Report.CapitationControllerTest do
 
       response =
         conn
-        |> get("/api/capitation_report_details", %{
-          page_size: 2,
-          legal_entity_id: legal_entity.id
-        })
+        |> get(capitation_path(conn, :details, %{page_size: 2, legal_entity_id: legal_entity.id}))
         |> json_response(200)
 
       reports = response["data"]
