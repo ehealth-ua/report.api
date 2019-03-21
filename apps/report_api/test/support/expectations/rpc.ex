@@ -19,13 +19,13 @@ defmodule Core.Expectations.Rpc do
 
   def expect_get_histogram_stats(times \\ 1) do
     expect(RpcWorkerMock, :run, times, fn _, _, :get_histogram_stats, _ ->
-      to_date = Timex.now()
-      from_date = Timex.shift(to_date, days: -30)
+      to_date = Timex.end_of_month(Timex.now())
+      from_date = to_date |> Timex.shift(months: -12) |> Timex.beginning_of_month()
 
       MainStats.get_histogram_stats(%{
-        "from_date" => Timex.format!(from_date, "{ISOdate}"),
-        "to_date" => Timex.format!(to_date, "{ISOdate}"),
-        "interval" => HistogramStatsRequest.interval(:day)
+        "from_date" => from_date,
+        "to_date" => to_date,
+        "interval" => HistogramStatsRequest.interval(:month)
       })
     end)
   end

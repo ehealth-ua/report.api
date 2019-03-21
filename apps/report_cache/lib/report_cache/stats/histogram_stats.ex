@@ -6,6 +6,7 @@ defmodule ReportCache.Stats.HistogramStats do
   use GenServer
   use Confex, otp_app: :report_cache
   use Timex
+
   alias Core.Stats.HistogramStatsRequest
   alias Core.Stats.MainStats
   alias ReportCache.Stats.Cache
@@ -20,14 +21,14 @@ defmodule ReportCache.Stats.HistogramStats do
   end
 
   def handle_info(:update_stats, state) do
-    to_date = Timex.now()
-    from_date = Timex.shift(to_date, days: -30)
+    to_date = Timex.end_of_month(Timex.now())
+    from_date = to_date |> Timex.shift(months: -12) |> Timex.beginning_of_month()
 
     with {:ok, stats} <-
            MainStats.get_histogram_stats(%{
-             "from_date" => Timex.format!(from_date, "{ISOdate}"),
-             "to_date" => Timex.format!(to_date, "{ISOdate}"),
-             "interval" => HistogramStatsRequest.interval(:day)
+             "from_date" => from_date,
+             "to_date" => to_date,
+             "interval" => HistogramStatsRequest.interval(:month)
            }) do
       Cache.set_histogram_stats(stats)
     end
