@@ -7,6 +7,5 @@ config :core, Core.Repo,
   hostname: {:system, :string, "DB_HOST"},
   port: {:system, :integer, "DB_PORT"},
   pool_size: {:system, :integer, "DB_POOL_SIZE", 10},
-  timeout: 15_000
-
-# types: Core.PostgresTypes
+  timeout: 15_000,
+  types: Core.PostgresTypes
