@@ -3,7 +3,6 @@
 use Mix.Config
 
 config :git_ops,
-  version_tag_prefix: "v",
   mix_project: Report.MixProject,
   changelog_file: "CHANGELOG.md",
   repository_url: "https://github.com/edenlabllc/report.api/",

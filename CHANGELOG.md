@@ -5,6 +5,33 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.4.0](https://github.com/edenlabllc/report.api/compare/2.3.3...2.4.0) (2019-3-27)
+
+
+
+
+### Features:
+
+* Dev 4360 change period of get histogram stats declaration to month (#188)
+
+* Ecto 3 (#185)
+
+* reason fields added to declarations (#181)
+
+* phoenix instruments (#179)
+
+### Bug Fixes:
+
+* postgis ecto types (#189)
+
+* report_api: fix pagination types on capitation details (#187)
+
+* about myself text (#184)
+
+* return rest of datetime fields with timezones
+
+* refactor(core): return timestamps with timezones (#182)
+
 ## [2.3.3](https://github.com/edenlabllc/report.api/compare/2.3.3...2.3.3) (2019-3-4)
 
 
