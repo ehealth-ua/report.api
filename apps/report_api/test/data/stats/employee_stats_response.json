@@ -29,6 +29,12 @@
                             "specialities": {
                                 "type": "array",
                                 "description": "блок інформації про отримання сертифікату спеціалісту та проходження атестацій"
+                            },
+                            "gender": {
+                                "type": "string"
+                            },
+                            "no_tax_id": {
+                                "type": "boolean"
                             }
                         },
                         "required": [

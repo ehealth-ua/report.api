@@ -15,6 +15,8 @@ defmodule Core.Replica.Division do
     field(:is_active, :boolean, default: false)
     field(:location, Geo.PostGIS.Geometry)
     field(:working_hours, :map)
+    field(:dls_id, :string)
+    field(:dls_verified, :boolean)
 
     belongs_to(:legal_entity, Core.Replica.LegalEntity, type: Ecto.UUID)
     has_many(:addresses, Core.Replica.DivisionAddress, foreign_key: :division_id)

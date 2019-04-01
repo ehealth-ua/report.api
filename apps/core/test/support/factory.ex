@@ -62,7 +62,10 @@ defmodule Core.Factory do
       created_by: UUID.generate(),
       updated_by: UUID.generate(),
       is_active: true,
-      scope: ""
+      scope: "",
+      declaration_number: "1111",
+      overlimit: false,
+      reason_description: "some description"
     }
   end
 
@@ -121,7 +124,10 @@ defmodule Core.Factory do
       is_active: true,
       party: build(:party),
       legal_entity: build(:legal_entity),
-      division: build(:division)
+      division: build(:division),
+      additional_info: %{},
+      speciality_officio: "some speciality",
+      speciality_officio_valid_to_date: NaiveDateTime.utc_now()
     }
   end
 
@@ -140,7 +146,9 @@ defmodule Core.Factory do
       location: %Geo.Point{
         coordinates: {50.12332, 30.12332}
       },
-      legal_entity_id: nil
+      legal_entity_id: nil,
+      dls_id: UUID.generate(),
+      dls_verified: true
     }
   end
 
@@ -222,7 +230,37 @@ defmodule Core.Factory do
       addresses: [%{}],
       phones: [],
       mis_verified: "VERIFIED",
-      nhs_verified: true
+      nhs_verified: true,
+      capitation_contract_id: UUID.generate(),
+      archive: %{},
+      website: "some website",
+      beneficiary: "some beneficiary",
+      receiver_funds_code: "some code",
+      nhs_reviewed: true,
+      nhs_comment: "some comment",
+      edr_verified: true,
+      registration_country: "some country",
+      registration_area: "some area",
+      registration_region: "some region",
+      registration_settlement: "some settlement",
+      registration_settlement_type: "some settlement type",
+      registration_settlement_id: UUID.generate(),
+      registration_street_type: "some street type",
+      registration_street: "some street",
+      registration_building: "1",
+      registration_zip: "12345",
+      residence_country: "some country",
+      residence_area: "some area",
+      residence_region: "some region",
+      residence_settlement: "some settlement",
+      residence_settlement_type: "some settlement type",
+      residence_settlement_id: UUID.generate(),
+      residence_street_type: "some street type",
+      residence_street: "some street",
+      residence_building: "1",
+      residence_zip: "12345",
+      mobile_phone: "+380503410870",
+      land_line_phone: "+380503410870"
     }
   end
 
@@ -258,7 +296,14 @@ defmodule Core.Factory do
       first_name: "some first_name",
       last_name: "some last_name",
       second_name: "some second_name",
-      declaration_limit: 2000
+      declaration_limit: 2000,
+      gender: "some gender",
+      inserted_by: UUID.generate(),
+      updated_by: UUID.generate(),
+      no_tax_id: false,
+      educations_qty: 0,
+      qualifications_qty: 0,
+      specialities_qty: 0
     }
   end
 
@@ -428,7 +473,12 @@ defmodule Core.Factory do
       is_suspended: false,
       inserted_by: UUID.generate(),
       updated_by: UUID.generate(),
-      type: "CAPITATION"
+      type: "CAPITATION",
+      medical_program_id: UUID.generate(),
+      reason: "some reason",
+      contractor_payment_details_mfo: "some details",
+      contractor_payment_details_bank_name: "some bank name",
+      contractor_payment_details_payer_account: "some account"
     }
   end
 

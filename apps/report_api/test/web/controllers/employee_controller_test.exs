@@ -108,7 +108,9 @@ defmodule Report.Web.EmployeeControllerTest do
                    "specialities" => [
                      Map.put(employee.speciality |> Jason.encode!() |> Jason.decode!(), "speciality_officio", true)
                      | specialities
-                   ]
+                   ],
+                   "gender" => "some gender",
+                   "no_tax_id" => false
                  }
                }
              ] == resp["data"]
@@ -370,7 +372,9 @@ defmodule Report.Web.EmployeeControllerTest do
                    Map.put(employee.speciality |> Jason.encode!() |> Jason.decode!(), "speciality_officio", true)
                  ],
                  "qualifications" => qualifications |> Jason.encode!() |> Jason.decode!(),
-                 "science_degree" => science_degree |> Jason.encode!() |> Jason.decode!()
+                 "science_degree" => science_degree |> Jason.encode!() |> Jason.decode!(),
+                 "gender" => "some gender",
+                 "no_tax_id" => false
                },
                "position" => employee.position,
                "legal_entity" => %{
