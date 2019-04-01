@@ -15,6 +15,9 @@ defmodule Core.Replica.Declaration do
     field(:scope, :string)
     field(:declaration_request_id, Ecto.UUID)
     field(:seed, :string)
+    field(:declaration_number, :string)
+    field(:overlimit, :boolean)
+    field(:reason_description, :string)
 
     belongs_to(:division, Core.Replica.Division, type: Ecto.UUID)
     belongs_to(:person, Core.Replica.Person, type: Ecto.UUID)

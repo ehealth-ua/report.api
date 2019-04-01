@@ -27,6 +27,10 @@ defmodule Core.Replica.Employee do
     has_one(:doctor, Core.Replica.EmployeeDoctor)
     has_many(:declarations, Core.Replica.Declaration)
 
+    field(:additional_info, :map)
+    field(:speciality_officio, :string)
+    field(:speciality_officio_valid_to_date, :date)
+
     timestamps(type: :utc_datetime)
   end
 

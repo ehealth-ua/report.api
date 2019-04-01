@@ -41,6 +41,11 @@ defmodule Core.Replica.Contract do
     field(:id_form, :string)
     field(:nhs_signed_date, :date)
     field(:type, :string)
+    field(:medical_program_id, UUID)
+    field(:reason, :string)
+    field(:contractor_payment_details_mfo, :string)
+    field(:contractor_payment_details_bank_name, :string)
+    field(:contractor_payment_details_payer_account, :string)
 
     has_many(:contract_employees, ContractEmployee)
     has_many(:contract_divisions, ContractDivision)
