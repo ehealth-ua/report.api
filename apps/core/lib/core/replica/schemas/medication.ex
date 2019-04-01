@@ -18,6 +18,7 @@ defmodule Core.Replica.Medication do
     field(:is_active, :boolean, default: true)
     field(:inserted_by, Ecto.UUID)
     field(:updated_by, Ecto.UUID)
+    field(:daily_dosage, :float)
 
     timestamps(type: :utc_datetime)
   end
