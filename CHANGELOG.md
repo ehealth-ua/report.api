@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.5.0](https://github.com/edenlabllc/report.api/compare/2.4.0...2.5.0) (2019-4-3)
+
+
+
+
+### Features:
+
+* added merge_candidates and merged_pairs tables (#193)
+
+* changed some fields, added new fields and triggers to db (#191)
+
 ## [2.4.0](https://github.com/edenlabllc/report.api/compare/2.3.3...2.4.0) (2019-3-27)
 
 
