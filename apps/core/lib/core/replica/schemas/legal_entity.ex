@@ -24,7 +24,7 @@ defmodule Core.Replica.LegalEntity do
     field(:mis_verified, :string, default: "NOT_VERIFIED")
     field(:nhs_verified, :boolean, default: false)
     field(:capitation_contract_id, Ecto.UUID)
-    field(:archive, :map)
+    field(:archive, {:array, :map})
     field(:website, :string)
     field(:beneficiary, :string)
     field(:receiver_funds_code, :string)

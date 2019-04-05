@@ -232,7 +232,7 @@ defmodule Core.Factory do
       mis_verified: "VERIFIED",
       nhs_verified: true,
       capitation_contract_id: UUID.generate(),
-      archive: %{},
+      archive: [],
       website: "some website",
       beneficiary: "some beneficiary",
       receiver_funds_code: "some code",
