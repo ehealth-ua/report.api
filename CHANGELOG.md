@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.6.0](https://github.com/edenlabllc/report.api/compare/2.5.0...2.6.0) (2019-4-5)
+
+
+
+
+### Bug Fixes:
+
+* field :archive in legal entity schema/factory (#198)
+
+* after update triggers (#197)
+
 ## [2.5.0](https://github.com/edenlabllc/report.api/compare/2.4.0...2.5.0) (2019-4-3)
 
 
