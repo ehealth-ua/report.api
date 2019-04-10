@@ -36,9 +36,7 @@ pipeline {
             do
               sleep 2
             done
-          psql -U postgres -h localhost -c "create database prm_dev";
-          psql -U postgres -h localhost -c "create database fraud_dev";
-          psql -U postgres -h localhost -c "create database event_manager_dev";
+          psql -U postgres -h localhost -c "create database report_dev";
         '''
         sh '''
           mix local.hex --force;
