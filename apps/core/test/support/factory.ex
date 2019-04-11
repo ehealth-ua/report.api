@@ -148,7 +148,9 @@ defmodule Core.Factory do
       },
       legal_entity_id: nil,
       dls_id: UUID.generate(),
-      dls_verified: true
+      dls_verified: true,
+      mobile_phone: "+380503410870",
+      land_line_phone: "+380503410870"
     }
   end
 
@@ -177,6 +179,9 @@ defmodule Core.Factory do
 
     %Person{
       birth_date: birth_date,
+      gender: "some gender",
+      is_active: true,
+      status: "ACTIVE",
       addresses: [
         %{
           zip: "02090",

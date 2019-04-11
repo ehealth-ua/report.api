@@ -17,6 +17,8 @@ defmodule Core.Replica.Division do
     field(:working_hours, :map)
     field(:dls_id, :string)
     field(:dls_verified, :boolean)
+    field(:mobile_phone, :string)
+    field(:land_line_phone, :string)
 
     belongs_to(:legal_entity, Core.Replica.LegalEntity, type: Ecto.UUID)
     has_many(:addresses, Core.Replica.DivisionAddress, foreign_key: :division_id)
