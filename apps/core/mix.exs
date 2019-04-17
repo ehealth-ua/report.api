@@ -43,7 +43,7 @@ defmodule Core.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:kube_rpc, "~> 0.1.0"},
+      {:kube_rpc, "~> 0.2.0"},
       {:confex, "~> 3.4"},
       {:jason, "~> 1.0"},
       {:httpoison, "~> 1.2"},
