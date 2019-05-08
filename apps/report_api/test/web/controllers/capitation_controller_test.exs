@@ -309,6 +309,32 @@ defmodule Report.CapitationControllerTest do
                |> MapSet.to_list()
     end
 
+    test "get details success pagination", %{conn: conn} do
+      capitation_report = insert(:capitation_report)
+      contract = insert(:contracts)
+
+      Enum.each(1..12, fn _ ->
+        legal_entity = insert(:legal_entity)
+
+        insert(
+          :capitation_report_detail,
+          capitation_report_id: capitation_report.id,
+          contract_id: contract.id,
+          legal_entity_id: legal_entity.id,
+          age_group: "0-18",
+          declaration_count: 100
+        )
+      end)
+
+      response =
+        conn
+        |> get(capitation_path(conn, :details, %{page_size: 2, page: 3}))
+        |> json_response(200)
+
+      assert 2 == length(response["data"])
+      assert %{"page_number" => 3, "page_size" => 2, "total_entries" => 12, "total_pages" => 6} == response["paging"]
+    end
+
     test "get details success only from legal entity if no merged", %{conn: conn} do
       cr = insert(:capitation_report)
       contract = insert(:contracts)

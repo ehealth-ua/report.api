@@ -25,7 +25,7 @@
       "type": "string",
       "$ref": "#/definitions/uuid"
     },
-    "page_number": {
+    "page": {
       "type": "string",
       "$ref": "#/definitions/numeric_string"
     },
