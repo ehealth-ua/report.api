@@ -5,34 +5,20 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
-## [2.6.0](https://github.com/edenlabllc/report.api/compare/2.5.0...2.6.0) (2019-4-5)
-
-
-
-
-### Bug Fixes:
-
-* field :archive in legal entity schema/factory (#198)
-
-* after update triggers (#197)
-
-## [2.5.0](https://github.com/edenlabllc/report.api/compare/2.4.0...2.5.0) (2019-4-3)
+## [2.6.0](https://github.com/edenlabllc/report.api/compare/2.6.0...2.6.0) (2019-5-9)
 
 
 
 
 ### Features:
+
+* added new columns to persons and divisions (#204)
+
+* added medication_request_requests table (#202)
 
 * added merge_candidates and merged_pairs tables (#193)
 
 * changed some fields, added new fields and triggers to db (#191)
-
-## [2.4.0](https://github.com/edenlabllc/report.api/compare/2.3.3...2.4.0) (2019-3-27)
-
-
-
-
-### Features:
 
 * Dev 4360 change period of get histogram stats declaration to month (#188)
 
@@ -42,7 +28,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 * phoenix instruments (#179)
 
+* use ehealth logger (#176)
+
 ### Bug Fixes:
+
+* replace page_number with page on capitation report details (#208)
+
+* field :archive in legal entity schema/factory (#198)
+
+* after update triggers (#197)
 
 * postgis ecto types (#189)
 
@@ -53,17 +47,6 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 * return rest of datetime fields with timezones
 
 * refactor(core): return timestamps with timezones (#182)
-
-## [2.3.3](https://github.com/edenlabllc/report.api/compare/2.3.3...2.3.3) (2019-3-4)
-
-
-
-
-### Features:
-
-* use ehealth logger (#176)
-
-### Bug Fixes:
 
 * jason dep removed to core (#175)
 
