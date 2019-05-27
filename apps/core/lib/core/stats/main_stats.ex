@@ -311,7 +311,7 @@ defmodule Core.Stats.MainStats do
     |> where([..., da], da.type == "RESIDENCE")
     |> group_by([..., da], da.area)
     |> select([..., da], %{region: da.area, count: count(da.id)})
-    |> Repo.all()
+    |> Repo.all(timeout: :infinity)
   end
 
   defp declarations_by_regions do
@@ -381,7 +381,7 @@ defmodule Core.Stats.MainStats do
     |> where([a], a.x == 1)
     |> medication_request_query()
     |> select([a], count(a.medication_request_id))
-    |> Repo.one!()
+    |> Repo.one!(timeout: :infinity)
   end
 
   defp doctor_params do
