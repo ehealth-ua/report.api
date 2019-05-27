@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.6.1](https://github.com/edenlabllc/report.api/compare/2.6.0...2.6.1) (2019-5-27)
+
+
+
+
+### Bug Fixes:
+
+* improve medication requests stats (#211)
+
 ## [2.6.0](https://github.com/edenlabllc/report.api/compare/2.6.0...2.6.0) (2019-5-9)
 
 
