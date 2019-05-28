@@ -31,6 +31,8 @@ config :core, Core.MediaStorage,
     timeout: {:system, :integer, "MEDIA_STORAGE_REQUEST_TIMEOUT", 30_000}
   ]
 
+config :core, :cache, list_reimbursement_report_ttl: {:system, :integer, "LIST_REIMBURSEMENT_REPORT_TTL", 60 * 60}
+
 config :core,
   api_resolvers: [
     media_storage: Core.MediaStorage
@@ -50,5 +52,12 @@ config :core,
       ]
     ]
   ]
+
+config :core, Core.Redis,
+  host: {:system, "REDIS_HOST", "0.0.0.0"},
+  port: {:system, :integer, "REDIS_PORT", 6379},
+  password: {:system, "REDIS_PASSWORD", nil},
+  database: {:system, "REDIS_DATABASE", nil},
+  pool_size: {:system, :integer, "REDIS_POOL_SIZE", 5}
 
 import_config "#{Mix.env()}.exs"

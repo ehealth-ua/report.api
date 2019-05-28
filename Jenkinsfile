@@ -29,6 +29,7 @@ pipeline {
         sh 'sudo docker system prune -f'
         sh '''
           sudo docker run -d --name postgres -p 5432:5432 edenlabllc/alpine-postgre:pglogical-gis-1.1;
+          sudo docker run -d --name redis -p 6379:6379 redis:4-alpine3.9;
           sudo docker ps;
         '''
         sh '''

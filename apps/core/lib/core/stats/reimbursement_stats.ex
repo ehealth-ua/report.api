@@ -2,13 +2,12 @@ defmodule Core.Stats.ReimbursementStats do
   @moduledoc false
 
   alias Core.Connection
+  alias Core.Redis
   alias Core.Replica.Employee
   alias Core.Replica.LegalEntity
   alias Core.Replica.MedicationDispense.Details
   alias Core.Replica.MedicationRequest
   alias Core.Repo
-  alias Scrivener.Config
-  alias Scrivener.Page
   import Core.Stats.ReimbursementStatsValidator, only: [validate: 3]
   import Ecto.Query
 
@@ -19,16 +18,26 @@ defmodule Core.Stats.ReimbursementStats do
     with {%Ecto.Changeset{valid?: true, changes: changes}, legal_entity} <- validate(params, legal_entity_id, user_id),
          %{dispense: %{changes: dispense_changes}} <- changes.period.changes,
          %{request: %{changes: request_changes}} <- changes.period.changes,
-         query <- get_data_query(dispense_changes, request_changes, legal_entity),
-         config <- Config.new(Repo, [page_size: 10], params),
-         total_entries <- Repo.one(select(query, [mr, md], count(mr.id))) do
-      %Page{
-        page_size: config.page_size,
-        page_number: config.page_number,
-        entries: get_data(query, config),
-        total_entries: total_entries,
-        total_pages: round(Float.ceil(total_entries / config.page_size))
-      }
+         cache_key <- get_cache_key(dispense_changes, request_changes),
+         query <- get_data_query(dispense_changes, request_changes, legal_entity) do
+      total_entries =
+        case Redis.get(cache_key) do
+          {:ok, count} ->
+            count
+
+          _ ->
+            count = query |> get_count_query() |> Repo.one()
+            Redis.setex(cache_key, Confex.fetch_env!(:core, :cache)[:list_reimbursement_report_ttl], count)
+            count
+        end
+
+      options =
+        params
+        |> Map.take(~w(page page_size))
+        |> Map.put("options", total_entries: total_entries)
+        |> Repo.paginator_options()
+
+      EctoPaginator.paginate(get_data(query, options), total_entries, options)
     else
       {%Ecto.Changeset{valid?: false} = changeset, _} -> changeset
       error -> error
@@ -118,6 +127,13 @@ defmodule Core.Stats.ReimbursementStats do
     |> do_get_data(legal_entity)
   end
 
+  defp get_count_query(query) do
+    query
+    |> distinct([mr], mr.id)
+    |> select([mr], count(mr.id))
+    |> group_by([mr], [:id])
+  end
+
   defp do_get_data(query, legal_entity) do
     query
     |> join(:left, [mr, md], e in Employee, on: e.id == mr.employee_id)
@@ -147,5 +163,21 @@ defmodule Core.Stats.ReimbursementStats do
 
   defp join_medication_dispense(query) do
     join(query, :left, [mr], md in assoc(mr, :medication_dispense), on: mr.id == md.medication_request_id)
+  end
+
+  def get_cache_key(dispense_changes, request_changes) do
+    key =
+      Enum.reduce(dispense_changes, "count_reimbursement_report", fn
+        {k, v}, acc when is_list(v) -> "#{acc}_#{k}_#{Enum.sort(v)}"
+        {k, v}, acc -> "#{acc}_#{k}_#{v}"
+      end)
+
+    key =
+      Enum.reduce(request_changes, key, fn
+        {k, v}, acc when is_list(v) -> "#{acc}_#{k}_#{Enum.sort(v)}"
+        {k, v}, acc -> "#{acc}_#{k}_#{v}"
+      end)
+
+    :md5 |> :crypto.hash(key) |> Base.encode64()
   end
 end
