@@ -130,8 +130,9 @@ defmodule Core.Stats.ReimbursementStats do
   defp get_count_query(query) do
     query
     |> distinct([mr], mr.id)
-    |> select([mr], count(mr.id))
     |> group_by([mr], [:id])
+    |> subquery()
+    |> select([a], count(a.id))
   end
 
   defp do_get_data(query, legal_entity) do
