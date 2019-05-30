@@ -18,7 +18,7 @@ defmodule Core.Stats.ReimbursementStats do
     with {%Ecto.Changeset{valid?: true, changes: changes}, legal_entity} <- validate(params, legal_entity_id, user_id),
          %{dispense: %{changes: dispense_changes}} <- changes.period.changes,
          %{request: %{changes: request_changes}} <- changes.period.changes,
-         cache_key <- get_cache_key(dispense_changes, request_changes),
+         cache_key <- get_cache_key(dispense_changes, request_changes, legal_entity_id),
          query <- get_data_query(dispense_changes, request_changes, legal_entity) do
       total_entries =
         case Redis.get(cache_key) do
@@ -166,7 +166,7 @@ defmodule Core.Stats.ReimbursementStats do
     join(query, :left, [mr], md in assoc(mr, :medication_dispense), on: mr.id == md.medication_request_id)
   end
 
-  def get_cache_key(dispense_changes, request_changes) do
+  def get_cache_key(dispense_changes, request_changes, legal_entity_id) do
     key =
       Enum.reduce(dispense_changes, "count_reimbursement_report", fn
         {k, v}, acc when is_list(v) -> "#{acc}_#{k}_#{Enum.sort(v)}"
@@ -178,6 +178,8 @@ defmodule Core.Stats.ReimbursementStats do
         {k, v}, acc when is_list(v) -> "#{acc}_#{k}_#{Enum.sort(v)}"
         {k, v}, acc -> "#{acc}_#{k}_#{v}"
       end)
+
+    key = "#{key}_#{legal_entity_id}"
 
     :md5 |> :crypto.hash(key) |> Base.encode64()
   end
