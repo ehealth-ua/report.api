@@ -382,7 +382,7 @@
       <rect x="1886" y="-13" clip-path="url(#clipPath2)" fill="none" width="227" height="77" stroke="gray"/>
     </g>
     <g stroke-miterlimit="1.45" font-size="13px" font-weight="bold" font-family="sans-serif" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
-      <text x="1973" xml:space="preserve" y="4.9131" clip-path="url(#clipPath2)" stroke="none">districts</text>
+      <text x="1973" xml:space="preserve" y="4.9131" clip-path="url(#clipPath2)" stroke="none">regions</text>
     </g>
     <g fill="gray" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke="gray">
       <line y2="11" fill="none" x1="1887" clip-path="url(#clipPath2)" x2="2112" y1="11"/>
@@ -395,7 +395,7 @@
     </g>
     <g stroke-miterlimit="1.45" font-size="10px" font-family="'Helvetica'" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
       <text x="1964.5" xml:space="preserve" y="25.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
-      <text x="1912.5" xml:space="preserve" y="41.3555" clip-path="url(#clipPath2)" font-weight="bold" stroke="none">region_id</text>
+      <text x="1912.5" xml:space="preserve" y="41.3555" clip-path="url(#clipPath2)" font-weight="bold" stroke="none">area_id</text>
       <text x="1964.5" xml:space="preserve" y="41.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
       <text x="1912.5" xml:space="preserve" y="57.3555" clip-path="url(#clipPath2)" font-weight="bold" stroke="none">name</text>
       <text x="1964.5" xml:space="preserve" y="57.3555" clip-path="url(#clipPath2)" stroke="none">CHARACTER VARYING(255)</text>
@@ -586,7 +586,7 @@
       <rect x="2235" y="195" clip-path="url(#clipPath2)" fill="none" width="279" height="109" stroke="gray"/>
     </g>
     <g stroke-miterlimit="1.45" font-size="13px" font-weight="bold" font-family="sans-serif" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
-      <text x="2349.5" xml:space="preserve" y="213.9131" clip-path="url(#clipPath2)" stroke="none">regions</text>
+      <text x="2349.5" xml:space="preserve" y="213.9131" clip-path="url(#clipPath2)" stroke="none">areas</text>
     </g>
     <g fill="gray" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke="gray">
       <line y2="220" fill="none" x1="2236" clip-path="url(#clipPath2)" x2="2513" y1="220"/>
@@ -647,9 +647,9 @@
     </g>
     <g stroke-miterlimit="1.45" font-size="10px" font-family="'Helvetica'" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
       <text x="1982.5" xml:space="preserve" y="485.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
-      <text x="1878.5" xml:space="preserve" y="501.3555" clip-path="url(#clipPath2)" stroke="none">district_id</text>
+      <text x="1878.5" xml:space="preserve" y="501.3555" clip-path="url(#clipPath2)" stroke="none">region_id</text>
       <text x="1982.5" xml:space="preserve" y="501.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
-      <text x="1878.5" xml:space="preserve" y="517.3555" clip-path="url(#clipPath2)" font-weight="bold" stroke="none">region_id</text>
+      <text x="1878.5" xml:space="preserve" y="517.3555" clip-path="url(#clipPath2)" font-weight="bold" stroke="none">area_id</text>
       <text x="1982.5" xml:space="preserve" y="517.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
       <text x="1878.5" xml:space="preserve" y="533.3555" clip-path="url(#clipPath2)" stroke="none">koatuu</text>
       <text x="1982.5" xml:space="preserve" y="533.3555" clip-path="url(#clipPath2)" stroke="none">CHARACTER VARYING(10)</text>
@@ -712,14 +712,14 @@
     </g>
     <g stroke-miterlimit="1.45" font-size="10px" font-family="'Helvetica'" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
       <text x="1945.5" xml:space="preserve" y="186.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
-      <text x="1872.5" xml:space="preserve" y="202.3555" clip-path="url(#clipPath2)" stroke="none">district_id</text>
+      <text x="1872.5" xml:space="preserve" y="202.3555" clip-path="url(#clipPath2)" stroke="none">region_id</text>
       <text x="1945.5" xml:space="preserve" y="202.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>
     </g>
     <g fill="gray" transform="matrix(0.317,0,0,0.317,9.5108,7.1409) translate(2131.5,191.6553) scale(0.5,0.5)" stroke="gray">
       <image x="0" y="0" clip-path="url(#clipPath22)" width="32" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB/0lEQVR42u3WXW/S&#10;UBjAcS40MSbtOU/rlVd+NOfr/AAT6KDrBmNjvDgqm1YX/RjbJMsUF5gERFxAh1aC&#10;REN2YeIX2OM53VqWOHbVUxPDk/wSaGn+T9qQNBSazGR8muvWz6vw4vd79eUvhAvw&#10;8+K2MPCS+vyoyiCMdyz2VvAlng2rsDFE2Dg6x/A4kEcCT4ffGDyH+AWuWT9mwBrg&#10;GGIXIOuDGfXJAB1rXP+U913cArDWf0itPirrfaSOHtKiw3Y+nxwTswAp9sK0+B0V&#10;FlRMl41g2g/4eWraNcqOcf7HTTtMza+oPOa6HjfujFW/7Cyx2vV3ASh8idACC7oe&#10;fUbKQL47/deP2RJk9bDqXzz/KcJjSu6sDkKhPT3umhtG74ovcTXXjtL8ISr5zki2&#10;gyTXvi/8f65mDzQle4DKCtcaybbvCY+TfEsjmRaONJGkmZWPAcTTzVngsaUmgqeB&#10;SqZxV3hcXq7HIPMByXIDwZVi8VQQ8VQtRlI15CC57yFL9TvC4zS9HyeLLMaAo4KQ&#10;qKCSeHdbfDxZ0XkM5l17KDNSYi+A+EJZlxerSBdY9BQ1yigZb2+Jf+ZGeV423rAg&#10;o+86ZEaKBxAn+m5SnmNRzw7K8R2U9NdTgbxKUa00J8+WkJ4hxUrBxL27oG2FqbaN&#10;J17d/Cfv+VJkM0qjW1Ohyfzv8wdCyLRFV41bFgAAAABJRU5ErkJggg==" height="32" preserveAspectRatio="none"/>
     </g>
     <g stroke-miterlimit="1.45" font-size="10px" font-family="'Helvetica'" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
-      <text x="1872.5" xml:space="preserve" y="218.3555" clip-path="url(#clipPath2)" stroke="none">region_id</text>
+      <text x="1872.5" xml:space="preserve" y="218.3555" clip-path="url(#clipPath2)" stroke="none">area_id</text>
     </g>
     <g stroke-miterlimit="1.45" font-size="10px" font-family="'Helvetica'" transform="matrix(0.317,0,0,0.317,9.5108,7.1409)" stroke-linecap="butt">
       <text x="1945.5" xml:space="preserve" y="218.3555" clip-path="url(#clipPath2)" stroke="none">UUID</text>

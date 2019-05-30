@@ -4,6 +4,7 @@ defmodule Core.Factory do
   use ExMachina.Ecto, repo: Core.Repo
   alias Core.CapitationReport
   alias Core.CapitationReportDetail
+  alias Core.Replica.Area
   alias Core.Replica.Declaration
   alias Core.Replica.DeclarationStatusHistory
   alias Core.Replica.MedicationRequestStatusHistory
@@ -14,7 +15,6 @@ defmodule Core.Factory do
   alias Core.Replica.MSP
   alias Core.Replica.Division
   alias Core.Replica.DivisionAddress
-  alias Core.Replica.Region
   alias Core.Replica.Party
   alias Core.Replica.PartyUser
   alias Core.Replica.MedicationRequest
@@ -290,8 +290,8 @@ defmodule Core.Factory do
     insert(:legal_entity, medical_service_provider: msp)
   end
 
-  def region_factory do
-    %Region{
+  def area_factory do
+    %Area{
       name: "ЛЬВІВСЬКА"
     }
   end

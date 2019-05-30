@@ -1,11 +1,11 @@
 defmodule Core.Integration.MainStatsTest do
   @moduledoc false
 
+  use Timex
   use Report.Web.ConnCase
 
   alias Core.Stats.HistogramStatsRequest
   alias Core.Stats.MainStats
-  use Timex
 
   test "get_main_stats/1" do
     insert_fixtures()
@@ -310,8 +310,8 @@ defmodule Core.Integration.MainStatsTest do
   end
 
   defp insert_fixtures do
-    region = insert(:region)
-    insert(:region, name: "ЧЕРКАСЬКА")
+    area = insert(:area)
+    insert(:area, name: "ЧЕРКАСЬКА")
     person = insert(:person)
 
     insert(
@@ -471,7 +471,7 @@ defmodule Core.Integration.MainStatsTest do
     )
 
     %{
-      "region" => region,
+      "area" => area,
       "division" => division,
       "legal_entity" => legal_entity,
       "employee" => employee,

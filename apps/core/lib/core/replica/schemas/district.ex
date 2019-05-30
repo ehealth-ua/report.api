@@ -1,16 +1,16 @@
-defmodule Core.Replica.District do
+defmodule Core.Replica.Region do
   @moduledoc false
   use Ecto.Schema
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  schema "districts" do
+  schema "regions" do
     field(:name, :string)
     field(:koatuu, :string)
 
     timestamps(type: :utc_datetime)
 
-    belongs_to(:region, Core.Replica.Region, type: Ecto.UUID)
+    belongs_to(:area, Core.Replica.Area, type: Ecto.UUID)
 
     has_many(:settlements, Core.Replica.Settlement)
   end

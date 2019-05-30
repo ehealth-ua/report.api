@@ -136,7 +136,7 @@
                                 },
                                 "region": {
                                     "type": "string",
-                                    "description": "district of area"
+                                    "description": "region name"
                                 },
                                 "settlement": {
                                     "type": "string",

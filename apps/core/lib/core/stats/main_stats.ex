@@ -9,6 +9,7 @@ defmodule Core.Stats.MainStats do
   import Core.Replica.Replicas
   import Core.Stats.MainStatsValidator
 
+  alias Core.Replica.Area
   alias Core.Replica.Declaration
   alias Core.Replica.DeclarationStatusHistory
   alias Core.Replica.Division
@@ -17,7 +18,6 @@ defmodule Core.Stats.MainStats do
   alias Core.Replica.LegalEntity
   alias Core.Replica.MedicationRequest
   alias Core.Replica.MedicationRequestStatusHistory
-  alias Core.Replica.Region
   alias Core.Repo
   alias Core.Stats.HistogramStatsRequest
 
@@ -90,7 +90,7 @@ defmodule Core.Stats.MainStats do
   end
 
   def get_regions_stats do
-    with skeleton <- regions_stats_skeleton(Repo.all(Region)),
+    with skeleton <- regions_stats_skeleton(Repo.all(Area)),
          skeleton <- add_to_regions_skeleton(msps_by_regions(), ["stats", "msps"], skeleton),
          skeleton <- add_to_regions_skeleton(pharmacies_by_regions(), ["stats", "pharmacies"], skeleton),
          skeleton <- add_to_regions_skeleton(doctors_by_regions(), ["stats", "doctors"], skeleton),

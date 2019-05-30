@@ -198,15 +198,15 @@ medication_request_id | uuid | not null
 status | varchar | not null
 inserted_at | timestamp | not null
 
-[regions]
+[areas]
 id | UUID | NOT NULL
 koatuu | VARCHAR('10')
 name | VARCHAR('50') | NOT NULL
 
-[districts]
+[regions]
 id | UUID | NOT NULL
 koatuu | VARCHAR('10')
-region_id | UUID | NOT NULL
+area_id | UUID | NOT NULL
 name | VARCHAR('100') | NOT NULL
 
 [settlements]
@@ -214,8 +214,8 @@ id | UUID | NOT NULL
 type | VARCHAR(1)
 koatuu | VARCHAR('10')
 name | VARCHAR | NOT NULL
-district_id | UUID
-region_id | UUID | NOT NULL
+region_id | UUID
+area_id | UUID | NOT NULL
 mountain_group | VARCHAR(150)
 parent_settlement | UUID
 
@@ -254,7 +254,7 @@ legal_entity_id | uuid
 declaration_id| uuid 
 person_id | uuid 
 division_id | uuid 
-message | ARCHAR(255)
+message | VARCHAR(255)
 person_age | integer
 inserted_at | timestamp | not null
 
@@ -310,12 +310,12 @@ medication_dispense_details 1--1 medications
 
 
 
-regions 1--+ districts
+areas 1--+ regions
+areas 1--+ settlements
 regions 1--+ settlements
-districts 1--+ settlements
 settlements 1--+ streets
+areas 1--+ streets
 regions 1--+ streets
-districts 1--+ streets
 streets 1--+ streets_aliases
 
 

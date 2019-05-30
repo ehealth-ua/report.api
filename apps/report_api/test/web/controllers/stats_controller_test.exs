@@ -47,7 +47,7 @@ defmodule Report.Web.StatsControllerTest do
     conn = get(conn, stats_path(conn, :regions))
     :ok = Validator.validate(schema, json_response(conn, 200))
 
-    insert(:region)
+    insert(:area)
     conn = get(conn, stats_path(conn, :regions))
     :ok = Validator.validate(schema, json_response(conn, 200))
   end

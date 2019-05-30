@@ -11,8 +11,8 @@ defmodule Core.Replica.Settlement do
 
     timestamps(type: :utc_datetime)
 
+    belongs_to(:area, Core.Replica.Area, type: Ecto.UUID)
     belongs_to(:region, Core.Replica.Region, type: Ecto.UUID)
-    belongs_to(:district, Core.Replica.District, type: Ecto.UUID)
     belongs_to(:parent_settlement, Core.Replica.Settlement, type: Ecto.UUID)
   end
 end
