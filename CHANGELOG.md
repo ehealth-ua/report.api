@@ -5,6 +5,25 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.7.0](https://github.com/edenlabllc/report.api/compare/2.6.1...2.7.0) (2019-6-4)
+
+
+
+
+### Features:
+
+* rename region to area, district to region (#214)
+
+* improve reimbursement report performance (#215)
+
+### Bug Fixes:
+
+* changes in legal_entities table (#220)
+
+* reimbursement report (#218)
+
+* reimbursement report query (#216)
+
 ## [2.6.1](https://github.com/edenlabllc/report.api/compare/2.6.0...2.6.1) (2019-5-27)
 
 
