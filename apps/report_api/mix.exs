@@ -40,7 +40,8 @@ defmodule ReportApi.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:phoenix, "~> 1.4.0"},
       {:eview, "~> 0.15.0"},
-      {:libcluster, "~> 3.0", git: "https://github.com/AlexKovalevych/libcluster.git", branch: "kube_namespaces"},
+      {:libcluster, "~> 3.0",
+       git: "https://github.com/AlexKovalevych/libcluster.git", branch: "fix_kubernetes_strategy"},
       {:core, in_umbrella: true}
     ]
   end
